@@ -3,19 +3,39 @@ import MessageBox from "./components/MessageBox";
 import Main from "./components/Main";
 import { useState, createRef, useEffect } from "react";
 import MessageBubble from "./components/MessageBubble";
-var ws = new WebSocket("ws://127.0.0.1:8000/ws/test");
 
 function App() {
   const [text, changeText] = useState("");
   const [messageBubbles, addBubble] = useState([]);
+  const [ws, setWebSocket] = useState(null);
   const messagesEndRef = createRef();
 
   useEffect(() => {
-    ws = new WebSocket("ws://127.0.0.1:8000/ws/test");
-    ws.addEventListener("message", createVolunteerBubble);
+    if (ws !== null) {
+      console.log("event");
+      ws.addEventListener("message", createVolunteerBubble);
+    }
+
     return function () {
-      ws.removeEventListener("message", createVolunteerBubble);
+      console.log("clean");
+      if (ws !== null) ws.removeEventListener("message", createVolunteerBubble);
     };
+  }, [ws]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("http://localhost:8000/api/threads/", {
+        method: "POST",
+      });
+
+      const { thread_id } = await response.json();
+      console.log(thread_id);
+      return thread_id;
+    }
+
+    fetchData().then((t) => {
+      setWebSocket(new WebSocket("ws://127.0.0.1:8000/ws/" + t));
+    });
   }, []);
 
   function createVolunteerBubble(event) {
@@ -43,7 +63,7 @@ function App() {
     const type = "message-bubble-user";
 
     if (text !== "") {
-      ws.send(text);
+      if (ws !== null) ws.send(text);
       addBubble((bubbles) => {
         return [
           <MessageBubble
