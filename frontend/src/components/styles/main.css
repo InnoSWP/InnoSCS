@@ -1,0 +1,7 @@
+.message-container {
+  height: calc(100vh - 75px - 85px - 16px);
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: scroll;
+  padding-bottom: 16px;
+}

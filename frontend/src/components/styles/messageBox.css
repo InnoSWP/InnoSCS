@@ -1,0 +1,60 @@
+.message-box-wrapper {
+  height: 85px;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  justify-content: space-between;
+  background-color: white;
+}
+
+.message-wrapper {
+  margin-top: 19px;
+  margin-left: 16px;
+  display: flex;
+  flex-direction: row;
+  flex-flow: row;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  height: 46px;
+  background-color: #F4F4F4;
+  border-radius: 10px;
+}
+
+.message-wrapper input {
+  height: 45px;
+  flex: 1 1 auto;
+  background-color: #F4F4F4;
+  padding: 0;
+  border-width: 0;
+  text-indent: 9px;
+  border-radius: 10px;
+}
+
+.button-attach {
+  padding-top: 15px;
+  padding-right: 15px;
+}
+
+.button-send {
+  background-color: #349EFF;
+  border-width: 0;
+  border-radius: 25px;
+  height: 46px;
+  width: 46px;
+  padding-left: 14px;
+  padding-top: 5px;
+  margin-top: 19px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.message-wrapper input::placeholder {
+  color: #a4a4a4;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+}
+
+.message-wrapper input:focus {
+  border: 0;
+  outline: 0;
+}
