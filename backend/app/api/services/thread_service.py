@@ -14,7 +14,7 @@ class SupportThreadService:
     @staticmethod
     async def create(thread: SupportCreate) -> SupportThread:
         """from function expected that it will store the thread in db"""
-        thread_new = SupportThread(id=thread.id, questions=thread.questions)
+        thread_new = SupportThread(ws_id=thread.ws_id, questions=thread.questions)
         _threads.append(thread_new)
 
         return thread_new
@@ -25,21 +25,21 @@ class SupportThreadService:
         return _threads
 
     @staticmethod
-    async def find_by_id(thread_id: str) -> Optional[SupportThread]:
+    async def find_by_ws_id(ws_id: int) -> Optional[SupportThread]:
         """from function expected that it will return SupportThread"""
         for thread in _threads:
-            if thread.id == thread_id:
+            if thread.ws_id == ws_id:
                 return thread
 
         return None
 
     @staticmethod
-    async def save_question(question: str, thread_id: str) -> None:
+    async def save_question(question: str, ws_id: int) -> None:
         """
-        from function expected that it will add questions in thread_id,
+        from function expected that it will add questions in ws_id,
         by question is meant messages from acclient and a volunteer
         """
-        thread = await SupportThreadService.find_by_id(thread_id)
+        thread = await SupportThreadService.find_by_ws_id(ws_id)
         _threads.remove(thread)  # type: ignore  # will be another implementation
 
         thread.questions.append(question)  # type: ignore  # will be another implementation
