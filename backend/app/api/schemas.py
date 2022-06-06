@@ -1,12 +1,29 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class SupportThread(BaseModel):
-    id: int
+class SupportBase(BaseModel):
     questions: list[str]
 
 
-class Volunteer(BaseModel):
+class SupportCreate(SupportBase):
+    pass
+
+
+class SupportThread(SupportBase):
+    id: int
+
+
+class VolunteerBase(BaseModel):
     id: int
     username: str
-    thread_id: int
+    thread_id: Optional[int] = None
+
+
+class Volunteer(VolunteerBase):
+    pass
+
+
+class VolunteerCreate(VolunteerBase):
+    pass
