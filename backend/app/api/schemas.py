@@ -8,7 +8,7 @@ class SupportBase(BaseModel):
 
 
 class SupportCreate(SupportBase):
-    pass
+    id: Optional[int] = None
 
 
 class SupportThread(SupportBase):

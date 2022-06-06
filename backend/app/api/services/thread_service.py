@@ -1,19 +1,21 @@
 from typing import Optional
 
-from app.api.schemas import SupportThread
+from app.api.schemas import SupportThread, SupportCreate
 
 
 _threads: list[SupportThread] = []
 
 
 class SupportThreadService:
-    """class for manipulation SupportThread entities. Note: some functions should return exactly pydantic model"""
+    """class for manipulation SupportThread entities. Note: some functions should return exactly pydantic model!"""
 
     @staticmethod
-    async def create(thread: SupportThread) -> None:
-        """from function expected to store the thread in db"""
+    async def create(thread: SupportCreate) -> SupportThread:
+        """from function expected that it will store the thread in db"""
+        thread_new = SupportThread(id=thread.id, questions=thread.questions)
+        _threads.append(thread_new)
 
-        _threads.append(thread)
+        return thread_new
 
     @staticmethod
     async def find_all() -> list[SupportThread]:
