@@ -6,7 +6,6 @@ from fastapi import APIRouter
 from app.api.schemas import Volunteer, VolunteerCreate
 from app.api.services import VolunteerService
 
-
 router = APIRouter()
 
 
@@ -25,7 +24,7 @@ async def find_volunteers(flt: Optional[str] = None) -> list[Volunteer]:
 
 
 @router.put('/volunteer/{volunteer_id}', response_model=Volunteer)
-async def update_volunteer(volunteer_id: int, volunteer: VolunteerCreate):
+async def update_volunteer(volunteer_id: int, volunteer: VolunteerCreate) -> Volunteer:
     volunteer_upd = await VolunteerService.update(volunteer, volunteer_id)
 
     return volunteer_upd

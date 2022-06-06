@@ -8,11 +8,11 @@ class SupportBase(BaseModel):
 
 
 class SupportCreate(SupportBase):
-    id: Optional[int] = None
+    id: Optional[str] = None
 
 
 class SupportThread(SupportBase):
-    id: int
+    id: str
 
 
 class VolunteerBase(BaseModel):

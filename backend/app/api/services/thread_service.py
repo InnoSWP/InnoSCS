@@ -1,13 +1,15 @@
 from typing import Optional
 
-from app.api.schemas import SupportThread, SupportCreate
-
+from app.api.schemas import SupportCreate, SupportThread
 
 _threads: list[SupportThread] = []
 
 
 class SupportThreadService:
-    """class for manipulation SupportThread entities. Note: some functions should return exactly pydantic model!"""
+    """
+    class for manipulation SupportThread entities.
+    Note: some functions should return exactly pydantic model!
+    """
 
     @staticmethod
     async def create(thread: SupportCreate) -> SupportThread:
@@ -23,7 +25,7 @@ class SupportThreadService:
         return _threads
 
     @staticmethod
-    async def find_by_id(thread_id: int) -> Optional[SupportThread]:
+    async def find_by_id(thread_id: str) -> Optional[SupportThread]:
         """from function expected that it will return SupportThread"""
         for thread in _threads:
             if thread.id == thread_id:
@@ -32,16 +34,13 @@ class SupportThreadService:
         return None
 
     @staticmethod
-    async def save_question(question: str, thread_id):
-        """from function expected that it will add questions in thread_id, by question is meant messages from a
-        cclient and a volunteer
+    async def save_question(question: str, thread_id: str) -> None:
+        """
+        from function expected that it will add questions in thread_id,
+        by question is meant messages from acclient and a volunteer
         """
         thread = await SupportThreadService.find_by_id(thread_id)
-        _threads.remove(thread)
+        _threads.remove(thread)  # type: ignore  # will be another implementation
 
-        thread.questions.append(question)
-        _threads.append(thread)
-
-
-
-
+        thread.questions.append(question)  # type: ignore  # will be another implementation
+        _threads.append(thread)  # type: ignore  # will be another implementation
