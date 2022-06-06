@@ -35,3 +35,8 @@ format: ## Formats all files
 
 .PHONY: ci
 ci:	lint test ## Lint code then run tests
+
+
+.PHONY: up
+up: ## Launch
+	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
