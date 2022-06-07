@@ -6,6 +6,9 @@ from pydantic import BaseModel
 class SupportBase(BaseModel):
     questions: list[str]
 
+    class Config:
+        orm_mode = True
+
 
 class SupportCreate(SupportBase):
     ws_id: Optional[int] = None
@@ -19,6 +22,9 @@ class VolunteerBase(BaseModel):
     tg_id: int
     username: str
     thread_id: Optional[int] = None
+
+    class Config:
+        orm_mode = True
 
 
 class Volunteer(VolunteerBase):
