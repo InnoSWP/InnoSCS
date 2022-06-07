@@ -6,6 +6,9 @@
 ### Create venv:
     make venv
 
+### Run API
+    make up
+
 ### Run tests:
     make test
 
