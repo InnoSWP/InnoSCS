@@ -15,7 +15,9 @@ class VolunteerService:
     async def create(volunteer: VolunteerCreate) -> Volunteer:
         """from function expected that it will store the volunteer in db"""
         volunteer_new = Volunteer(
-            id=volunteer.id, thread_id=volunteer.thread_id, username=volunteer.username
+            tg_id=volunteer.tg_id,
+            thread_id=volunteer.thread_id,
+            username=volunteer.username,
         )
         _volunteers.append(volunteer_new)
 
@@ -35,22 +37,27 @@ class VolunteerService:
         return _volunteers
 
     @staticmethod
-    async def find_by_id(volunteer_id: int) -> Optional[Volunteer]:
-        """from function expected that it will return volunteer by id"""
+    async def find_by_tg_id(volunteer_tg_id: int) -> Optional[Volunteer]:
+        """from function expected that it will return volunteer by telegram id"""
         for volunteer in _volunteers:
-            if volunteer.id == volunteer_id:
+            if volunteer.tg_id == volunteer_tg_id:
                 return volunteer
 
         return None
 
     @staticmethod
-    async def update(volunteer: VolunteerCreate, volunteer_id: int) -> Volunteer:
-        """from function expected that it will update all field of volunteer"""
-        volunteer_to_upd = await VolunteerService.find_by_id(volunteer_id)
+    async def update(volunteer: VolunteerCreate, volunteer_tg_id: int) -> Volunteer:
+        """
+        from function expected that it will update all field of volunteer,
+        volunteer is searched by telegram id
+        """
+        volunteer_to_upd = await VolunteerService.find_by_tg_id(volunteer_tg_id)
         _volunteers.remove(volunteer_to_upd)  # type: ignore  # will be another implementation
 
         volunteer_upd = Volunteer(
-            id=volunteer.id, username=volunteer.username, thread_id=Volunteer.thread_id
+            tg_id=volunteer.tg_id,
+            username=volunteer.username,
+            thread_id=Volunteer.thread_id,
         )
         _volunteers.append(volunteer_upd)
 

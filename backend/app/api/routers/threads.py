@@ -13,7 +13,7 @@ ws_manager = WsConnectionManager()
 
 @router.post('/threads', response_model=SupportThread, status_code=HTTPStatus.CREATED)
 async def create_thread(thread: SupportCreate) -> SupportThread:
-    thread.id = str(uuid.uuid4())
+    thread.ws_id = uuid.uuid4().int
     thread_new = await SupportThreadService.create(thread)
 
     return thread_new
@@ -27,7 +27,7 @@ async def find_all_threads() -> list[SupportThread]:
 
 
 @router.websocket('/ws/{thread_id}')
-async def websocket_endpoint(websocket: WebSocket, thread_id: str) -> None:
+async def websocket_endpoint(websocket: WebSocket, thread_id: int) -> None:
     await ws_manager.connect(websocket)
     try:
         while True:
