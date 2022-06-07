@@ -3,6 +3,9 @@
 ### Description:
     backend for scs
 
+### Run in docker
+    make docker
+
 ### Create venv:
     make venv
 
