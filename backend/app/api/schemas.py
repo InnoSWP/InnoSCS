@@ -21,7 +21,7 @@ class SupportThread(SupportBase):
 class VolunteerBase(BaseModel):
     tg_id: int
     username: str
-    thread_id: Optional[int] = None
+    thread_ws_id: Optional[int] = None
 
     class Config:
         orm_mode = True

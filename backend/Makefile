@@ -40,3 +40,8 @@ ci:	lint test ## Lint code then run tests
 .PHONY: up
 up: ## Launch
 	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
+
+
+.PHOMY: docker
+docker: ## Launch up in docker
+	docker-compose up
