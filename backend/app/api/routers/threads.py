@@ -13,7 +13,7 @@ ws_manager = WsConnectionManager()
 
 @router.post('/threads', response_model=SupportThread, status_code=HTTPStatus.CREATED)
 async def create_thread(thread: SupportCreate) -> SupportThread:
-    thread.ws_id = uuid.uuid4().int
+    thread.ws_id = int(str(uuid.uuid4().int)[:6])
     thread_new = await SupportThreadService.create(thread)
 
     return thread_new
