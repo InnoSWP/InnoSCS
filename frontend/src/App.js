@@ -3,21 +3,36 @@ import MessageBox from "./components/MessageBox";
 import Main from "./components/Main";
 import { useState, createRef, useEffect } from "react";
 import MessageBubble from "./components/MessageBubble";
+import SideBar from "./components/SideBar";
+import Thread from "./components/Thread";
 
 function App() {
   const [text, changeText] = useState("");
   const [messageBubbles, addBubble] = useState([]);
   const [ws, setWebSocket] = useState(null);
+  const [sidebarActivated, toggleSideBar] = useState(false);
+  const [threads, addThread] = useState([
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+  ]);
   const messagesEndRef = createRef();
 
   useEffect(() => {
     if (ws !== null) {
-      console.log("event");
       ws.addEventListener("message", createVolunteerBubble);
     }
 
     return function () {
-      console.log("clean");
       if (ws !== null) ws.removeEventListener("message", createVolunteerBubble);
     };
   }, [ws]);
@@ -39,7 +54,6 @@ function App() {
   }, []);
 
   function createVolunteerBubble(event) {
-    console.log(event);
     const type = "message-bubble-volunteer";
     if (event.data) {
       addBubble((bubbles) => [
@@ -83,22 +97,40 @@ function App() {
       });
     }
   }
-
   return (
     <div>
-      <Navbar />
-      <Main
-        key="main"
-        bubbles={messageBubbles}
-        messagesEndRef={messagesEndRef}
-      />
-      <MessageBox
-        key="messageBox"
-        changeText={changeText}
-        createBubble={createBubble}
-        scrollToBottom={scrollToBottom}
-        inputText={text}
-      />
+      <Navbar toggleSideBar={toggleSideBar} />
+      <SideBar threads={threads} />
+      <button className="add-button">
+        <svg
+          width="46"
+          height="46"
+          viewBox="0 0 46 46"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M36.3333 24.9048H24.9048V36.3334H21.0952V24.9048H9.66666V21.0953H21.0952V9.66669H24.9048V21.0953H36.3333V24.9048Z"
+            fill="white"
+          />
+        </svg>
+      </button>
+      <div
+        className={sidebarActivated ? "main-wrapper activated" : "main-wrapper"}
+      >
+        <Main
+          key="main"
+          bubbles={messageBubbles}
+          messagesEndRef={messagesEndRef}
+        />
+        <MessageBox
+          key="messageBox"
+          changeText={changeText}
+          createBubble={createBubble}
+          scrollToBottom={scrollToBottom}
+          inputText={text}
+        />
+      </div>
     </div>
   );
 }

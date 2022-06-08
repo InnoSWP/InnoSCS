@@ -1,0 +1,53 @@
+.sidebar-wrapper {
+  position: fixed;
+  background-color: #F4F4F4;
+  height: calc(100vh - 75px);
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: scroll;
+  padding-bottom: 16px;
+  padding-top: 16px;
+  box-sizing: border-box;
+
+}
+
+.thread-container {
+  background-color: white;
+  height: 75px;
+  filter: drop-shadow(0px 4px 9px rgba(0, 0, 0, 0.05));
+  border-radius: 10px;
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  align-items: center;
+  overflow: hidden;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.thread-container span {
+  font-size: 18px;
+  padding-left: 16px;
+
+}
+
+.status {
+  height: 100%;
+  width: 8px;
+
+}
+
+.status.resolving {
+  background-color: #FFD27B;
+}
+
+.status.solved {
+  background-color: #9EFF7B;
+}
+
+.status.unsolved {
+  background-color: #FF7B7B;
+}
+

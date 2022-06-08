@@ -1,7 +1,22 @@
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   font-family: 'Inter', sans-serif;
   background-color: #F4F4F4;
+  box-sizing: border-box;
+
+}
+
+.add-button {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  bottom: 0;
+  right: 0;
+  border-width: 0;
+  background-color: #349EFF;
+  border-radius: 100px;
+  margin: 16px;
+  padding: 0;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
 }

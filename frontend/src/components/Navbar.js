@@ -1,10 +1,13 @@
 import "./styles/navbar.css";
-export default function Navbar() {
+export default function Navbar(props) {
   return (
     <nav>
       <div className="navbar-wrapper">
         <div className="button-back-container">
-          <button className="button-back">
+          <button
+            className="button-back"
+            onClick={() => props.toggleSideBar((prev) => !prev)}
+          >
             <svg
               width="22"
               height="22"

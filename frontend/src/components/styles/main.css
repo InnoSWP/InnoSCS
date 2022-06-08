@@ -1,7 +1,23 @@
 .message-container {
+  background-color: #f4f4f4;
+  width: 100vw;
   height: calc(100vh - 75px - 85px - 16px);
   display: flex;
   flex-direction: column-reverse;
   overflow-y: scroll;
   padding-bottom: 16px;
+}
+
+.main-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: calc(100vh - 75px);
+  left: 0;
+  transition: 0.5s;
+  box-shadow: -2px 0px 11px rgba(0, 0, 0, 0.1);
+}
+
+.main-wrapper.activated {
+  left: 100%;
+  transition: 0.5s;
 }
