@@ -1,16 +1,47 @@
 body {
   margin: 0;
   padding: 0;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
   font-family: 'Inter', sans-serif;
   background-color: #F4F4F4;
-  box-sizing: border-box;
 
 }
 
+#root, #app {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
+
+.blurred {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 6;
+  left: 0;
+  top: 0;
+  transition: 1s;
+}
+
+
+.blurred.activated {
+  filter: blur(4px);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+  transition: 1s;
+  z-index: 6;
+  pointer-events: none;
+  user-select: none;
+
+}
+
+
 .add-button {
   position: fixed;
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
+  z-index: 3;
   bottom: 0;
   right: 0;
   border-width: 0;

@@ -5,7 +5,9 @@ export default function Navbar(props) {
       <div className="navbar-wrapper">
         <div className="button-back-container">
           <button
-            className="button-back"
+            className={
+              props.sideBarActivated ? "button-back rotated" : "button-back"
+            }
             onClick={() => props.toggleSideBar((prev) => !prev)}
           >
             <svg

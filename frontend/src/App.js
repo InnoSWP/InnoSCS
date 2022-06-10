@@ -5,25 +5,20 @@ import { useState, createRef, useEffect } from "react";
 import MessageBubble from "./components/MessageBubble";
 import SideBar from "./components/SideBar";
 import Thread from "./components/Thread";
+import SubmitProblemNotification from "./components/SubmitProblemNotification";
 
 function App() {
-  const [text, changeText] = useState("");
+  const [messageTextInput, changeMessageText] = useState("");
+  const [submitProblemTextInput, changeSubmitProblemText] = useState("");
   const [messageBubbles, addBubble] = useState([]);
   const [ws, setWebSocket] = useState(null);
   const [sidebarActivated, toggleSideBar] = useState(false);
+  const [blurActivated, toggleBlur] = useState(false);
+  const [submitProblemActivated, toggleSubmitProblem] = useState(false);
   const [threads, addThread] = useState([
     <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread problemName={"Some other problem"} status={"solved"} />,
+    <Thread problemName={"Some new problem"} status={"unsolved"} />,
   ]);
   const messagesEndRef = createRef();
 
@@ -39,8 +34,12 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("http://localhost:8000/api/threads/", {
+      const response = await fetch("http://localhost:8000/threads/", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({ questions: [] }),
       });
 
       const { thread_id } = await response.json();
@@ -52,6 +51,26 @@ function App() {
       setWebSocket(new WebSocket("ws://127.0.0.1:8000/ws/" + t));
     });
   }, []);
+
+  function createThread() {
+    toggleSideBar((prev) => !prev);
+    toggleBlur((prev) => !prev);
+    toggleSubmitProblem((prev) => !prev);
+  }
+
+  function submitThread() {
+    if (submitProblemTextInput !== "") {
+      addThread((threads) => [
+        ...threads,
+        <Thread problemName={submitProblemTextInput} status={"resolving"} />,
+      ]);
+    }
+
+    toggleSubmitProblem((prev) => !prev);
+    toggleBlur((prev) => !prev);
+    toggleSideBar((prev) => !prev);
+    changeSubmitProblemText("");
+  }
 
   function createVolunteerBubble(event) {
     const type = "message-bubble-volunteer";
@@ -76,13 +95,13 @@ function App() {
   function createBubble() {
     const type = "message-bubble-user";
 
-    if (text !== "") {
-      if (ws !== null) ws.send(text);
+    if (messageTextInput !== "") {
+      if (ws !== null) ws.send(messageTextInput);
       addBubble((bubbles) => {
         return [
           <MessageBubble
             key={bubbles.length + 1}
-            text={text}
+            text={messageTextInput}
             type={type}
             flexibleMargin={
               bubbles.length === 0
@@ -97,40 +116,54 @@ function App() {
       });
     }
   }
+
   return (
-    <div>
-      <Navbar toggleSideBar={toggleSideBar} />
-      <SideBar threads={threads} />
-      <button className="add-button">
-        <svg
-          width="46"
-          height="46"
-          viewBox="0 0 46 46"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+    <div id="app">
+      <div className={blurActivated ? "blurred activated" : "blurred"}>
+        <Navbar
+          toggleSideBar={toggleSideBar}
+          sideBarActivated={sidebarActivated}
+        />
+        <SideBar threads={threads} />
+        <button className="add-button" onClick={createThread}>
+          <svg
+            width="46"
+            height="46"
+            viewBox="0 0 46 46"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M36.3333 24.9048H24.9048V36.3334H21.0952V24.9048H9.66666V21.0953H21.0952V9.66669H24.9048V21.0953H36.3333V24.9048Z"
+              fill="white"
+            />
+          </svg>
+        </button>
+        <div
+          className={
+            sidebarActivated ? "main-wrapper activated" : "main-wrapper"
+          }
         >
-          <path
-            d="M36.3333 24.9048H24.9048V36.3334H21.0952V24.9048H9.66666V21.0953H21.0952V9.66669H24.9048V21.0953H36.3333V24.9048Z"
-            fill="white"
+          <Main
+            key="main"
+            bubbles={messageBubbles}
+            messagesEndRef={messagesEndRef}
           />
-        </svg>
-      </button>
-      <div
-        className={sidebarActivated ? "main-wrapper activated" : "main-wrapper"}
-      >
-        <Main
-          key="main"
-          bubbles={messageBubbles}
-          messagesEndRef={messagesEndRef}
-        />
-        <MessageBox
-          key="messageBox"
-          changeText={changeText}
-          createBubble={createBubble}
-          scrollToBottom={scrollToBottom}
-          inputText={text}
-        />
+          <MessageBox
+            key="messageBox"
+            changeText={changeMessageText}
+            createBubble={createBubble}
+            scrollToBottom={scrollToBottom}
+            inputText={messageTextInput}
+          />
+        </div>
       </div>
+      <SubmitProblemNotification
+        changeText={changeSubmitProblemText}
+        inputText={submitProblemTextInput}
+        show={submitProblemActivated}
+        submitThread={submitThread}
+      />
     </div>
   );
 }
