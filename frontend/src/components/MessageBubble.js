@@ -7,7 +7,7 @@ export default function MessageBubble(props) {
     <div className={`${message_type}-wrapper`}>
       <div
         className={message_type}
-        style={{ marginTop: message_margin_bottom + "px" }}
+        style={{ marginTop: `${message_margin_bottom}px` }}
       >
         <p>{message_text}</p>
       </div>

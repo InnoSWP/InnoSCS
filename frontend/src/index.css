@@ -37,17 +37,3 @@ body {
 }
 
 
-.add-button {
-  position: fixed;
-  width: 70px;
-  height: 70px;
-  z-index: 3;
-  bottom: 0;
-  right: 0;
-  border-width: 0;
-  background-color: #349EFF;
-  border-radius: 100px;
-  margin: 16px;
-  padding: 0;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
-}
