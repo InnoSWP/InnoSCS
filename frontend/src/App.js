@@ -5,6 +5,8 @@ import { useState, createRef, useEffect } from "react";
 import MessageBubble from "./components/MessageBubble";
 import SideBar from "./components/SideBar";
 import Thread from "./components/Thread";
+import KebabMenu from "./components/KebabMenu";
+
 import SubmitProblemNotification from "./components/SubmitProblemNotification";
 
 function App() {
@@ -20,8 +22,25 @@ function App() {
     <Thread problemName={"Some other problem"} status={"solved"} />,
     <Thread problemName={"Some new problem"} status={"unsolved"} />,
   ]);
+  const [menuActivated, toggleMenuPopup] = useState(false);
+  const opts = [
+    {
+      optionName: "Close thread",
+      onClick: () => console.log("Thread closed"),
+    },
+    {
+      optionName: "Settings",
+      onClick: () => console.log("Settings opened"),
+    },
+    {
+      optionName: "Change Volunteer",
+      onClick: () => console.log("Volunteer changed"),
+    },
+  ];
   const messagesEndRef = createRef();
-
+  useEffect(() => {
+    console.log(menuActivated);
+  }, [menuActivated]);
   useEffect(() => {
     if (ws !== null) {
       ws.addEventListener("message", createVolunteerBubble);
@@ -88,6 +107,7 @@ function App() {
       ]);
     }
   }
+
   function scrollToBottom() {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   }
@@ -121,10 +141,14 @@ function App() {
     <div id="app">
       <div className={blurActivated ? "blurred activated" : "blurred"}>
         <Navbar
+          key="navbar"
           toggleSideBar={toggleSideBar}
+          togglePopup={toggleMenuPopup}
           sideBarActivated={sidebarActivated}
         />
+
         <SideBar
+          key="sidebar"
           threads={threads}
           createThread={createThread}
           sideBarActivated={sidebarActivated}
@@ -154,6 +178,11 @@ function App() {
         inputText={submitProblemTextInput}
         show={submitProblemActivated}
         submitThread={submitThread}
+      />
+      <KebabMenu
+        active={menuActivated}
+        togglePopup={toggleMenuPopup}
+        optionsData={opts}
       />
     </div>
   );

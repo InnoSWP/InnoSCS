@@ -32,7 +32,10 @@ export default function Navbar(props) {
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu">
+        <button
+          className="button-menu"
+          onClick={() => props.togglePopup((prev) => !prev)}
+        >
           <svg
             width="6"
             height="22"
