@@ -44,3 +44,10 @@ class SupportThreadService:
 
         thread.questions.append(question)  # type: ignore  # will be another implementation
         _threads.append(thread)  # type: ignore  # will be another implementation
+
+    @staticmethod
+    async def delete(thread_ws_id: int) -> None:
+        thread = await SupportThreadService.find_by_ws_id(thread_ws_id)
+
+        if thread:
+            _threads.remove(thread)
