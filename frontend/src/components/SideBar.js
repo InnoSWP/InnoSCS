@@ -1,11 +1,72 @@
+import Modal from "./Modal";
+import Thread from "./Thread";
+import SubmitProblemNotification from "./SubmitProblemNotification";
+import { useEffect, useState } from "react";
 import "./styles/sidebar.css";
-export default function SideBar(props) {
+export default function SideBar({ toggleSideBar, sideBarActivated }) {
+  const [submitProblemTextInput, changeSubmitProblemText] = useState("");
+  const [modalActivated, toggleModal] = useState(false);
+  const [submitProblemActivated, toggleSubmitProblem] = useState(false);
+  const [threads, addThread] = useState([
+    <Thread key="thread-1" problemName={"Lorem ipsum"} status={"resolving"} />,
+    <Thread
+      key="thread-2"
+      problemName={"Some other problem"}
+      status={"solved"}
+    />,
+    <Thread
+      key="thread-3"
+      problemName={"Some new problem"}
+      status={"unsolved"}
+    />,
+  ]);
+
+  function toggleBlur(status) {
+    if (document.getElementById("modal") !== undefined) {
+      if (status) document.getElementById("modal").classList.add("blurred");
+      else document.getElementById("modal").classList.remove("blurred");
+    }
+  }
+
+  function createThread() {
+    toggleModal((prev) => !prev);
+  }
+  // looks scary actually (change it later)
+  useEffect(() => {
+    if (modalActivated !== false) {
+      toggleSideBar((prev) => !prev);
+      toggleBlur(true);
+      toggleSubmitProblem((prev) => !prev);
+    }
+  }, [modalActivated]);
+
+  function submitThread() {
+    if (submitProblemTextInput !== "") {
+      addThread((threads) => [
+        ...threads,
+        <Thread
+          key={`thread-${threads.length + 1}`}
+          problemName={submitProblemTextInput}
+          status={"resolving"}
+        />,
+      ]);
+    }
+
+    toggleSubmitProblem((prev) => !prev);
+    toggleBlur(false);
+    toggleSideBar((prev) => !prev);
+    changeSubmitProblemText("");
+    setTimeout(() => {
+      toggleModal((prev) => !prev);
+    }, 500);
+  }
+
   return (
     <div>
-      <div className="sidebar-wrapper">{props.threads}</div>
+      <div className="sidebar-wrapper">{threads}</div>
       <button
-        className={props.sideBarActivated ? "add-button" : "add-button removed"}
-        onClick={props.createThread}
+        className={sideBarActivated ? "add-button" : "add-button removed"}
+        onClick={createThread}
       >
         <svg
           width="46"
@@ -20,6 +81,14 @@ export default function SideBar(props) {
           />
         </svg>
       </button>
+      <Modal isOpen={modalActivated}>
+        <SubmitProblemNotification
+          changeText={changeSubmitProblemText}
+          inputText={submitProblemTextInput}
+          show={submitProblemActivated}
+          submitThread={submitThread}
+        />
+      </Modal>
     </div>
   );
 }

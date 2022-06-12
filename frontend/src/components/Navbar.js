@@ -1,5 +1,25 @@
 import "./styles/navbar.css";
+import KebabMenu from "./KebabMenu";
+import Modal from "./Modal";
+import opts from "../data/optionsData";
+import { useState, useEffect } from "react";
 export default function Navbar(props) {
+  const [menuActivated, toggleMenuPopup] = useState(false);
+  const [modalActivated, toggleModal] = useState(false);
+
+  useEffect(() => {
+    if (modalActivated !== false) {
+      toggleMenuPopup(true);
+    }
+  }, [modalActivated]);
+
+  function closeModal() {
+    toggleMenuPopup(false);
+    setTimeout(() => {
+      toggleModal(false);
+    }, 500);
+  }
+
   return (
     <nav>
       <div className="navbar-wrapper">
@@ -32,10 +52,7 @@ export default function Navbar(props) {
       </div>
 
       <div className="button-menu-container">
-        <button
-          className="button-menu"
-          onClick={() => props.togglePopup((prev) => !prev)}
-        >
+        <button className="button-menu" onClick={() => toggleModal(true)}>
           <svg
             width="6"
             height="22"
@@ -50,6 +67,13 @@ export default function Navbar(props) {
           </svg>
         </button>
       </div>
+      <Modal isOpen={modalActivated} onClose={closeModal}>
+        <KebabMenu
+          active={menuActivated}
+          togglePopup={closeModal}
+          optionsData={opts}
+        />
+      </Modal>
     </nav>
   );
 }
