@@ -26,13 +26,18 @@ async def find_all_threads() -> list[SupportThread]:
     return threads
 
 
+@router.delete('/threads/{thread_id}')
+async def delete_thread(thread_id: int) -> None:
+    await SupportThreadService.delete(thread_id)
+
+
 @router.websocket('/ws/{ws_id}')
 async def websocket_endpoint(websocket: WebSocket, ws_id: int) -> None:
-    await ws_manager.connect(websocket)
+    await ws_manager.connect(websocket, room_id=ws_id)
     try:
         while True:
             data = await websocket.receive_text()
-            await ws_manager.broadcast(data, exp=websocket)
+            await ws_manager.broadcast(data, room_id=ws_id, exp=websocket)
             await SupportThreadService.save_question(question=data, ws_id=ws_id)
     except WebSocketDisconnect:
-        ws_manager.disconnect(websocket)
+        ws_manager.disconnect(websocket, room_id=ws_id)
