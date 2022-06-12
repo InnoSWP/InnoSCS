@@ -16,7 +16,7 @@ class VolunteerService:
         """from function expected that it will store the volunteer in db"""
         volunteer_new = Volunteer(
             tg_id=volunteer.tg_id,
-            thread_id=volunteer.thread_id,
+            thread_ws_id=volunteer.thread_ws_id,
             username=volunteer.username,
         )
         _volunteers.append(volunteer_new)
@@ -31,7 +31,7 @@ class VolunteerService:
         """
         if flt and flt == 'free':
             return [
-                volunteer for volunteer in _volunteers if volunteer.thread_id is None
+                volunteer for volunteer in _volunteers if volunteer.thread_ws_id is None
             ]
 
         return _volunteers
@@ -57,7 +57,7 @@ class VolunteerService:
         volunteer_upd = Volunteer(
             tg_id=volunteer.tg_id,
             username=volunteer.username,
-            thread_id=Volunteer.thread_id,
+            thread_ws_id=volunteer.thread_ws_id,
         )
         _volunteers.append(volunteer_upd)
 

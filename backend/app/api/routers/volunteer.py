@@ -23,10 +23,15 @@ async def find_volunteers(flt: Optional[str] = None) -> list[Volunteer]:
     return volunteers
 
 
-@router.put('/volunteer/{volunteer_tg_id}', response_model=Volunteer)
-async def update_volunteer(
-    volunteer_tg_id: int, volunteer: VolunteerCreate
-) -> Volunteer:
-    volunteer_upd = await VolunteerService.update(volunteer, volunteer_tg_id)
+@router.get('/volunteers/{volunteer_tg_id}', response_model=Volunteer)
+async def find_volunteers(volunteer_tg_id: int) -> Volunteer:
+    volunteer = await VolunteerService.find_by_tg_id(volunteer_tg_id)
+
+    return volunteer
+
+
+@router.put('/volunteers/{volunteer_id}', response_model=Volunteer)
+async def update_volunteer(volunteer_id: int, volunteer: VolunteerCreate) -> Volunteer:
+    volunteer_upd = await VolunteerService.update(volunteer, volunteer_id)
 
     return volunteer_upd
