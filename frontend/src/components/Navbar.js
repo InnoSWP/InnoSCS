@@ -70,6 +70,7 @@ export default function Navbar(props) {
       </div>
       <Modal isOpen={modalActivated} onClose={closeModal}>
         <KebabMenu
+          key="kebab-menu"
           active={menuActivated}
           togglePopup={closeModal}
           optionsData={opts}

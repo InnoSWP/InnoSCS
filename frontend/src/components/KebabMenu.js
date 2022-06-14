@@ -2,6 +2,7 @@ import "./styles/kebabMenu.css";
 export default function KebabMenu(props) {
   const options = props.optionsData.map((opt) => (
     <MenuOption
+      key={opt.optionName}
       optionName={opt.optionName}
       onClick={() => {
         opt.onClick();
