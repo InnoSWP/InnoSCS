@@ -15,6 +15,7 @@ export default function Navbar(props) {
 
   function closeModal() {
     toggleMenuPopup(false);
+    // TODO: change it later
     setTimeout(() => {
       toggleModal(false);
     }, 500);

@@ -6,7 +6,6 @@ body {
   height: 100vh;
   font-family: 'Inter', sans-serif;
   background-color: #F4F4F4;
-
 }
 
 #root, #app {
@@ -22,8 +21,6 @@ body {
   z-index: 300 !important;
   transition: 1s;
 }
-
-
 
 .modal-container.blurred {
   backdrop-filter: blur(4px) brightness(90%);

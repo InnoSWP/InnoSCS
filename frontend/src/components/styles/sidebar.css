@@ -34,21 +34,21 @@
 
 }
 
-.status {
+.thread-status {
   height: 100%;
   width: 8px;
 
 }
 
-.status.resolving {
+.thread-status.resolving {
   background-color: #FFD27B;
 }
 
-.status.solved {
+.thread-status.solved {
   background-color: #9EFF7B;
 }
 
-.status.unsolved {
+.thread-status.unsolved {
   background-color: #FF7B7B;
 }
 
