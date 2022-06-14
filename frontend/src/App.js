@@ -1,10 +1,31 @@
 import Navbar from "./components/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SideBar from "./components/SideBar";
 import Messenger from "./components/Messenger";
 
 function App() {
-  const [sidebarActivated, toggleSideBar] = useState(false);
+  const [sidebarActivated, toggleSideBar] = useState(true);
+  const [ws, setWebSocket] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("http://localhost:8000/threads/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({ questions: [] }),
+      });
+
+      const { thread_id } = await response.json();
+      console.log(thread_id);
+      return thread_id;
+    }
+
+    fetchData().then((t) => {
+      setWebSocket(new WebSocket("ws://127.0.0.1:8000/ws/" + t));
+    });
+  }, []);
 
   return (
     <div id="app">
@@ -18,7 +39,11 @@ function App() {
         toggleSideBar={toggleSideBar}
         sideBarActivated={sidebarActivated}
       />
-      <Messenger sidebarActivated={sidebarActivated} />
+      <Messenger
+        key="messenger"
+        webSocket={ws}
+        sidebarActivated={sidebarActivated}
+      />
     </div>
   );
 }

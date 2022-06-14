@@ -3,41 +3,21 @@ import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
 
-export default function Messenger(props) {
+export default function Messenger({ sidebarActivated, webSocket }) {
   const [messageBubbles, addBubble] = useState([]);
   const [messageTextInput, changeMessageText] = useState("");
-  const [ws, setWebSocket] = useState(null);
   const messagesEndRef = createRef();
 
   useEffect(() => {
-    if (ws !== null) {
-      ws.addEventListener("message", createVolunteerBubble);
+    if (webSocket !== null) {
+      webSocket.addEventListener("message", createVolunteerBubble);
     }
 
     return function () {
-      if (ws !== null) ws.removeEventListener("message", createVolunteerBubble);
+      if (webSocket !== null)
+        webSocket.removeEventListener("message", createVolunteerBubble);
     };
-  }, [ws]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("http://localhost:8000/threads/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify({ questions: [] }),
-      });
-
-      const { thread_id } = await response.json();
-      console.log(thread_id);
-      return thread_id;
-    }
-
-    fetchData().then((t) => {
-      setWebSocket(new WebSocket("ws://127.0.0.1:8000/ws/" + t));
-    });
-  }, []);
+  }, [webSocket]);
 
   function createVolunteerBubble(event) {
     const type = "message-bubble-volunteer";
@@ -64,7 +44,7 @@ export default function Messenger(props) {
     const type = "message-bubble-user";
 
     if (messageTextInput !== "") {
-      if (ws !== null) ws.send(messageTextInput);
+      if (webSocket !== null) webSocket.send(messageTextInput);
       addBubble((bubbles) => {
         return [
           <MessageBubble
@@ -87,9 +67,7 @@ export default function Messenger(props) {
 
   return (
     <div
-      className={
-        props.sidebarActivated ? "main-wrapper activated" : "main-wrapper"
-      }
+      className={sidebarActivated ? "main-wrapper activated" : "main-wrapper"}
     >
       <Main
         key="main"
