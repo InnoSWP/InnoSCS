@@ -6,6 +6,10 @@ import Messenger from "./components/Messenger";
 function App() {
   const [sidebarActivated, toggleSideBar] = useState(true);
   const [ws, setWebSocket] = useState(null);
+  const [messageBubbles, addBubble] = useState([]);
+  const [currentThreadName, setCurrentThreadName] = useState(
+    localStorage.key(0)
+  );
 
   useEffect(() => {
     async function fetchData() {
@@ -38,11 +42,16 @@ function App() {
         key="sidebar"
         toggleSideBar={toggleSideBar}
         sideBarActivated={sidebarActivated}
+        addBubble={addBubble}
+        setCurrentThreadName={setCurrentThreadName}
       />
       <Messenger
         key="messenger"
         webSocket={ws}
         sidebarActivated={sidebarActivated}
+        messageBubbles={messageBubbles}
+        addBubble={addBubble}
+        currentThreadName={currentThreadName}
       />
     </div>
   );

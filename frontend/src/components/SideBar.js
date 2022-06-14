@@ -1,5 +1,6 @@
 import Modal from "./Modal";
 import Thread from "./Thread";
+import MessageBubble from "./MessageBubble";
 import SubmitProblemNotification from "./SubmitProblemNotification";
 import { useEffect, useState } from "react";
 import "./styles/sidebar.css";
@@ -7,6 +8,8 @@ export default function SideBar({
   toggleSideBar,
   sideBarActivated,
   setWebSocket,
+  addBubble,
+  setCurrentThreadName,
 }) {
   const [submitProblemTextInput, changeSubmitProblemText] = useState("");
   const [modalActivated, toggleModal] = useState(false);
@@ -27,8 +30,28 @@ export default function SideBar({
     }
   }, []);
 
-  function openThread() {
+  function openThread(problemName) {
     toggleSideBar((prev) => !prev);
+    const currentThread = JSON.parse(localStorage.getItem(problemName));
+    const threadMessages = [];
+    for (var m in currentThread.messages) {
+      threadMessages.push(
+        <MessageBubble
+          key={`message-${threadMessages.length + 1}`}
+          text={currentThread.messages[m].text}
+          type={currentThread.messages[m].sender}
+          flexibleMargin={
+            threadMessages.length === 0
+              ? 16
+              : threadMessages[0].props.type === m.sender
+              ? 8
+              : 16
+          }
+        />
+      );
+    }
+    addBubble(threadMessages.reverse());
+    setCurrentThreadName(problemName);
   }
 
   function toggleBlur(status) {
@@ -64,7 +87,7 @@ export default function SideBar({
 
         const newThread = {
           status: "resolving",
-          messages: {},
+          messages: [],
         };
         localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
         return [...threads, newThreadElement];

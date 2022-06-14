@@ -3,8 +3,13 @@ import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
 
-export default function Messenger({ sidebarActivated, webSocket }) {
-  const [messageBubbles, addBubble] = useState([]);
+export default function Messenger({
+  sidebarActivated,
+  webSocket,
+  addBubble,
+  messageBubbles,
+  currentThreadName,
+}) {
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef();
 
@@ -48,7 +53,7 @@ export default function Messenger({ sidebarActivated, webSocket }) {
       addBubble((bubbles) => {
         return [
           <MessageBubble
-            key={bubbles.length + 1}
+            key={`message-${bubbles.length + 1}`}
             text={messageTextInput}
             type={type}
             flexibleMargin={
@@ -62,6 +67,12 @@ export default function Messenger({ sidebarActivated, webSocket }) {
           ...bubbles,
         ];
       });
+
+      if (localStorage.getItem(currentThreadName) !== null) {
+        var currentThread = JSON.parse(localStorage.getItem(currentThreadName));
+        currentThread.messages.push({ text: messageTextInput, sender: type });
+        localStorage.setItem(currentThreadName, JSON.stringify(currentThread));
+      }
     }
   }
 
