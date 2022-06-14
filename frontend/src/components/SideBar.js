@@ -3,23 +3,33 @@ import Thread from "./Thread";
 import SubmitProblemNotification from "./SubmitProblemNotification";
 import { useEffect, useState } from "react";
 import "./styles/sidebar.css";
-export default function SideBar({ toggleSideBar, sideBarActivated }) {
+export default function SideBar({
+  toggleSideBar,
+  sideBarActivated,
+  setWebSocket,
+}) {
   const [submitProblemTextInput, changeSubmitProblemText] = useState("");
   const [modalActivated, toggleModal] = useState(false);
   const [submitProblemActivated, toggleSubmitProblem] = useState(false);
-  const [threads, addThread] = useState([
-    <Thread key="thread-1" problemName={"Lorem ipsum"} status={"resolving"} />,
-    <Thread
-      key="thread-2"
-      problemName={"Some other problem"}
-      status={"solved"}
-    />,
-    <Thread
-      key="thread-3"
-      problemName={"Some new problem"}
-      status={"unsolved"}
-    />,
-  ]);
+  const [threads, addThread] = useState([]);
+
+  useEffect(() => {
+    for (let i = 0; i < localStorage.length; i++) {
+      addThread((threads) => [
+        ...threads,
+        <Thread
+          key={`thread-${threads.length + 1}`}
+          problemName={localStorage.key(i)}
+          status={"resolving"}
+          openThread={openThread}
+        />,
+      ]);
+    }
+  }, []);
+
+  function openThread() {
+    toggleSideBar((prev) => !prev);
+  }
 
   function toggleBlur(status) {
     if (document.getElementById("modal") !== undefined) {
@@ -42,14 +52,23 @@ export default function SideBar({ toggleSideBar, sideBarActivated }) {
 
   function submitThread() {
     if (submitProblemTextInput !== "") {
-      addThread((threads) => [
-        ...threads,
-        <Thread
-          key={`thread-${threads.length + 1}`}
-          problemName={submitProblemTextInput}
-          status={"resolving"}
-        />,
-      ]);
+      addThread((threads) => {
+        const newThreadElement = (
+          <Thread
+            key={`thread-${threads.length + 1}`}
+            problemName={submitProblemTextInput}
+            status={"resolving"}
+            openThread={openThread}
+          />
+        );
+
+        const newThread = {
+          status: "resolving",
+          messages: {},
+        };
+        localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
+        return [...threads, newThreadElement];
+      });
     }
 
     toggleSubmitProblem((prev) => !prev);

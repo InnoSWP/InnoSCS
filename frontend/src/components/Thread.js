@@ -1,8 +1,8 @@
-export default function Thread(props) {
+export default function Thread({ problemName, status, openThread }) {
   return (
-    <div className="thread-container">
-      <div className={`thread-status ${props.status}`}></div>
-      <span>{props.problemName}</span>
+    <div className="thread-container" onClick={() => openThread(problemName)}>
+      <div className={`thread-status ${status}`}></div>
+      <span>{problemName}</span>
     </div>
   );
 }
