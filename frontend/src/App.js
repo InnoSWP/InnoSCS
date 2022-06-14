@@ -11,6 +11,15 @@ function App() {
     localStorage.key(0)
   );
 
+  function closeCurrentThread() {
+    if (currentThreadName !== "") {
+      localStorage.removeItem(currentThreadName);
+      setCurrentThreadName("");
+      toggleSideBar(true);
+      addBubble([]);
+    }
+  }
+
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("http://localhost:8000/threads/", {
@@ -37,6 +46,7 @@ function App() {
         key="navbar"
         toggleSideBar={toggleSideBar}
         sideBarActivated={sidebarActivated}
+        closeCurrentThread={closeCurrentThread}
       />
       <SideBar
         key="sidebar"
@@ -44,6 +54,7 @@ function App() {
         sideBarActivated={sidebarActivated}
         addBubble={addBubble}
         setCurrentThreadName={setCurrentThreadName}
+        currentThreadName={currentThreadName}
       />
       <Messenger
         key="messenger"

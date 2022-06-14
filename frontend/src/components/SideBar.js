@@ -10,6 +10,7 @@ export default function SideBar({
   setWebSocket,
   addBubble,
   setCurrentThreadName,
+  currentThreadName,
 }) {
   const [submitProblemTextInput, changeSubmitProblemText] = useState("");
   const [modalActivated, toggleModal] = useState(false);
@@ -17,6 +18,7 @@ export default function SideBar({
   const [threads, addThread] = useState([]);
 
   useEffect(() => {
+    addThread([]);
     for (let i = 0; i < localStorage.length; i++) {
       addThread((threads) => [
         ...threads,
@@ -28,7 +30,7 @@ export default function SideBar({
         />,
       ]);
     }
-  }, []);
+  }, [currentThreadName]);
 
   function openThread(problemName) {
     toggleSideBar((prev) => !prev);

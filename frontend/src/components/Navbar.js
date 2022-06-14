@@ -1,11 +1,28 @@
 import "./styles/navbar.css";
 import KebabMenu from "./KebabMenu";
 import Modal from "./Modal";
-import opts from "../data/optionsData";
 import { useState, useEffect } from "react";
-export default function Navbar(props) {
+export default function Navbar({
+  sideBarActivated,
+  toggleSideBar,
+  closeCurrentThread,
+}) {
   const [menuActivated, toggleMenuPopup] = useState(false);
   const [modalActivated, toggleModal] = useState(false);
+  const opts = [
+    {
+      optionName: "Close thread",
+      onClick: () => closeCurrentThread(),
+    },
+    {
+      optionName: "Settings",
+      onClick: () => console.log("Settings opened"),
+    },
+    {
+      optionName: "Change Volunteer",
+      onClick: () => console.log("Volunteer changed"),
+    },
+  ];
 
   useEffect(() => {
     if (modalActivated !== false) {
@@ -26,10 +43,8 @@ export default function Navbar(props) {
       <div className="navbar-wrapper">
         <div className="button-back-container">
           <button
-            className={
-              props.sideBarActivated ? "button-back rotated" : "button-back"
-            }
-            onClick={() => props.toggleSideBar((prev) => !prev)}
+            className={sideBarActivated ? "button-back rotated" : "button-back"}
+            onClick={() => toggleSideBar((prev) => !prev)}
           >
             <svg
               width="22"
