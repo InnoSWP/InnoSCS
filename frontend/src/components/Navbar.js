@@ -12,6 +12,8 @@ export default function Navbar({
 }) {
   const [menuActivated, toggleMenuPopup] = useState(false);
   const [modalActivated, toggleModal] = useState(false);
+
+  // TODO: add functionality to <Settings> and <Change Volunteer>
   const opts = [
     {
       optionName: "Close thread",
