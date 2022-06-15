@@ -43,15 +43,22 @@ nav {
 
 .navbar-wrapper {
   display: flex;
-  gap: 14px
+  gap: 14px;
 }
 
 .button-back {
   background-color: white;
   border-width: 0;
+  transition: 0.5s;
+}
+
+.button-back.rotated {
+  transform: rotate(-180deg);
+  transition: 0.5s;
 }
 
 .button-menu {
   background-color: white;
   border-width: 0;
 }
+

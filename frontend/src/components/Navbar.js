@@ -1,10 +1,56 @@
+import { useState, useEffect } from "react";
+
 import "./styles/navbar.css";
-export default function Navbar() {
+
+import KebabMenu from "./KebabMenu";
+import Modal from "./Modal";
+
+export default function Navbar({
+  sideBarActivated,
+  toggleSideBar,
+  closeCurrentThread,
+}) {
+  const [menuActivated, toggleMenuPopup] = useState(false);
+  const [modalActivated, toggleModal] = useState(false);
+  const ANIMATION_TIMEOUT = 500;
+
+  // TODO: add functionality to <Settings> and <Change Volunteer>
+  const opts = [
+    {
+      optionName: "Close thread",
+      onClick: () => closeCurrentThread(),
+    },
+    {
+      optionName: "Settings",
+      onClick: () => console.log("Settings opened"),
+    },
+    {
+      optionName: "Change Volunteer",
+      onClick: () => console.log("Volunteer changed"),
+    },
+  ];
+
+  useEffect(() => {
+    if (modalActivated !== false) {
+      toggleMenuPopup(true);
+    }
+  }, [modalActivated]);
+
+  function closeModal() {
+    toggleMenuPopup(false);
+    setTimeout(() => {
+      toggleModal(false);
+    }, ANIMATION_TIMEOUT);
+  }
+
   return (
     <nav>
       <div className="navbar-wrapper">
         <div className="button-back-container">
-          <button className="button-back">
+          <button
+            className={sideBarActivated ? "button-back rotated" : "button-back"}
+            onClick={() => toggleSideBar((prev) => !prev)}
+          >
             <svg
               width="22"
               height="22"
@@ -27,7 +73,7 @@ export default function Navbar() {
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu">
+        <button className="button-menu" onClick={() => toggleModal(true)}>
           <svg
             width="6"
             height="22"
@@ -42,6 +88,14 @@ export default function Navbar() {
           </svg>
         </button>
       </div>
+      <Modal isOpen={modalActivated} onClose={closeModal}>
+        <KebabMenu
+          key="kebab-menu"
+          active={menuActivated}
+          togglePopup={closeModal}
+          optionsData={opts}
+        />
+      </Modal>
     </nav>
   );
 }
