@@ -67,7 +67,6 @@ export default function Messenger({
         key="main"
         bubbles={messageBubbles}
         messagesEndRef={messagesEndRef}
-        // TODO: pass messagesEndRef to MessageBubble props
       />
       <MessageBox
         key="messageBox"

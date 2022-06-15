@@ -63,7 +63,6 @@ export default function SideBar({
   function createThread() {
     toggleModal((prev) => !prev);
   }
-  // TODO: change it later
   useEffect(() => {
     if (modalActivated !== false) {
       toggleSideBar((prev) => !prev);
@@ -98,7 +97,6 @@ export default function SideBar({
     toggleBlur(false);
     toggleSideBar((prev) => !prev);
     changeSubmitProblemText("");
-    // TODO: change it later
     setTimeout(() => {
       toggleModal((prev) => !prev);
     }, ANIMATION_TIMEOUT);
