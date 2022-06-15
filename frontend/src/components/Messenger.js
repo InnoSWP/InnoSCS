@@ -59,6 +59,12 @@ export default function Messenger({
     }
   }
 
+  function sendMessage() {
+    createBubble();
+    scrollToBottom();
+    changeMessageText(() => "");
+  }
+
   return (
     <div
       className={sidebarActivated ? "main-wrapper activated" : "main-wrapper"}
@@ -70,10 +76,9 @@ export default function Messenger({
       />
       <MessageBox
         key="messageBox"
-        changeText={changeMessageText}
-        createBubble={createBubble}
-        scrollToBottom={scrollToBottom}
         inputText={messageTextInput}
+        sendMessage={sendMessage}
+        changeMessageText={changeMessageText}
       />
     </div>
   );
