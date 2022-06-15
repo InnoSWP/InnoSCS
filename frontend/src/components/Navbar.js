@@ -17,7 +17,7 @@ export default function Navbar({
   toggleSideBar,
   closeCurrentThread,
 }) {
-  const [menuActivated, toggleMenuPopup] = useState(false); // menu state
+  const [menuActivated, toggleMenuPopup] = useState(false);
   const [modalActivated, toggleModal] = useState(false); // KebabMenu modal state
   const ANIMATION_TIMEOUT = 500; // time it takes to animate KebabMenu in ms
 

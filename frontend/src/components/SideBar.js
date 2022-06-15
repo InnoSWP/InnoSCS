@@ -25,10 +25,10 @@ export default function SideBar({
   setCurrentThreadName,
   currentThreadName,
 }) {
-  const [submitProblemTextInput, changeSubmitProblemText] = useState(""); // SubmitProblemNotification component input field state
-  const [modalActivated, toggleModal] = useState(false); // Modal state
-  const [submitProblemActivated, toggleSubmitProblem] = useState(false); // SubmitProblemNotification state
-  const [threads, addThread] = useState([]); // Thread list state
+  const [submitProblemTextInput, changeSubmitProblemText] = useState("");
+  const [modalActivated, toggleModal] = useState(false);
+  const [submitProblemActivated, toggleSubmitProblem] = useState(false);
+  const [threads, addThread] = useState([]);
   const ANIMATION_TIMEOUT = 500; // time it takes to animate Popup Menu
 
   // Thread list sync with localStorage, whenever current thread is changed

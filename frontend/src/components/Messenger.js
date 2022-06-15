@@ -19,8 +19,8 @@ export default function Messenger({
   messageBubbles,
   currentThreadName,
 }) {
-  const [messageTextInput, changeMessageText] = useState(""); // input field text state
-  const messagesEndRef = createRef(); // reference to last message
+  const [messageTextInput, changeMessageText] = useState("");
+  const messagesEndRef = createRef();
 
   /**
    * Creates Volunteer Bubble
