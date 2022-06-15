@@ -16,8 +16,7 @@ class VolunteerService:
         """from function expected that it will store the volunteer in db"""
         volunteer_new = Volunteer(
             tg_id=volunteer.tg_id,
-            thread_ws_id=volunteer.thread_ws_id,
-            username=volunteer.username,
+            thread_id=volunteer.thread_id,
         )
         _volunteers.append(volunteer_new)
 
@@ -30,8 +29,9 @@ class VolunteerService:
         flt - filter
         """
         if flt and flt == 'free':
+            print(_volunteers)
             return [
-                volunteer for volunteer in _volunteers if volunteer.thread_ws_id is None
+                volunteer for volunteer in _volunteers if volunteer.thread_id is None
             ]
 
         return _volunteers
@@ -56,9 +56,15 @@ class VolunteerService:
 
         volunteer_upd = Volunteer(
             tg_id=volunteer.tg_id,
-            username=volunteer.username,
-            thread_ws_id=volunteer.thread_ws_id,
+            thread_id=volunteer.thread_id,
         )
         _volunteers.append(volunteer_upd)
 
         return volunteer_upd
+
+    @staticmethod
+    async def delete(volunteer_id: int) -> None:
+        volunteer = await VolunteerService.find_by_tg_id(volunteer_id)
+
+        if volunteer:
+            _volunteers.remove(volunteer)

@@ -1,6 +1,6 @@
-from typing import Optional
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -25,17 +25,17 @@ class Message(MessageBase):
 
 
 class SupportBase(BaseModel):
-    questions: str
-    client_id: int
+    question: str
+    client_id: Optional[int]
     volunteer_id: Optional[int]
-    messages: Optional[list[Message]]
+    messages: Optional[list[Message]] = []
 
     class Config:
         orm_mode = True
 
 
 class SupportCreate(SupportBase):
-    pass
+    id: Optional[int]
 
 
 class SupportThread(SupportBase):
@@ -44,6 +44,7 @@ class SupportThread(SupportBase):
 
 class VolunteerBase(BaseModel):
     tg_id: int
+    thread_id: Optional[int]
 
     class Config:
         orm_mode = True

@@ -28,6 +28,18 @@ async def test_create(client):
 
 
 @pytest.mark.asyncio
+async def test_update(client, thread):
+    thread_to_upd = SupportCreate(question=thread.question, volunteer_id=1)
+    res = client.put(f'/threads/{thread.id}', json=thread_to_upd.dict())
+    thread_upd = res.json()
+
+    assert res.status_code == HTTPStatus.OK
+    assert thread_upd
+    assert thread_upd.get('volunteer_id') is not None
+    assert thread_upd.get('volunteer_id') == 1
+
+
+@pytest.mark.asyncio
 async def test_delete(client, thread):
     res = client.delete(f'/threads/{thread.id}')
     res2 = client.get('/threads')
