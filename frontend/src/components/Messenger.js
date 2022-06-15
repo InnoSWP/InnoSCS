@@ -1,4 +1,4 @@
-import { useState, useEffect, createRef } from "react";
+import { useState, createRef } from "react";
 
 import MessageBubble from "./MessageBubble";
 import Main from "./Main";
@@ -13,17 +13,6 @@ export default function Messenger({
 }) {
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef();
-
-  useEffect(() => {
-    if (webSocket !== null) {
-      webSocket.addEventListener("message", createVolunteerBubble);
-    }
-
-    return function () {
-      if (webSocket !== null)
-        webSocket.removeEventListener("message", createVolunteerBubble);
-    };
-  }, [webSocket]);
 
   function createVolunteerBubble(event) {
     const type = "message-bubble-volunteer";
