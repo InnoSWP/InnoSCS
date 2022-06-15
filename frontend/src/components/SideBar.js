@@ -7,6 +7,16 @@ import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblemNotification from "./SubmitProblemNotification";
 
+/**
+ * SideBar component contains list of all threads
+ * @param {{toggleSideBar: function, sideBarActivated: boolean, setWebSocket: function, addBubble: function, setCurrentThreadName: function, currentThreadName: string}} props
+ * @param {function} toggleSideBar toggles SideBar component
+ * @param {boolean} sideBarActivated represents the state of the SideBar component
+ * @param {function} setWebSocket changes current WebSocket
+ * @param {function} addBubble changes the MessageBubble List
+ * @param {function} setCurrentThreadName changes current thread name
+ * @param {string} currentThreadName represents the name of the current thread
+ */
 export default function SideBar({
   toggleSideBar,
   sideBarActivated,
@@ -15,12 +25,13 @@ export default function SideBar({
   setCurrentThreadName,
   currentThreadName,
 }) {
-  const [submitProblemTextInput, changeSubmitProblemText] = useState("");
-  const [modalActivated, toggleModal] = useState(false);
-  const [submitProblemActivated, toggleSubmitProblem] = useState(false);
-  const [threads, addThread] = useState([]);
-  const ANIMATION_TIMEOUT = 500;
+  const [submitProblemTextInput, changeSubmitProblemText] = useState(""); // SubmitProblemNotification component input field state
+  const [modalActivated, toggleModal] = useState(false); // Modal state
+  const [submitProblemActivated, toggleSubmitProblem] = useState(false); // SubmitProblemNotification state
+  const [threads, addThread] = useState([]); // Thread list state
+  const ANIMATION_TIMEOUT = 500; // time it takes to animate Popup Menu
 
+  // Thread list sync with localStorage, whenever current thread is changed
   useEffect(() => {
     addThread([]);
     for (let i = 0; i < localStorage.length; i++) {
@@ -36,6 +47,10 @@ export default function SideBar({
     }
   }, [currentThreadName]);
 
+  /**
+   * Toggles SideBar and gets messages of the current thread.
+   * @param {string} problemName name of the current thread
+   */
   function openThread(problemName) {
     toggleSideBar((prev) => !prev);
     const currentThread = JSON.parse(localStorage.getItem(problemName));
@@ -54,6 +69,10 @@ export default function SideBar({
     setCurrentThreadName(problemName);
   }
 
+  /**
+   * Toggles blur for the modal Popup Menu
+   * @param {string} status represents the status of the modal blur
+   */
   function toggleBlur(status) {
     if (document.getElementById("modal") !== undefined) {
       if (status) document.getElementById("modal").classList.add("blurred");
@@ -61,17 +80,25 @@ export default function SideBar({
     }
   }
 
+  /**
+   * Toggles SubmitProblemNotification
+   */
   function createThread() {
     toggleModal((prev) => !prev);
   }
+
+  // Whenever modal opens up, turn sideBar, blur and SubmitProblemNotification (Used for proper animation)
   useEffect(() => {
-    if (modalActivated !== false) {
+    if (modalActivated) {
       toggleSideBar((prev) => !prev);
       toggleBlur(true);
       toggleSubmitProblem((prev) => !prev);
     }
   }, [modalActivated]);
 
+  /**
+   * Creates new thread if input is not empty, then pushes to localStorage
+   */
   function submitThread() {
     if (submitProblemTextInput !== "") {
       addThread((threads) => {
