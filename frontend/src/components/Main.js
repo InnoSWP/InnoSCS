@@ -1,9 +1,15 @@
 import "./styles/main.css";
-export default function Main(props) {
+/**
+ * Main component contains the list of messages for current thread
+ * @param {{bubbles: MessageBubble[], messagesEndRef: Ref}} props
+ * @param {MessageBubble[]} bubbles list of the messages
+ * @param {Ref} messagesEndRef reference to the last message
+ */
+export default function Main({ bubbles, messagesEndRef }) {
   return (
     <div className="message-container">
-      <div ref={props.messagesEndRef} className="dummy-div"></div>
-      {props.bubbles}
+      <div ref={messagesEndRef} className="dummy-div"></div>
+      {bubbles}
     </div>
   );
 }
