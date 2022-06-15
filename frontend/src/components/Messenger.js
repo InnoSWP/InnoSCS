@@ -22,9 +22,7 @@ export default function Messenger({
           key={`message-${bubbles.length + 1}`}
           text={event.data}
           type={type}
-          flexibleMargin={
-            bubbles.length === 0 ? 16 : bubbles[0].props.type === type ? 8 : 16
-          }
+          prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
         />,
         ...bubbles,
       ]);
@@ -40,19 +38,14 @@ export default function Messenger({
 
     if (messageTextInput !== "") {
       if (webSocket !== null) webSocket.send(messageTextInput);
+
       addBubble((bubbles) => {
         return [
           <MessageBubble
             key={`message-${bubbles.length + 1}`}
             text={messageTextInput}
             type={type}
-            flexibleMargin={
-              bubbles.length === 0
-                ? 16
-                : bubbles[0].props.type === type
-                ? 8
-                : 16
-            }
+            prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
           />,
           ...bubbles,
         ];

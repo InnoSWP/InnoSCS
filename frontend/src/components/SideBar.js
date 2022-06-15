@@ -45,13 +45,7 @@ export default function SideBar({
           key={`message-${threadMessages.length + 1}`}
           text={currentThread.messages[m].text}
           type={currentThread.messages[m].sender}
-          flexibleMargin={
-            threadMessages.length === 0
-              ? 16
-              : threadMessages[0].props.type === m.sender
-              ? 8
-              : 16
-          }
+          prevSender={m - 1 < 0 ? null : currentThread.messages[m - 1].sender}
         />
       );
     }
