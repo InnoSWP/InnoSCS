@@ -83,7 +83,7 @@ export default function SideBar({
   /**
    * Toggles SubmitProblemNotification
    */
-  function createThread() {
+  function openModal() {
     toggleModal((prev) => !prev);
   }
 
@@ -134,7 +134,7 @@ export default function SideBar({
       <div className="sidebar-wrapper">{threads}</div>
       <button
         className={sideBarActivated ? "add-button" : "add-button removed"}
-        onClick={createThread}
+        onClick={openModal}
       >
         <svg
           width="46"
