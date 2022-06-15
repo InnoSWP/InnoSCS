@@ -1,10 +1,10 @@
-import uuid
+from datetime import datetime
 from http import HTTPStatus
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.api.managers import WsConnectionManager
-from app.api.schemas import SupportCreate, SupportThread
+from app.api.schemas import MessageCreate, Sender, SupportCreate, SupportThread
 from app.api.services import SupportThreadService
 
 router = APIRouter()
@@ -13,7 +13,6 @@ ws_manager = WsConnectionManager()
 
 @router.post('/threads', response_model=SupportThread, status_code=HTTPStatus.CREATED)
 async def create_thread(thread: SupportCreate) -> SupportThread:
-    thread.ws_id = int(str(uuid.uuid4().int)[:6])
     thread_new = await SupportThreadService.create(thread)
 
     return thread_new
@@ -31,13 +30,20 @@ async def delete_thread(thread_id: int) -> None:
     await SupportThreadService.delete(thread_id)
 
 
-@router.websocket('/ws/{ws_id}')
-async def websocket_endpoint(websocket: WebSocket, ws_id: int) -> None:
-    await ws_manager.connect(websocket, room_id=ws_id)
+@router.websocket('/ws/{thread_id}')
+async def websocket_endpoint(websocket: WebSocket, thread_id: int) -> None:
+    await ws_manager.connect(websocket, room_id=thread_id)
     try:
         while True:
             data = await websocket.receive_text()
-            await ws_manager.broadcast(data, room_id=ws_id, exp=websocket)
-            await SupportThreadService.save_question(question=data, ws_id=ws_id)
+            message = MessageCreate(
+                created_at=datetime.utcnow(), content=data, sender=Sender.client
+            )  # for now sender set as client by default
+
+            await ws_manager.broadcast(data, room_id=thread_id, exp=websocket)
+            await SupportThreadService.create_message(
+                message=message, thread_id=thread_id
+            )
+
     except WebSocketDisconnect:
-        ws_manager.disconnect(websocket, room_id=ws_id)
+        ws_manager.disconnect(websocket, room_id=thread_id)
