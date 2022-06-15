@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
+
+import "./styles/sidebar.css";
+
 import Modal from "./Modal";
 import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblemNotification from "./SubmitProblemNotification";
-import { useEffect, useState } from "react";
-import "./styles/sidebar.css";
+
 export default function SideBar({
   toggleSideBar,
   sideBarActivated,

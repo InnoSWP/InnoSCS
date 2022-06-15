@@ -1,7 +1,10 @@
+import { useState, useEffect } from "react";
+
 import "./styles/navbar.css";
+
 import KebabMenu from "./KebabMenu";
 import Modal from "./Modal";
-import { useState, useEffect } from "react";
+
 export default function Navbar({
   sideBarActivated,
   toggleSideBar,
