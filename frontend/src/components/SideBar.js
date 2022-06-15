@@ -73,6 +73,7 @@ export default function SideBar({
   }, [modalActivated]);
 
   function submitThread() {
+    const ANIMATION_TIMEOUT = 500;
     if (submitProblemTextInput !== "") {
       addThread((threads) => {
         const newThreadElement = (
@@ -100,7 +101,7 @@ export default function SideBar({
     // TODO: change it later
     setTimeout(() => {
       toggleModal((prev) => !prev);
-    }, 500);
+    }, ANIMATION_TIMEOUT);
   }
 
   return (
