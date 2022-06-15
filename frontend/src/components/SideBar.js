@@ -19,6 +19,7 @@ export default function SideBar({
   const [modalActivated, toggleModal] = useState(false);
   const [submitProblemActivated, toggleSubmitProblem] = useState(false);
   const [threads, addThread] = useState([]);
+  const ANIMATION_TIMEOUT = 500;
 
   useEffect(() => {
     addThread([]);
@@ -72,7 +73,6 @@ export default function SideBar({
   }, [modalActivated]);
 
   function submitThread() {
-    const ANIMATION_TIMEOUT = 500;
     if (submitProblemTextInput !== "") {
       addThread((threads) => {
         const newThreadElement = (

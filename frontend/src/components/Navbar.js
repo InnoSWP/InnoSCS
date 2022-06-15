@@ -12,6 +12,7 @@ export default function Navbar({
 }) {
   const [menuActivated, toggleMenuPopup] = useState(false);
   const [modalActivated, toggleModal] = useState(false);
+  const ANIMATION_TIMEOUT = 500;
 
   // TODO: add functionality to <Settings> and <Change Volunteer>
   const opts = [
@@ -37,10 +38,9 @@ export default function Navbar({
 
   function closeModal() {
     toggleMenuPopup(false);
-    // TODO: change it later
     setTimeout(() => {
       toggleModal(false);
-    }, 500);
+    }, ANIMATION_TIMEOUT);
   }
 
   return (
