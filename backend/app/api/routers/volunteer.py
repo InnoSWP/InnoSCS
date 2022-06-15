@@ -5,6 +5,7 @@ from fastapi import APIRouter
 
 from app.api.schemas import Volunteer, VolunteerCreate
 from app.api.services import VolunteerService
+from app.api.exceptions import EntityNotFound
 
 router = APIRouter()
 
@@ -17,15 +18,18 @@ async def create_volunteer(volunteer: VolunteerCreate) -> Volunteer:
 
 
 @router.get('/volunteers', response_model=list[Volunteer])
-async def find_volunteers(flt: Optional[str] = None) -> list[Volunteer]:
+async def find_all_volunteers(flt: Optional[str] = None) -> list[Volunteer]:
     volunteers = await VolunteerService.find_all(flt)
 
     return volunteers
 
 
 @router.get('/volunteers/{volunteer_tg_id}', response_model=Volunteer)
-async def find_volunteers(volunteer_tg_id: int) -> Volunteer:
+async def find_volunteer(volunteer_tg_id: int) -> Volunteer:
     volunteer = await VolunteerService.find_by_tg_id(volunteer_tg_id)
+
+    if not volunteer:
+        raise EntityNotFound('volunteer')
 
     return volunteer
 
