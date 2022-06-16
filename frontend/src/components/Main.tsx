@@ -5,7 +5,12 @@ import "./styles/main.css";
  * @param {MessageBubble[]} bubbles list of the messages
  * @param {Ref} messagesEndRef reference to the last message
  */
-export default function Main({ bubbles, messagesEndRef }) {
+
+type Props = {
+  bubbles: JSX.Element[],
+  messagesEndRef: React.RefObject<any>
+}
+export default function Main({ bubbles, messagesEndRef }: Props) {
   return (
     <div className="message-container">
       <div ref={messagesEndRef} className="dummy-div"></div>
