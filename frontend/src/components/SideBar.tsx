@@ -65,7 +65,7 @@ export default function SideBar({
     toggleSideBar((prev) => !prev);
     const currentThread = JSON.parse(localStorage.getItem(problemName)!);
     const threadMessages = [];
-    for (let m of currentThread.messages) {
+    for (let m = 0; m < currentThread.messages.length; m++) {
       threadMessages.push(
         <MessageBubble
           key={`message-${threadMessages.length + 1}`}
