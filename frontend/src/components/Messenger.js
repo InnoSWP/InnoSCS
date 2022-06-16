@@ -3,7 +3,15 @@ import { useState, createRef } from "react";
 import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
-
+/**
+ * Messenger component is a main part of the application. It contains Main and MessageBox.
+ * @param {{sidebarActivated: boolean, webSocket: WebSocket, addBubble: function, messageBubbles: Array.<MessageBubble>, currentThreadName: string}} props
+ * @param {boolean} sidebarActivated represents the state of the SideBar component
+ * @param {WebSocket} webSocket current WebSocket connection
+ * @param {function} addBubble changes the state of the MessageBubble list
+ * @param {Array.<MessageBubble>} messageBubbles list of the messageBubbles
+ * @param {string} currentThreadName name of the current thread
+ */
 export default function Messenger({
   sidebarActivated,
   webSocket,
@@ -14,6 +22,11 @@ export default function Messenger({
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef();
 
+  /**
+   * Creates Volunteer Bubble
+   *
+   * In current implementation is used for {@link webSocket} listener event
+   */
   function createVolunteerBubble(event) {
     const type = "message-bubble-volunteer";
     if (event.data) {
@@ -29,10 +42,16 @@ export default function Messenger({
     }
   }
 
+  /**
+   * Scrolls chat to latest message using {@link messagesEndRef} reference
+   */
   function scrollToBottom() {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   }
 
+  /**
+   * Creates new User Bubble from {@link messageTextInput}
+   */
   function createBubble() {
     const type = "message-bubble-user";
 
@@ -58,6 +77,14 @@ export default function Messenger({
       }
     }
   }
+  /**
+   * Creates message bubble, scrolls to bottom and changes input field text.
+   */
+  function sendMessage() {
+    createBubble();
+    scrollToBottom();
+    changeMessageText(() => "");
+  }
 
   return (
     <div
@@ -70,10 +97,9 @@ export default function Messenger({
       />
       <MessageBox
         key="messageBox"
-        changeText={changeMessageText}
-        createBubble={createBubble}
-        scrollToBottom={scrollToBottom}
         inputText={messageTextInput}
+        sendMessage={sendMessage}
+        changeMessageText={changeMessageText}
       />
     </div>
   );

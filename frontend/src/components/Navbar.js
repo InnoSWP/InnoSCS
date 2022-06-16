@@ -5,15 +5,23 @@ import "./styles/navbar.css";
 import KebabMenu from "./KebabMenu";
 import Modal from "./Modal";
 
+/**
+ * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
+ * @param {{sideBarActivated: boolean, toggleSideBar: function, closeCurrentThread: function}} props
+ * @param {boolean} sideBarActivated represents the state of the SideBar component
+ * @param {function} toggleSideBar function that changes the state of the SideBar component
+ * @param {function} closeCurrentThread function that closes the current thread
+ */
 export default function Navbar({
   sideBarActivated,
   toggleSideBar,
   closeCurrentThread,
 }) {
   const [menuActivated, toggleMenuPopup] = useState(false);
-  const [modalActivated, toggleModal] = useState(false);
-  const ANIMATION_TIMEOUT = 500;
+  const [modalActivated, toggleModal] = useState(false); // KebabMenu modal state
+  const ANIMATION_TIMEOUT = 500; // time it takes to animate KebabMenu in ms
 
+  // KebabMenu config
   // TODO: add functionality to <Settings> and <Change Volunteer>
   const opts = [
     {
@@ -30,12 +38,18 @@ export default function Navbar({
     },
   ];
 
+  // When Modal is created, toggle KebabMenu. (Used for proper animation)
   useEffect(() => {
-    if (modalActivated !== false) {
+    if (modalActivated) {
       toggleMenuPopup(true);
     }
   }, [modalActivated]);
 
+  /**
+   * Closes KebabMenu
+   *
+   * Timeout added to prevent closing modal without animation
+   */
   function closeModal() {
     toggleMenuPopup(false);
     setTimeout(() => {

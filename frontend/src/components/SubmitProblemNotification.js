@@ -1,16 +1,26 @@
 import "./styles/submitProblemNotification.css";
-
-export default function SubmitProblemNotification(props) {
+/**
+ * SubmitProblemNotification component is a Popup Menu that contains input field and submit button. The component creates new Thread.
+ * @param {{changeText: function, show: boolean, inputText: string, submitThread: function}} props
+ * @param {function} changeText function that changes state of the input field text
+ * @param {boolean} show represents the state of the Popup Menu
+ * @param {string} inputText text of the input field
+ * @param {function} submitThread function that submits new thread
+ */
+export default function SubmitProblemNotification({
+  changeText,
+  show,
+  inputText,
+  submitThread,
+}) {
   function getText(event) {
-    props.changeText(() => event.target.value);
+    changeText(() => event.target.value);
   }
   return (
     <div className="notification-wrapper">
       <div
         className={
-          props.show
-            ? "notification-container activated"
-            : "notification-container"
+          show ? "notification-container activated" : "notification-container"
         }
       >
         <span className="notification-text">Describe your problem</span>
@@ -18,7 +28,7 @@ export default function SubmitProblemNotification(props) {
           <input
             placeholder="Type your message here..."
             onChange={getText}
-            value={props.inputText}
+            value={inputText}
           />
           <div className="button-attach">
             <svg
@@ -35,7 +45,7 @@ export default function SubmitProblemNotification(props) {
             </svg>
           </div>
         </div>
-        <button className="submit-button" onClick={props.submitThread}>
+        <button className="submit-button" onClick={submitThread}>
           <span>Submit</span>
         </button>
       </div>

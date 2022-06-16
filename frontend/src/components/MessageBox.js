@@ -1,7 +1,18 @@
 import "./styles/messageBox.css";
-export default function MessageBox(props) {
+/**
+ * MessageBox component is a footer part of the application, which sends user message.
+ * @param {{changeMessageText: function, inputText: string, sendMessage: function}} props
+ * @param {function} changeMessageText function that changes the state of the input field text
+ * @param {string} inputText the text of the MessageBox input field
+ * @param {function} sendMessage function that sends message
+ */
+export default function MessageBox({
+  changeMessageText,
+  inputText,
+  sendMessage,
+}) {
   function getText(event) {
-    props.changeText(() => event.target.value);
+    changeMessageText(() => event.target.value);
   }
 
   return (
@@ -10,7 +21,7 @@ export default function MessageBox(props) {
         <input
           placeholder="Type your message here..."
           onChange={getText}
-          value={props.inputText}
+          value={inputText}
         />
         <div className="button-attach">
           <svg
@@ -27,14 +38,7 @@ export default function MessageBox(props) {
           </svg>
         </div>
       </div>
-      <button
-        className="button-send"
-        onClick={() => {
-          props.createBubble();
-          props.scrollToBottom();
-          props.changeText(() => "");
-        }}
-      >
+      <button className="button-send" onClick={sendMessage}>
         <svg
           width="21"
           height="18"
