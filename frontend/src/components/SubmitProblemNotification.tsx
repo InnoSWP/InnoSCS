@@ -26,11 +26,13 @@ export default function SubmitProblemNotification({
     changeText(() => event.target.value);
   }
   return (
+    // TODO: Remove redundant "notification-wrapper" div
     <div className="notification-wrapper">
       <div
         className={
           show ? "notification-container activated" : "notification-container"
         }
+        onClick={(e) => e.stopPropagation()}
       >
         <span className="notification-text">Describe your problem</span>
         <div className="message-wrapper notification">

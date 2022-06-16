@@ -17,6 +17,16 @@ import SubmitProblemNotification from "./SubmitProblemNotification";
  * @param {function} setCurrentThreadName changes current thread name
  * @param {string} currentThreadName represents the name of the current thread
  */
+
+type Props = {
+  toggleSideBar: React.Dispatch<React.SetStateAction<Boolean>>
+  sideBarActivated: boolean,
+  setWebSocket: React.Dispatch<React.SetStateAction<WebSocket>>
+  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
+  setCurrentThreadName: React.Dispatch<React.SetStateAction<string>>
+  currentThreadName: string
+}
+
 export default function SideBar({
   toggleSideBar,
   sideBarActivated,
@@ -24,11 +34,11 @@ export default function SideBar({
   addBubble,
   setCurrentThreadName,
   currentThreadName,
-}) {
-  const [submitProblemTextInput, changeSubmitProblemText] = useState("");
-  const [modalActivated, toggleModal] = useState(false);
-  const [submitProblemActivated, toggleSubmitProblem] = useState(false);
-  const [threads, addThread] = useState([]);
+}: Props) {
+  const [submitProblemTextInput, changeSubmitProblemText] = useState<string>("");
+  const [modalActivated, toggleModal] = useState<boolean>(false);
+  const [submitProblemActivated, toggleSubmitProblem] = useState<boolean>(false);
+  const [threads, addThread] = useState<JSX.Element[]>([]);
   const ANIMATION_TIMEOUT = 500; // time it takes to animate Popup Menu
 
   // Thread list sync with localStorage, whenever current thread is changed
@@ -39,7 +49,7 @@ export default function SideBar({
         ...threads,
         <Thread
           key={`thread-${threads.length + 1}`}
-          problemName={localStorage.key(i)}
+          problemName={localStorage.key(i)!}
           status={"resolving"}
           openThread={openThread}
         />,
@@ -51,11 +61,11 @@ export default function SideBar({
    * Toggles SideBar and gets messages of the current thread.
    * @param {string} problemName name of the current thread
    */
-  function openThread(problemName) {
+  function openThread(problemName: string) {
     toggleSideBar((prev) => !prev);
-    const currentThread = JSON.parse(localStorage.getItem(problemName));
+    const currentThread = JSON.parse(localStorage.getItem(problemName)!);
     const threadMessages = [];
-    for (var m in currentThread.messages) {
+    for (let m of currentThread.messages) {
       threadMessages.push(
         <MessageBubble
           key={`message-${threadMessages.length + 1}`}
@@ -73,11 +83,11 @@ export default function SideBar({
    * Toggles blur for the modal Popup Menu
    * @param {string} status represents the status of the modal blur
    */
-  function toggleBlur(status) {
-    if (document.getElementById("modal") !== undefined) {
-      if (status) document.getElementById("modal").classList.add("blurred");
-      else document.getElementById("modal").classList.remove("blurred");
-    }
+  function toggleBlur(status: boolean) {
+ 
+      if (status) document.getElementById("modal")!.classList.add("blurred");
+      else document.getElementById("modal")!.classList.remove("blurred");
+    
   }
 
   /**
@@ -85,6 +95,16 @@ export default function SideBar({
    */
   function openModal() {
     toggleModal((prev) => !prev);
+  }
+
+  function closeModal() {
+    toggleSubmitProblem((prev) => !prev);
+    toggleBlur(false);
+    toggleSideBar((prev) => !prev);
+    changeSubmitProblemText("");
+    setTimeout(() => {
+      toggleModal((prev) => !prev);
+    }, ANIMATION_TIMEOUT);
   }
 
   // Whenever modal opens up, turn sideBar, blur and SubmitProblemNotification (Used for proper animation)
@@ -120,13 +140,7 @@ export default function SideBar({
       });
     }
 
-    toggleSubmitProblem((prev) => !prev);
-    toggleBlur(false);
-    toggleSideBar((prev) => !prev);
-    changeSubmitProblemText("");
-    setTimeout(() => {
-      toggleModal((prev) => !prev);
-    }, ANIMATION_TIMEOUT);
+    closeModal();
   }
 
   return (
@@ -149,7 +163,7 @@ export default function SideBar({
           />
         </svg>
       </button>
-      <Modal isOpen={modalActivated}>
+      <Modal isOpen={modalActivated} onClose={closeModal}>
         <SubmitProblemNotification
           changeText={changeSubmitProblemText}
           inputText={submitProblemTextInput}
