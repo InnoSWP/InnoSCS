@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import "./styles/kebabMenu.css";
 /**
  * KebabMenu component is a vertical dots button that toggles Popup Menu
@@ -6,7 +7,17 @@ import "./styles/kebabMenu.css";
  * @param {boolean} active represents the state of the KebabMenu
  * @param {function} togglePopup opens/closes the Popup Menu
  */
-export default function KebabMenu({ optionsData, active, togglePopup }) {
+
+type KebabMenuProps = {
+  optionsData: {
+    optionName: string,
+    onClick: () => void;
+  }[],
+  active: boolean,
+  togglePopup: Function
+}
+
+export default function KebabMenu({ optionsData, active, togglePopup }: KebabMenuProps) {
   const options = optionsData.map((opt) => (
     <MenuOption
       key={opt.optionName}
@@ -27,10 +38,15 @@ export default function KebabMenu({ optionsData, active, togglePopup }) {
   );
 }
 
-function MenuOption(props) {
+type MenuOptionProps = {
+  optionName: string,
+  onClick: MouseEventHandler<HTMLDivElement>
+}
+
+function MenuOption({onClick, optionName}: MenuOptionProps) {
   return (
-    <div className="menu-option" onClick={props.onClick}>
-      <span>{props.optionName}</span>
+    <div className="menu-option" onClick={onClick}>
+      <span>{optionName}</span>
     </div>
   );
 }
