@@ -21,7 +21,6 @@ import SubmitProblemNotification from "./SubmitProblemNotification";
 type Props = {
   toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>
   sideBarActivated: boolean,
-  setWebSocket: React.Dispatch<React.SetStateAction<WebSocket>>
   addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
   setCurrentThreadName: React.Dispatch<React.SetStateAction<string>>
   currentThreadName: string
@@ -30,7 +29,6 @@ type Props = {
 export default function SideBar({
   toggleSideBar,
   sideBarActivated,
-  setWebSocket,
   addBubble,
   setCurrentThreadName,
   currentThreadName,

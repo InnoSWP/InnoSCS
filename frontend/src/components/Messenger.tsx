@@ -15,7 +15,6 @@ import MessageBox from "./MessageBox";
 
 type Props = {
   sidebarActivated: boolean,
-  webSocket: WebSocket,
   addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
   messageBubbles: JSX.Element[],
   currentThreadName: string
@@ -24,7 +23,6 @@ type Props = {
 
 export default function Messenger({
   sidebarActivated,
-  webSocket,
   addBubble,
   messageBubbles,
   currentThreadName,
@@ -65,7 +63,6 @@ export default function Messenger({
     const type = "message-bubble-user";
 
     if (messageTextInput !== "") {
-      if (webSocket !== null) webSocket.send(messageTextInput);
 
       addBubble((bubbles) => {
         return [
