@@ -38,7 +38,7 @@ async def websocket_endpoint(websocket: WebSocket, thread_id: int) -> None:
             data = await websocket.receive_text()
             message = MessageCreate(
                 created_at=datetime.utcnow(), content=data, sender=Sender.client
-            )  # for now sender set as client by default
+            )  # TODO: make sender recognizer
 
             await ws_manager.broadcast(data, room_id=thread_id, exp=websocket)
             await SupportThreadService.create_message(

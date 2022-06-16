@@ -3,9 +3,9 @@ from typing import Optional
 
 from fastapi import APIRouter
 
+from app.api.exceptions import EntityNotFound
 from app.api.schemas import Volunteer, VolunteerCreate
 from app.api.services import VolunteerService
-from app.api.exceptions import EntityNotFound
 
 router = APIRouter()
 
