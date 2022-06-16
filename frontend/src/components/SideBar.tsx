@@ -19,7 +19,7 @@ import SubmitProblemNotification from "./SubmitProblemNotification";
  */
 
 type Props = {
-  toggleSideBar: React.Dispatch<React.SetStateAction<Boolean>>
+  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>
   sideBarActivated: boolean,
   setWebSocket: React.Dispatch<React.SetStateAction<WebSocket>>
   addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
