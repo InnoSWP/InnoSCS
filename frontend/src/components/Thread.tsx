@@ -5,7 +5,14 @@
  * @param {string} status current status of the thread (solved, solving, unsolved)
  * @param {function} openThread the openThread function that passed from {@link SideBar} component
  */
-export default function Thread({ problemName, status, openThread }) {
+
+type Props = {
+  problemName: string,
+  status: "resolving" | "resolved" | "unsolved",
+  openThread: Function
+}
+
+export default function Thread({ problemName, status, openThread }: Props) {
   return (
     <div className="thread-container" onClick={() => openThread(problemName)}>
       <div className={`thread-status ${status}`}></div>
