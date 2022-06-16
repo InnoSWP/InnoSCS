@@ -9,7 +9,7 @@ import Messenger from "./components/Messenger";
  */
 function App() {
   const [sidebarActivated, toggleSideBar] = useState<boolean>(true); // toggles SideBar component
-  const [ws, setWebSocket] = useState<WebSocket>(new WebSocket('ws://localhost:0000/default_value'));
+  const [ws, setWebSocket] = useState(null);
   const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
   const [currentThreadName, setCurrentThreadName] = useState<string>(
     localStorage.key(0) === null ? "" : localStorage.key(0)! 
@@ -44,11 +44,9 @@ function App() {
         addBubble={addBubble}
         setCurrentThreadName={setCurrentThreadName}
         currentThreadName={currentThreadName}
-        setWebSocket={setWebSocket}
       />
       <Messenger
         key="messenger"
-        webSocket={ws}
         sidebarActivated={sidebarActivated}
         messageBubbles={messageBubbles}
         addBubble={addBubble}
