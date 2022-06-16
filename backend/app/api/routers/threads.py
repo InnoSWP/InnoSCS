@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from app.api.exceptions import EntityNotFound
 from app.api.managers import WsConnectionManager
 from app.api.schemas import MessageCreate, Sender, SupportCreate, SupportThread
 from app.api.services import SupportThreadService
@@ -23,6 +24,23 @@ async def find_all_threads() -> list[SupportThread]:
     threads = await SupportThreadService.find_all()
 
     return threads
+
+
+@router.get('/threads/{thread_id}', response_model=SupportThread)
+async def find_thread(thread_id: int) -> SupportThread:
+    thread = await SupportThreadService.find_by_id(thread_id)
+
+    if not thread:
+        raise EntityNotFound('thread')
+
+    return thread
+
+
+@router.put('/threads/{thread_id}', response_model=SupportThread)
+async def update_thread(thread_id: int, thread: SupportCreate) -> SupportThread:
+    thread_upd = await SupportThreadService.update(thread, thread_id)
+
+    return thread_upd
 
 
 @router.delete('/threads/{thread_id}')

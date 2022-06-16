@@ -59,7 +59,26 @@ class SupportThreadService:
     @staticmethod
     async def delete(thread_id: int) -> None:
         thread = await SupportThreadService.find_by_id(thread_id)
-        print(thread)
         if thread:
             _threads.remove(thread)
-            print(_threads)
+
+    @staticmethod
+    async def update(thread: SupportCreate, thread_id: int) -> SupportThread:
+        """
+        from function expected that it will update all field of thread,
+        volunteer is searched by telegram id
+        """
+        thread_to_upd = await SupportThreadService.find_by_id(thread_id)
+        _threads.remove(thread_to_upd)  # type: ignore  # will be another implementation
+
+        thread_upd = SupportThread(
+            id=thread_id,
+            question=thread.question,
+            client_id=thread.client_id,
+            volunteer_id=thread.volunteer_id,
+            messages=thread.messages,
+        )
+
+        _threads.append(thread_upd)
+
+        return thread_upd
