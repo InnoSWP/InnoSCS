@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./styles/navbar.css";
 
@@ -12,13 +12,20 @@ import Modal from "./Modal";
  * @param {function} toggleSideBar function that changes the state of the SideBar component
  * @param {function} closeCurrentThread function that closes the current thread
  */
+
+type Props = {
+  sideBarActivated: boolean,
+  toggleSideBar: React.Dispatch<React.SetStateAction<Boolean>>,
+  closeCurrentThread: () => void,
+}
+
 export default function Navbar({
   sideBarActivated,
   toggleSideBar,
   closeCurrentThread,
-}) {
-  const [menuActivated, toggleMenuPopup] = useState(false);
-  const [modalActivated, toggleModal] = useState(false); // KebabMenu modal state
+}: Props) {
+  const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
+  const [modalActivated, toggleModal] = useState<boolean>(false); // KebabMenu modal state
   const ANIMATION_TIMEOUT = 500; // time it takes to animate KebabMenu in ms
 
   // KebabMenu config
