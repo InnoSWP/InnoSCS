@@ -12,22 +12,31 @@ import MessageBox from "./MessageBox";
  * @param {Array.<MessageBubble>} messageBubbles list of the messageBubbles
  * @param {string} currentThreadName name of the current thread
  */
+
+type Props = {
+  sidebarActivated: boolean,
+  webSocket: WebSocket,
+  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
+  messageBubbles: JSX.Element[],
+  currentThreadName: string
+
+}
+
 export default function Messenger({
   sidebarActivated,
   webSocket,
   addBubble,
   messageBubbles,
   currentThreadName,
-}) {
+}: Props) {
   const [messageTextInput, changeMessageText] = useState("");
-  const messagesEndRef = createRef();
-
+  const messagesEndRef = createRef<HTMLDivElement>();
   /**
    * Creates Volunteer Bubble
    *
    * In current implementation is used for {@link webSocket} listener event
    */
-  function createVolunteerBubble(event) {
+  function createVolunteerBubble(event: MessageEvent<string>) {
     const type = "message-bubble-volunteer";
     if (event.data) {
       addBubble((bubbles) => [
@@ -46,7 +55,7 @@ export default function Messenger({
    * Scrolls chat to latest message using {@link messagesEndRef} reference
    */
   function scrollToBottom() {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current!.scrollIntoView({ behavior: "smooth" });
   }
 
   /**
@@ -70,11 +79,9 @@ export default function Messenger({
         ];
       });
 
-      if (localStorage.getItem(currentThreadName) !== null) {
-        var currentThread = JSON.parse(localStorage.getItem(currentThreadName));
-        currentThread.messages.push({ text: messageTextInput, sender: type });
-        localStorage.setItem(currentThreadName, JSON.stringify(currentThread));
-      }
+      var currentThread = JSON.parse(localStorage.getItem(currentThreadName)!);
+      currentThread.messages.push({ text: messageTextInput, sender: type });
+      localStorage.setItem(currentThreadName, JSON.stringify(currentThread));
     }
   }
   /**
