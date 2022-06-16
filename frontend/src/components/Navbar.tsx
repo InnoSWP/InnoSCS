@@ -15,7 +15,7 @@ import Modal from "./Modal";
 
 type Props = {
   sideBarActivated: boolean,
-  toggleSideBar: React.Dispatch<React.SetStateAction<Boolean>>,
+  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>,
   closeCurrentThread: () => void,
 }
 
