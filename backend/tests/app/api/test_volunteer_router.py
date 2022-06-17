@@ -70,3 +70,12 @@ async def test_update_one(client, volunteer):
     assert volunteer_upd.get('tg_id') is not None
     assert volunteer_upd.get('tg_id') == volunteer.tg_id + 1
     assert volunteer_upd.get('thread_id') is None
+
+
+@pytest.mark.asyncio
+async def test_delete_one(client, volunteer):
+    res = client.delete(f'/volunteers/{volunteer.tg_id}')
+    res2 = client.get(f'/volunteers/{volunteer.tg_id}')
+
+    assert res.status_code == HTTPStatus.OK
+    assert res2.status_code == HTTPStatus.NOT_FOUND

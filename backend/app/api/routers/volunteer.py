@@ -39,3 +39,8 @@ async def update_volunteer(volunteer_id: int, volunteer: VolunteerCreate) -> Vol
     volunteer_upd = await VolunteerService.update(volunteer, volunteer_id)
 
     return volunteer_upd
+
+
+@router.delete('/volunteers/{volunteer_id}')
+async def update_volunteer(volunteer_id: int) -> None:
+    await VolunteerService.delete(volunteer_id)

@@ -61,3 +61,10 @@ class VolunteerService:
         _volunteers.append(volunteer_upd)
 
         return volunteer_upd
+
+    @staticmethod
+    async def delete(volunteer_id):
+        volunteer = await VolunteerService.find_by_tg_id(volunteer_id)
+
+        if volunteer:
+            _volunteers.remove(volunteer)
