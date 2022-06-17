@@ -63,7 +63,7 @@ class VolunteerService:
         return volunteer_upd
 
     @staticmethod
-    async def delete(volunteer_id):
+    async def delete(volunteer_id: int) -> None:
         volunteer = await VolunteerService.find_by_tg_id(volunteer_id)
 
         if volunteer:
