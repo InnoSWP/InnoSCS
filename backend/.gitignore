@@ -138,6 +138,9 @@ dmypy.json
 cython_debug/
 
 # ide
-
 .vscode
 .idea
+
+# db, sessions files
+*.db
+*.session
