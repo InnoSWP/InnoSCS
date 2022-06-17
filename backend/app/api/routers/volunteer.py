@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter
 
 from app.api.exceptions import EntityNotFound
-from app.api.schemas import Volunteer, VolunteerCreate
+from app.api.schemas import Filter, Volunteer, VolunteerCreate
 from app.api.services import VolunteerService
 
 router = APIRouter()
@@ -18,7 +18,7 @@ async def create_volunteer(volunteer: VolunteerCreate) -> Volunteer:
 
 
 @router.get('/volunteers', response_model=list[Volunteer])
-async def find_all_volunteers(flt: Optional[str] = None) -> list[Volunteer]:
+async def find_all_volunteers(flt: Optional[Filter] = None) -> list[Volunteer]:
     volunteers = await VolunteerService.find_all(flt)
 
     return volunteers
