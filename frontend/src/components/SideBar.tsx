@@ -5,7 +5,8 @@ import "./styles/sidebar.css";
 import Modal from "./Modal";
 import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
-import SubmitProblemNotification from "./SubmitProblemNotification";
+import SubmitProblemNotification from "./SubmitProblem";
+import Notification from "./Notification";
 
 /**
  * SideBar component contains list of all threads
@@ -162,12 +163,13 @@ export default function SideBar({
         </svg>
       </button>
       <Modal isOpen={modalActivated} onClose={closeModal}>
-        <SubmitProblemNotification
-          changeText={changeSubmitProblemText}
-          inputText={submitProblemTextInput}
-          show={submitProblemActivated}
-          submitThread={submitThread}
-        />
+        <Notification show={submitProblemActivated}>
+          <SubmitProblemNotification
+            changeText={changeSubmitProblemText}
+            inputText={submitProblemTextInput}
+            submitThread={submitThread}
+          />
+        </Notification> 
       </Modal>
     </div>
   );
