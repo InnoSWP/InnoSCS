@@ -9,12 +9,12 @@ import "./styles/submitProblem.css";
  */
 
 type Props = {
-  changeText: Function,
-  inputText: string,
-  submitThread: MouseEventHandler<HTMLButtonElement>
-}
+  changeText: Function;
+  inputText: string;
+  submitThread: MouseEventHandler<HTMLButtonElement>;
+};
 
-export default function SubmitProblemNotification({
+export default function SubmitProblem({
   changeText,
   inputText,
   submitThread,
@@ -49,6 +49,6 @@ export default function SubmitProblemNotification({
       <button className="submit-button" onClick={submitThread}>
         <span>Submit</span>
       </button>
-      </React.Fragment>
+    </React.Fragment>
   );
 }
