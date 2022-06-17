@@ -5,7 +5,7 @@ import "./styles/sidebar.css";
 import Modal from "./Modal";
 import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
-import SubmitProblemNotification from "./SubmitProblem";
+import SubmitProblem from "./SubmitProblem";
 import Notification from "./Notification";
 
 /**
@@ -20,12 +20,12 @@ import Notification from "./Notification";
  */
 
 type Props = {
-  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>
-  sideBarActivated: boolean,
-  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
-  setCurrentThreadName: React.Dispatch<React.SetStateAction<string>>
-  currentThreadName: string
-}
+  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  sideBarActivated: boolean;
+  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
+  setCurrentThreadName: React.Dispatch<React.SetStateAction<string>>;
+  currentThreadName: string;
+};
 
 export default function SideBar({
   toggleSideBar,
@@ -34,9 +34,11 @@ export default function SideBar({
   setCurrentThreadName,
   currentThreadName,
 }: Props) {
-  const [submitProblemTextInput, changeSubmitProblemText] = useState<string>("");
+  const [submitProblemTextInput, changeSubmitProblemText] =
+    useState<string>("");
   const [modalActivated, toggleModal] = useState<boolean>(false);
-  const [submitProblemActivated, toggleSubmitProblem] = useState<boolean>(false);
+  const [submitProblemActivated, toggleSubmitProblem] =
+    useState<boolean>(false);
   const [threads, addThread] = useState<JSX.Element[]>([]);
   const ANIMATION_TIMEOUT = 500; // time it takes to animate Popup Menu
 
@@ -83,10 +85,8 @@ export default function SideBar({
    * @param {string} status represents the status of the modal blur
    */
   function toggleBlur(status: boolean) {
- 
-      if (status) document.getElementById("modal")!.classList.add("blurred");
-      else document.getElementById("modal")!.classList.remove("blurred");
-    
+    if (status) document.getElementById("modal")!.classList.add("blurred");
+    else document.getElementById("modal")!.classList.remove("blurred");
   }
 
   /**
@@ -164,12 +164,12 @@ export default function SideBar({
       </button>
       <Modal isOpen={modalActivated} onClose={closeModal}>
         <Notification show={submitProblemActivated}>
-          <SubmitProblemNotification
+          <SubmitProblem
             changeText={changeSubmitProblemText}
             inputText={submitProblemTextInput}
             submitThread={submitThread}
           />
-        </Notification> 
+        </Notification>
       </Modal>
     </div>
   );
