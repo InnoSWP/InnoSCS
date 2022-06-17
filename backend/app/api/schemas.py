@@ -5,6 +5,10 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class Filter(str, Enum):
+    free = 'free'
+
+
 class Sender(str, Enum):
     volunteer = 'volunteer'
     client = 'client'

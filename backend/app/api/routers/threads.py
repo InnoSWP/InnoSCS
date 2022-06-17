@@ -1,11 +1,12 @@
 from datetime import datetime
 from http import HTTPStatus
+from typing import Optional
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.api.exceptions import EntityNotFound
 from app.api.managers import WsConnectionManager
-from app.api.schemas import MessageCreate, Sender, SupportCreate, SupportThread
+from app.api.schemas import Filter, MessageCreate, Sender, SupportCreate, SupportThread
 from app.api.services import SupportThreadService
 
 router = APIRouter()
@@ -20,8 +21,8 @@ async def create_thread(thread: SupportCreate) -> SupportThread:
 
 
 @router.get('/threads', response_model=list[SupportThread])
-async def find_all_threads() -> list[SupportThread]:
-    threads = await SupportThreadService.find_all()
+async def find_all_threads(flt: Optional[Filter] = None) -> list[SupportThread]:
+    threads = await SupportThreadService.find_all(flt)
 
     return threads
 

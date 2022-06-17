@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 
-from app.api.schemas import Message, MessageCreate, SupportCreate, SupportThread
+from app.api.schemas import Filter, Message, MessageCreate, SupportCreate, SupportThread
 
 _threads: list[SupportThread] = []
 
@@ -22,8 +22,11 @@ class SupportThreadService:
         return thread_new
 
     @staticmethod
-    async def find_all() -> list[SupportThread]:
+    async def find_all(flt: Optional[Filter] = None) -> list[SupportThread]:
         """from function expected to return all thread entities from db"""
+        if flt and flt == Filter.free:
+            return [t for t in _threads if not t.volunteer_id]
+
         return _threads
 
     @staticmethod

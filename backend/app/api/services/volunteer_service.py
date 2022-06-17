@@ -1,6 +1,6 @@
 from typing import Optional
 
-from app.api.schemas import Volunteer, VolunteerCreate
+from app.api.schemas import Filter, Volunteer, VolunteerCreate
 
 _volunteers: list[Volunteer] = []
 
@@ -23,13 +23,12 @@ class VolunteerService:
         return volunteer_new
 
     @staticmethod
-    async def find_all(flt: Optional[str] = None) -> list[Volunteer]:
+    async def find_all(flt: Optional[Filter] = None) -> list[Volunteer]:
         """
         from function expected to return all volunteer from db or free volunteers,
         flt - filter
         """
-        if flt and flt == 'free':
-            print(_volunteers)
+        if flt and flt == Filter.free:
             return [
                 volunteer for volunteer in _volunteers if volunteer.thread_id is None
             ]
