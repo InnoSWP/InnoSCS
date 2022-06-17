@@ -38,10 +38,15 @@ ci:	lint test ## Lint code then run tests
 
 
 .PHONY: up
-up: ## Launch
+up: ## Launch api service
 	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
 
 
+.PHONY: bot
+bot: ## Launch the bot
+	$(VENV)/bin/python -m app.bot
+
+
 .PHOMY: docker
-docker: ## Launch up in docker
+docker: ## Launch api service in docker
 	docker-compose up
