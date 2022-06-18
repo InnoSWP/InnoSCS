@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Modal from "./Modal";
 import "./styles/notification.css";
 type Props = {
@@ -23,18 +23,21 @@ export default function Notification({
       return React.cloneElement(child, { ...child.props, toggleNotification });
   });
 
-  function toggleBlur(status: boolean) {
-    if (status)
-      document
-        .getElementsByClassName(`modal-container ${id}-modal`)!
-        .item(0)
-        ?.classList.add("blurred");
-    else
-      document
-        .getElementsByClassName(`modal-container ${id}-modal`)!
-        .item(0)
-        ?.classList.remove("blurred");
-  }
+  const toggleBlur = useCallback(
+    (status: boolean) => {
+      if (status)
+        document
+          .getElementsByClassName(`modal-container ${id}-modal`)!
+          .item(0)
+          ?.classList.add("blurred");
+      else
+        document
+          .getElementsByClassName(`modal-container ${id}-modal`)!
+          .item(0)
+          ?.classList.remove("blurred");
+    },
+    [id]
+  );
 
   useEffect(() => {
     if (active) {
@@ -43,14 +46,14 @@ export default function Notification({
       toggleBlur(false);
       togglePopup(false);
     }
-  }, [active, blur]);
+  }, [active, blur, toggleBlur]);
 
   useEffect(() => {
     if (modal) {
       if (blur) toggleBlur(true);
       togglePopup(true);
     }
-  }, [modal, blur]);
+  }, [modal, blur, toggleBlur]);
 
   return (
     <Modal

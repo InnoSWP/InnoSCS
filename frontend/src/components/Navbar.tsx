@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import "./styles/navbar.css";
 
@@ -41,10 +41,6 @@ export default function Navbar({
       onClick: () => console.log("Volunteer changed"),
     },
   ];
-
-  const toggleMenuPopupCallback = useCallback(toggleMenuPopup, [
-    toggleMenuPopup,
-  ]);
 
   return (
     <nav>
@@ -95,7 +91,7 @@ export default function Navbar({
         key="kebab-menu"
         id="kebab-menu"
         active={menuActivated}
-        togglePopup={toggleMenuPopupCallback}
+        togglePopup={toggleMenuPopup}
         optionsData={opts}
       />
     </nav>
