@@ -15,7 +15,7 @@ type PopupMenuProps = {
     onClick: () => void;
   }[];
   active: boolean;
-  togglePopup: Function;
+  togglePopup: (value: boolean) => void;
   id: string;
 };
 
