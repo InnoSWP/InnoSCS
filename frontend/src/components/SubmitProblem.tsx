@@ -53,6 +53,7 @@ export default function SubmitProblem({
         onClick={(event) => {
           submitThread();
           toggleNotification!(false);
+          changeText("");
         }}
       >
         <span>Submit</span>
