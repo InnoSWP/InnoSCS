@@ -8,11 +8,11 @@ import Messenger from "./components/Messenger";
  * This component is a root of the application.
  */
 function App() {
-  const [sidebarActivated, toggleSideBar] = useState(true); // toggles SideBar component
-  const [ws, setWebSocket] = useState(null); // WebSocket state
-  const [messageBubbles, addBubble] = useState([]); // Messages of the current threads
-  const [currentThreadName, setCurrentThreadName] = useState(
-    localStorage.key(0)
+  const [sidebarActivated, toggleSideBar] = useState<boolean>(true); // toggles SideBar component
+  const [ws, setWebSocket] = useState(null);
+  const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
+  const [currentThreadName, setCurrentThreadName] = useState<string>(
+    localStorage.key(0) === null ? "" : localStorage.key(0)! 
   ); // Name of the current thread
 
   /**
@@ -22,7 +22,7 @@ function App() {
    */
   function closeCurrentThread() {
     if (currentThreadName !== "") {
-      localStorage.removeItem(currentThreadName);
+      localStorage.removeItem(currentThreadName!);
       setCurrentThreadName("");
       toggleSideBar(true);
       addBubble([]);
@@ -47,7 +47,6 @@ function App() {
       />
       <Messenger
         key="messenger"
-        webSocket={ws}
         sidebarActivated={sidebarActivated}
         messageBubbles={messageBubbles}
         addBubble={addBubble}

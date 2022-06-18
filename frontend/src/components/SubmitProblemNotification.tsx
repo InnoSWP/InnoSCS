@@ -1,3 +1,4 @@
+import { ChangeEvent, MouseEventHandler } from "react";
 import "./styles/submitProblemNotification.css";
 /**
  * SubmitProblemNotification component is a Popup Menu that contains input field and submit button. The component creates new Thread.
@@ -7,21 +8,31 @@ import "./styles/submitProblemNotification.css";
  * @param {string} inputText text of the input field
  * @param {function} submitThread function that submits new thread
  */
+
+type Props = {
+  changeText: Function,
+  show: boolean,
+  inputText: string,
+  submitThread: MouseEventHandler<HTMLButtonElement>
+}
+
 export default function SubmitProblemNotification({
   changeText,
   show,
   inputText,
   submitThread,
-}) {
-  function getText(event) {
+}: Props) {
+  function getText(event: ChangeEvent<HTMLInputElement>) {
     changeText(() => event.target.value);
   }
   return (
+    // TODO: Remove redundant "notification-wrapper" div
     <div className="notification-wrapper">
       <div
         className={
           show ? "notification-container activated" : "notification-container"
         }
+        onClick={(e) => e.stopPropagation()}
       >
         <span className="notification-text">Describe your problem</span>
         <div className="message-wrapper notification">
