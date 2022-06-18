@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import ReactDOM from "react-dom";
 /**
  * Modal component is a wrapper for Popup menus such as {@link KebabMenu} and {@link SubmitProblemNotification}
@@ -8,15 +8,19 @@ import ReactDOM from "react-dom";
  */
 
 type Props = {
-  isOpen: boolean,
-  onClose: MouseEventHandler<HTMLDivElement>,
-  children?: React.ReactNode
-}
+  id: string;
+  isOpen: boolean;
+  onClose: MouseEventHandler<HTMLDivElement>;
+  children?: React.ReactNode;
+};
 
-export default function Modal({ isOpen, onClose, children }: Props) {
-  if (!isOpen) return null;
+export default function Modal({ id, isOpen, onClose, children }: Props) {
   return ReactDOM.createPortal(
-    <div id="modal" className="modal-container" onClick={onClose}>
+    <div
+      className={"modal-container " + id}
+      onClick={onClose}
+      style={{ visibility: isOpen ? "visible" : "hidden" }}
+    >
       {children}
     </div>,
     document.body
