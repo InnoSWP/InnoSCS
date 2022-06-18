@@ -41,7 +41,7 @@ export default function PopupMenu({
     if (modal) {
       togglePopup(true);
     }
-  }, [modal]);
+  }, [modal, togglePopup]);
 
   return (
     <Modal id={id} isOpen={modal} onClose={() => togglePopup(false)}>

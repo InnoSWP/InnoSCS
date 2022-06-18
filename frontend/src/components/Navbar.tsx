@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 
 import "./styles/navbar.css";
 
 import PopupMenu from "./Menu";
-import Modal from "./Modal";
 
 /**
  * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
@@ -42,6 +41,10 @@ export default function Navbar({
       onClick: () => console.log("Volunteer changed"),
     },
   ];
+
+  const toggleMenuPopupCallback = useCallback(toggleMenuPopup, [
+    toggleMenuPopup,
+  ]);
 
   return (
     <nav>
@@ -92,7 +95,7 @@ export default function Navbar({
         key="kebab-menu"
         id="kebab-menu"
         active={menuActivated}
-        togglePopup={toggleMenuPopup}
+        togglePopup={toggleMenuPopupCallback}
         optionsData={opts}
       />
     </nav>
