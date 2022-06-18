@@ -10,7 +10,7 @@ import "./styles/messageBox.css";
  */
 
 type Props = {
-  changeMessageText: Function;
+  changeMessageText: (value: string | (() => string)) => void;
   inputText: string;
   sendMessage: MouseEventHandler<HTMLButtonElement>;
 };

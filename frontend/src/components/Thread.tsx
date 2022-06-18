@@ -7,10 +7,10 @@
  */
 
 type Props = {
-  problemName: string,
-  status: "resolving" | "resolved" | "unsolved",
-  openThread: Function
-}
+  problemName: string;
+  status: "resolving" | "resolved" | "unsolved";
+  openThread: (problemName: string) => void;
+};
 
 export default function Thread({ problemName, status, openThread }: Props) {
   return (
