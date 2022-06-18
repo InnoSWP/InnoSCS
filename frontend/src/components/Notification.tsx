@@ -26,12 +26,12 @@ export default function Notification({
   function toggleBlur(status: boolean) {
     if (status)
       document
-        .getElementsByClassName(`modal-container ${id}`)!
+        .getElementsByClassName(`modal-container ${id}-modal`)!
         .item(0)
         ?.classList.add("blurred");
     else
       document
-        .getElementsByClassName(`modal-container ${id}`)!
+        .getElementsByClassName(`modal-container ${id}-modal`)!
         .item(0)
         ?.classList.remove("blurred");
   }
@@ -40,6 +40,7 @@ export default function Notification({
     if (active) {
       toggleModal(true);
     } else {
+      toggleBlur(false);
       togglePopup(false);
     }
   }, [active, blur]);
