@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import "./styles/navbar.css";
 
-import KebabMenu from "./KebabMenu";
+import PopupMenu from "./Menu";
 import Modal from "./Modal";
 
 /**
@@ -25,8 +25,6 @@ export default function Navbar({
   toggleProblemSolved,
 }: Props) {
   const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
-  const [modalActivated, toggleModal] = useState<boolean>(false); // KebabMenu modal state
-  const ANIMATION_TIMEOUT = 500; // time it takes to animate KebabMenu in ms
 
   // KebabMenu config
   // TODO: add functionality to <Settings> and <Change Volunteer>
@@ -44,25 +42,6 @@ export default function Navbar({
       onClick: () => console.log("Volunteer changed"),
     },
   ];
-
-  // When Modal is created, toggle KebabMenu. (Used for proper animation)
-  useEffect(() => {
-    if (modalActivated) {
-      toggleMenuPopup(true);
-    }
-  }, [modalActivated]);
-
-  /**
-   * Closes KebabMenu
-   *
-   * Timeout added to prevent closing modal without animation
-   */
-  function closeModal() {
-    toggleMenuPopup(false);
-    setTimeout(() => {
-      toggleModal(false);
-    }, ANIMATION_TIMEOUT);
-  }
 
   return (
     <nav>
@@ -94,7 +73,7 @@ export default function Navbar({
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu" onClick={() => toggleModal(true)}>
+        <button className="button-menu" onClick={() => toggleMenuPopup(true)}>
           <svg
             width="6"
             height="22"
@@ -109,18 +88,13 @@ export default function Navbar({
           </svg>
         </button>
       </div>
-      <Modal
-        id={"kebab-menu-modal"}
-        isOpen={modalActivated}
-        onClose={closeModal}
-      >
-        <KebabMenu
-          key="kebab-menu"
-          active={menuActivated}
-          togglePopup={closeModal}
-          optionsData={opts}
-        />
-      </Modal>
+      <PopupMenu
+        key="kebab-menu"
+        id="kebab-menu"
+        active={menuActivated}
+        togglePopup={toggleMenuPopup}
+        optionsData={opts}
+      />
     </nav>
   );
 }
