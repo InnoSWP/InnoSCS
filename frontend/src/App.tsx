@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
@@ -32,6 +32,12 @@ function App() {
     }
   }
 
+  const toggleSideBarCallback = useCallback(toggleSideBar, [toggleSideBar]);
+  const addBubbleCallback = useCallback(addBubble, [addBubble]);
+  const setCurrentThreadNameCallback = useCallback(setCurrentThreadName, [
+    setCurrentThreadName,
+  ]);
+
   useEffect(() => {
     toggleSideBar(!problemSolvedActivated);
   }, [problemSolvedActivated]);
@@ -40,23 +46,23 @@ function App() {
     <div id="app">
       <Navbar
         key="navbar"
-        toggleSideBar={toggleSideBar}
+        toggleSideBar={toggleSideBarCallback}
         sideBarActivated={sidebarActivated}
         toggleProblemSolved={toggleProblemSolved}
       />
       <SideBar
         key="sidebar"
-        toggleSideBar={toggleSideBar}
+        toggleSideBar={toggleSideBarCallback}
         sideBarActivated={sidebarActivated}
-        addBubble={addBubble}
-        setCurrentThreadName={setCurrentThreadName}
+        addBubble={addBubbleCallback}
+        setCurrentThreadName={setCurrentThreadNameCallback}
         currentThreadName={currentThreadName}
       />
       <Messenger
         key="messenger"
         sidebarActivated={sidebarActivated}
         messageBubbles={messageBubbles}
-        addBubble={addBubble}
+        addBubble={addBubbleCallback}
         currentThreadName={currentThreadName}
       />
       <Notification

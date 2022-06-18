@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEventHandler } from "react";
+import React, { ChangeEvent } from "react";
 import "./styles/submitProblem.css";
 /**
  * SubmitProblem component is a Popup Menu that contains input field and submit button. The component creates new Thread.

@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import "./styles/sidebar.css";
 
@@ -36,6 +36,31 @@ export default function SideBar({
   const [submitProblemActivated, toggleSubmitProblem] = useState(false);
   const [threads, addThread] = useState<JSX.Element[]>([]);
 
+  /**
+   * Toggles SideBar and gets messages of the current thread.
+   * @param {string} problemName name of the current thread
+   */
+  const openThread = useCallback(
+    (problemName: string) => {
+      toggleSideBar((prev) => !prev);
+      const currentThread = JSON.parse(localStorage.getItem(problemName)!);
+      const threadMessages = [];
+      for (let m = 0; m < currentThread.messages.length; m++) {
+        threadMessages.push(
+          <MessageBubble
+            key={`message-${threadMessages.length + 1}`}
+            text={currentThread.messages[m].text}
+            type={currentThread.messages[m].sender}
+            prevSender={m - 1 < 0 ? null : currentThread.messages[m - 1].sender}
+          />
+        );
+      }
+      addBubble(threadMessages.reverse());
+      setCurrentThreadName(problemName);
+    },
+    [addBubble, toggleSideBar, setCurrentThreadName]
+  );
+
   // Thread list sync with localStorage, whenever current thread is changed
   useEffect(() => {
     addThread([]);
@@ -50,38 +75,11 @@ export default function SideBar({
         />,
       ]);
     }
-  }, [currentThreadName]);
+  }, [currentThreadName, openThread]);
 
   useEffect(() => {
     toggleSideBar(!submitProblemActivated);
-  }, [submitProblemActivated]);
-
-  /**
-   * Toggles SideBar and gets messages of the current thread.
-   * @param {string} problemName name of the current thread
-   */
-  function openThread(problemName: string) {
-    toggleSideBar((prev) => !prev);
-    const currentThread = JSON.parse(localStorage.getItem(problemName)!);
-    const threadMessages = [];
-    for (let m = 0; m < currentThread.messages.length; m++) {
-      threadMessages.push(
-        <MessageBubble
-          key={`message-${threadMessages.length + 1}`}
-          text={currentThread.messages[m].text}
-          type={currentThread.messages[m].sender}
-          prevSender={m - 1 < 0 ? null : currentThread.messages[m - 1].sender}
-        />
-      );
-    }
-    addBubble(threadMessages.reverse());
-    setCurrentThreadName(problemName);
-  }
-
-  /**
-   * Toggles blur for the modal Popup Menu
-   * @param {string} status represents the status of the modal blur
-   */
+  }, [submitProblemActivated, toggleSideBar]);
 
   /**
    * Creates new thread if input is not empty, then pushes to localStorage
