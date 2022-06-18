@@ -1,32 +1,33 @@
-import { ChangeEvent } from "react";
-import { MouseEventHandler } from "react";
-import "./styles/messageBox.css";
+import React, { ChangeEvent } from "react";
+import "./styles/submitProblem.css";
 /**
- * MessageBox component is a footer part of the application, which sends user message.
- * @param {{changeMessageText: function, inputText: string, sendMessage: function}} props
- * @param {function} changeMessageText function that changes the state of the input field text
- * @param {string} inputText the text of the MessageBox input field
- * @param {function} sendMessage function that sends message
+ * SubmitProblem component is a Popup Menu that contains input field and submit button. The component creates new Thread.
+ * @param {{changeText: function, show: boolean, inputText: string, submitThread: function}} props
+ * @param {function} changeText function that changes state of the input field text
+ * @param {string} inputText text of the input field
+ * @param {function} submitThread function that submits new thread
  */
 
 type Props = {
-  changeMessageText: (value: string | (() => string)) => void;
+  changeText: (value: string) => void;
   inputText: string;
-  sendMessage: MouseEventHandler<HTMLButtonElement>;
+  submitThread: () => void;
+  toggleNotification?: (value: boolean) => void;
 };
 
-export default function MessageBox({
-  changeMessageText,
+export default function SubmitProblem({
+  changeText,
   inputText,
-  sendMessage,
+  submitThread,
+  toggleNotification,
 }: Props) {
   function getText(event: ChangeEvent<HTMLInputElement>) {
-    changeMessageText(() => event.target.value);
+    changeText(event.target.value);
   }
-
   return (
-    <div className="message-box-wrapper">
-      <div className="message-wrapper">
+    <React.Fragment>
+      <span className="notification-text">Describe your problem</span>
+      <div className="message-wrapper notification">
         <input
           placeholder="Type your message here..."
           onChange={getText}
@@ -47,17 +48,16 @@ export default function MessageBox({
           </svg>
         </div>
       </div>
-      <button className="button-send" onClick={sendMessage}>
-        <svg
-          width="21"
-          height="18"
-          viewBox="0 0 21 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M0 18L21 9L0 0V7L15 9L0 11V18Z" fill="white" />
-        </svg>
+      <button
+        className="submit-button"
+        onClick={(event) => {
+          submitThread();
+          toggleNotification!(false);
+          changeText("");
+        }}
+      >
+        <span>Submit</span>
       </button>
-    </div>
+    </React.Fragment>
   );
 }

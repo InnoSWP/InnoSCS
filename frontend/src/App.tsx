@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
 import Messenger from "./components/Messenger";
+import Notification from "./components/Notification";
+import ProblemSolved from "./components/ProblemSolved";
 
 /**
  * This component is a root of the application.
@@ -10,9 +12,10 @@ import Messenger from "./components/Messenger";
 function App() {
   const [sidebarActivated, toggleSideBar] = useState<boolean>(true); // toggles SideBar component
   const [ws, setWebSocket] = useState(null);
+  const [problemSolvedActivated, toggleProblemSolved] = useState(false);
   const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
   const [currentThreadName, setCurrentThreadName] = useState<string>(
-    localStorage.key(0) === null ? "" : localStorage.key(0)! 
+    localStorage.key(0) === null ? "" : localStorage.key(0)!
   ); // Name of the current thread
 
   /**
@@ -29,13 +32,17 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    toggleSideBar(!problemSolvedActivated);
+  }, [problemSolvedActivated]);
+
   return (
     <div id="app">
       <Navbar
         key="navbar"
         toggleSideBar={toggleSideBar}
         sideBarActivated={sidebarActivated}
-        closeCurrentThread={closeCurrentThread}
+        toggleProblemSolved={toggleProblemSolved}
       />
       <SideBar
         key="sidebar"
@@ -52,6 +59,17 @@ function App() {
         addBubble={addBubble}
         currentThreadName={currentThreadName}
       />
+      <Notification
+        id={"problemSolved"}
+        active={problemSolvedActivated}
+        toggleNotification={toggleProblemSolved}
+        blur={true}
+      >
+        <ProblemSolved
+          onCancel={() => console.log("No")}
+          onSubmit={closeCurrentThread}
+        />
+      </Notification>
     </div>
   );
 }
