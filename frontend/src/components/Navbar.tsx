@@ -16,13 +16,13 @@ import Modal from "./Modal";
 type Props = {
   sideBarActivated: boolean;
   toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
-  closeCurrentThread: () => void;
+  toggleProblemSolved: (value: boolean) => void;
 };
 
 export default function Navbar({
   sideBarActivated,
   toggleSideBar,
-  closeCurrentThread,
+  toggleProblemSolved,
 }: Props) {
   const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
   const [modalActivated, toggleModal] = useState<boolean>(false); // KebabMenu modal state
@@ -33,7 +33,7 @@ export default function Navbar({
   const opts = [
     {
       optionName: "Close thread",
-      onClick: () => closeCurrentThread(),
+      onClick: () => toggleProblemSolved(true),
     },
     {
       optionName: "Settings",

@@ -1,5 +1,6 @@
 .no-button {
   border: 2px solid #ff5959;
+  background-color: white;
 }
 
 .yes-button {
@@ -21,8 +22,17 @@
   line-height: 19px;
 }
 
+.no-button > span {
+  color: #ff5959;
+}
+
+.yes-button > span {
+  color: white
+}
+
 .problem-solved-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  gap: 74px
 }
