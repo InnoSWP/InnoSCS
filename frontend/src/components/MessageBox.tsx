@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { MouseEventHandler, SyntheticEvent } from "react";
+import { MouseEventHandler } from "react";
 import "./styles/messageBox.css";
 /**
  * MessageBox component is a footer part of the application, which sends user message.
@@ -10,10 +10,10 @@ import "./styles/messageBox.css";
  */
 
 type Props = {
-  changeMessageText: Function,
-  inputText: string,
-  sendMessage: MouseEventHandler<HTMLButtonElement>
-}
+  changeMessageText: Function;
+  inputText: string;
+  sendMessage: MouseEventHandler<HTMLButtonElement>;
+};
 
 export default function MessageBox({
   changeMessageText,
