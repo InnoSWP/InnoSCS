@@ -9,18 +9,20 @@ import "./styles/submitProblem.css";
  */
 
 type Props = {
-  changeText: Function;
+  changeText: (value: string) => void;
   inputText: string;
-  submitThread: MouseEventHandler<HTMLButtonElement>;
+  submitThread: () => void;
+  toggleNotification?: (value: boolean) => void;
 };
 
 export default function SubmitProblem({
   changeText,
   inputText,
   submitThread,
+  toggleNotification,
 }: Props) {
   function getText(event: ChangeEvent<HTMLInputElement>) {
-    changeText(() => event.target.value);
+    changeText(event.target.value);
   }
   return (
     <React.Fragment>
@@ -46,7 +48,13 @@ export default function SubmitProblem({
           </svg>
         </div>
       </div>
-      <button className="submit-button" onClick={submitThread}>
+      <button
+        className="submit-button"
+        onClick={(event) => {
+          submitThread();
+          toggleNotification!(false);
+        }}
+      >
         <span>Submit</span>
       </button>
     </React.Fragment>

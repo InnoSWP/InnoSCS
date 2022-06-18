@@ -109,7 +109,11 @@ export default function Navbar({
           </svg>
         </button>
       </div>
-      <Modal isOpen={modalActivated} onClose={closeModal}>
+      <Modal
+        id={"kebab-menu-modal"}
+        isOpen={modalActivated}
+        onClose={closeModal}
+      >
         <KebabMenu
           key="kebab-menu"
           active={menuActivated}
