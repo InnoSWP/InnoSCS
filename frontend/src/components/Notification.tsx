@@ -49,7 +49,7 @@ export default function Notification({
       if (blur) toggleBlur(true);
       togglePopup(true);
     }
-  }, [modal]);
+  }, [modal, blur]);
 
   return (
     <Modal
@@ -60,13 +60,12 @@ export default function Notification({
         toggleNotification(false);
       }}
     >
-      <div className="notification-wrapper">
+      <div className={"notification-wrapper " + id}>
         <div
           className={`notification-container ${popupActive ? "activated" : ""}`}
           onClick={(e) => e.stopPropagation()}
           onTransitionEnd={() => {
             if (!active) {
-              toggleBlur(false);
               toggleModal(false);
             }
           }}

@@ -30,8 +30,6 @@ function App() {
       toggleSideBar(true);
       addBubble([]);
     }
-
-    toggleProblemSolved(true);
   }
 
   return (
@@ -40,7 +38,7 @@ function App() {
         key="navbar"
         toggleSideBar={toggleSideBar}
         sideBarActivated={sidebarActivated}
-        closeCurrentThread={closeCurrentThread}
+        toggleProblemSolved={toggleProblemSolved}
       />
       <SideBar
         key="sidebar"
@@ -65,7 +63,7 @@ function App() {
       >
         <ProblemSolved
           onCancel={() => console.log("No")}
-          onSubmit={() => console.log("Yes")}
+          onSubmit={closeCurrentThread}
         />
       </Notification>
     </div>
