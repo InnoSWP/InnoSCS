@@ -17,7 +17,7 @@ type Props = {
 export default function Modal({ id, isOpen, onClose, children }: Props) {
   return ReactDOM.createPortal(
     <div
-      className={"modal-container " + id}
+      className={"modal-container " + id + "-modal"}
       onClick={onClose}
       style={{ visibility: isOpen ? "visible" : "hidden" }}
     >

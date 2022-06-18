@@ -2,12 +2,10 @@ import { useEffect, useReducer, useState } from "react";
 
 import "./styles/sidebar.css";
 
-import Modal from "./Modal";
 import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblem from "./SubmitProblem";
 import Notification from "./Notification";
-import ProblemSolved from "./ProblemSolved";
 
 type Props = {
   toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,7 +35,6 @@ export default function SideBar({
     useState<string>("");
   const [submitProblemActivated, toggleSubmitProblem] = useState(false);
   const [threads, addThread] = useState<JSX.Element[]>([]);
-  const ANIMATION_TIMEOUT = 500; // time it takes to animate Popup Menu
 
   // Thread list sync with localStorage, whenever current thread is changed
   useEffect(() => {
@@ -54,6 +51,10 @@ export default function SideBar({
       ]);
     }
   }, [currentThreadName]);
+
+  useEffect(() => {
+    toggleSideBar(!submitProblemActivated);
+  }, [submitProblemActivated]);
 
   /**
    * Toggles SideBar and gets messages of the current thread.
@@ -128,7 +129,7 @@ export default function SideBar({
         </svg>
       </button>
       <Notification
-        id={"submitProblem-modal"}
+        id={"submitProblem"}
         active={submitProblemActivated}
         toggleNotification={toggleSubmitProblem}
         blur={true}

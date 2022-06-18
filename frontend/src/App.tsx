@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
@@ -32,6 +32,10 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    toggleSideBar(!problemSolvedActivated);
+  }, [problemSolvedActivated]);
+
   return (
     <div id="app">
       <Navbar
@@ -56,7 +60,7 @@ function App() {
         currentThreadName={currentThreadName}
       />
       <Notification
-        id={"problemSolved-modal"}
+        id={"problemSolved"}
         active={problemSolvedActivated}
         toggleNotification={toggleProblemSolved}
         blur={true}
