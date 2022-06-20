@@ -5,13 +5,13 @@ import SideBar from "./components/SideBar";
 import Messenger from "./components/Messenger";
 import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
+import { WebSocketProvider } from "./components/WebSocket-Context";
 
 /**
  * This component is a root of the application.
  */
 function App() {
   const [sidebarActivated, toggleSideBar] = useState<boolean>(true); // toggles SideBar component
-  const [ws, setWebSocket] = useState(null);
   const [problemSolvedActivated, toggleProblemSolved] = useState(false);
   const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
   const [currentThreadName, setCurrentThreadName] = useState<string>(
@@ -44,21 +44,23 @@ function App() {
         sideBarActivated={sidebarActivated}
         toggleProblemSolved={toggleProblemSolved}
       />
-      <SideBar
-        key="sidebar"
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={sidebarActivated}
-        addBubble={addBubble}
-        setCurrentThreadName={setCurrentThreadName}
-        currentThreadName={currentThreadName}
-      />
-      <Messenger
-        key="messenger"
-        sidebarActivated={sidebarActivated}
-        messageBubbles={messageBubbles}
-        addBubble={addBubble}
-        currentThreadName={currentThreadName}
-      />
+      <WebSocketProvider>
+        <SideBar
+          key="sidebar"
+          toggleSideBar={toggleSideBar}
+          sideBarActivated={sidebarActivated}
+          addBubble={addBubble}
+          setCurrentThreadName={setCurrentThreadName}
+          currentThreadName={currentThreadName}
+        />
+        <Messenger
+          key="messenger"
+          sidebarActivated={sidebarActivated}
+          messageBubbles={messageBubbles}
+          addBubble={addBubble}
+          currentThreadName={currentThreadName}
+        />
+      </WebSocketProvider>
       <Notification
         id={"problemSolved"}
         active={problemSolvedActivated}

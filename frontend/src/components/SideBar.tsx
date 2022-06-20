@@ -6,6 +6,7 @@ import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblem from "./SubmitProblem";
 import Notification from "./Notification";
+import { useWebSocket, WebSocketConfig } from "./WebSocket-Context";
 
 type Props = {
   toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +36,7 @@ export default function SideBar({
     useState<string>("");
   const [submitProblemActivated, toggleSubmitProblem] = useState(false);
   const [threads, addThread] = useState<JSX.Element[]>([]);
+  const { webSocketState, dispatchWebSocket } = useWebSocket();
 
   /**
    * Toggles SideBar and gets messages of the current thread.
@@ -81,11 +83,30 @@ export default function SideBar({
     toggleSideBar(!submitProblemActivated);
   }, [submitProblemActivated, toggleSideBar]);
 
+  const fetchData = async () => {
+    const response = await fetch(
+      `http://${WebSocketConfig.address}:${WebSocketConfig.port}/threads/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({ question: submitProblemTextInput }),
+      }
+    );
+    const { id } = await response.json();
+    return BigInt(id).toString();
+  };
+
   /**
    * Creates new thread if input is not empty, then pushes to localStorage
    */
   function submitThread() {
     if (submitProblemTextInput !== "") {
+      fetchData().then((t) => {
+        dispatchWebSocket({ type: "CONNECT", id: t });
+      });
+
       addThread((threads) => {
         const newThreadElement = (
           <Thread
@@ -101,6 +122,7 @@ export default function SideBar({
           messages: [],
         };
         localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
+
         return [...threads, newThreadElement];
       });
     }
