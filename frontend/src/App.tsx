@@ -6,6 +6,7 @@ import Messenger from "./components/Messenger";
 import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
 import { useWebSocket } from "./components/WebSocket-Context";
+import BackButton from "./components/BackButton";
 
 /**
  * This component is a root of the application.
@@ -43,12 +44,9 @@ function App() {
 
   return (
     <div id="app">
-      <Navbar
-        key="navbar"
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={sidebarActivated}
-        toggleProblemSolved={toggleProblemSolved}
-      />
+      <Navbar key="navbar" toggleProblemSolved={toggleProblemSolved}>
+        <BackButton active={sidebarActivated} toggle={toggleSideBar} />
+      </Navbar>
       <SideBar
         key="sidebar"
         toggleSideBar={toggleSideBar}
@@ -65,7 +63,7 @@ function App() {
         currentThreadName={currentThreadName}
       />
       <Notification
-        id={"problemSolved"}
+        id="problemSolved"
         active={problemSolvedActivated}
         toggleNotification={toggleProblemSolved}
         blur={true}

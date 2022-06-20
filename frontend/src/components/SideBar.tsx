@@ -44,30 +44,30 @@ export default function SideBar({
    *
    * In current implementation is used for {@link webSocket} listener event
    */
-  const createVolunteerBubble = (
-    event: MessageEvent<string>,
-    threadName: string
-  ) => {
-    const type = "message-bubble-volunteer";
-    if (event.data) {
-      const isCurrent = JSON.parse(localStorage.getItem(threadName)!).current;
-      if (isCurrent) {
-        addBubble((bubbles) => [
-          <MessageBubble
-            key={`message-${bubbles.length + 1}`}
-            text={event.data}
-            type={type}
-            prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-          />,
-          ...bubbles,
-        ]);
-      }
+  const createVolunteerBubble = useCallback(
+    (event: MessageEvent<string>, threadName: string) => {
+      const type = "message-bubble-volunteer";
+      if (event.data) {
+        const isCurrent = JSON.parse(localStorage.getItem(threadName)!).current;
+        if (isCurrent) {
+          addBubble((bubbles) => [
+            <MessageBubble
+              key={`message-${bubbles.length + 1}`}
+              text={event.data}
+              type={type}
+              prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
+            />,
+            ...bubbles,
+          ]);
+        }
 
-      var currentThread = JSON.parse(localStorage.getItem(threadName)!);
-      currentThread.messages.push({ text: event.data, sender: type });
-      localStorage.setItem(threadName, JSON.stringify(currentThread));
-    }
-  };
+        var currentThread = JSON.parse(localStorage.getItem(threadName)!);
+        currentThread.messages.push({ text: event.data, sender: type });
+        localStorage.setItem(threadName, JSON.stringify(currentThread));
+      }
+    },
+    [addBubble]
+  );
 
   /**
    * Toggles SideBar and gets messages of the current thread.
@@ -140,6 +140,8 @@ export default function SideBar({
     const json_data = await response.text();
     const json_data2 = json_data.split(":");
     const id = json_data2[json_data2.length - 1].replace("}", "");
+    // !!! SCARY PARSING !!!
+
     return id;
   };
 
@@ -200,7 +202,7 @@ export default function SideBar({
         </svg>
       </button>
       <Notification
-        id={"submitProblem"}
+        id="submitProblem"
         active={submitProblemActivated}
         toggleNotification={toggleSubmitProblem}
         blur={true}
