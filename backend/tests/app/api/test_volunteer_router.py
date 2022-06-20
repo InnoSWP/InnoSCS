@@ -30,18 +30,6 @@ async def test_find_all(client, volunteers):
 
 
 @pytest.mark.asyncio
-async def test_find_all_free(client, volunteer, volunteers):
-    res = client.get('/volunteers?flt=free')
-    volunteers_res = res.json()
-
-    assert res.status_code == HTTPStatus.OK
-    assert len(volunteers_res) == len(volunteers)
-    assert volunteers_res[0].get('tg_id') is not None
-    assert volunteers_res[0].get('tg_id') == volunteers[0].tg_id
-    assert volunteer.json() not in volunteers_res
-
-
-@pytest.mark.asyncio
 async def test_find_one(client, volunteer):
     res = client.get(f'/volunteers/{volunteer.tg_id}')
     volunteer_fnd = res.json()
