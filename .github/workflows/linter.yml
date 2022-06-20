@@ -52,3 +52,24 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Chekout repository
+          uses: actions/checkout@v3
+
+        - name: Set up Python 3.10
+          uses: actions/setup-python@v3
+          with:
+            python-version: "3.10"
+
+        - name: Install Poetry
+          uses: snok/install-poetry@v1
+
+        - name: Install dependences
+          run: poetry install
+
+        - name: Run tests
+          run: |
+            poetry run pytest -v tests
