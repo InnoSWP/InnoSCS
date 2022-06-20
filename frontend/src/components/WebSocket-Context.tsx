@@ -44,8 +44,6 @@ const WebSocketReducer = (state: WebSocketState, action: WebSocketAction) => {
 
     case "LISTEN_MESSAGE":
       state.webSocket.addEventListener("message", action.func);
-      state.webSocket.onclose = () =>
-        state.webSocket.removeEventListener("message", action.func);
       return state;
 
     case "REMOVE_LISTENER":
