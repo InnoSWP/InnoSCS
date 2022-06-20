@@ -37,9 +37,9 @@ async def find_thread(thread_id: int) -> SupportThread:
     return thread
 
 
-@router.put('/threads/{thread_id}', response_model=SupportThread)
-async def update_thread(thread_id: int, thread: SupportCreate) -> SupportThread:
-    thread_upd = await SupportThreadRepository.update(thread, thread_id)
+@router.patch('/threads/{thread_id}', response_model=SupportThread)
+async def patch_thread(thread_id: int, thread: SupportCreate) -> SupportThread:
+    thread_upd = await SupportThreadRepository.patch(thread, thread_id)
 
     return thread_upd
 
