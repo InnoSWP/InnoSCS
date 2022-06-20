@@ -6,7 +6,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.api.exceptions import EntityNotFound
 from app.api.managers import WsConnectionManager
-from app.api.schemas import Filter, MessageCreate, Sender, SupportCreate, SupportThread
+from app.api.schemas import Filter, MessageCreate, SupportCreate, SupportThread
 from app.api.services import SupportThreadService
 
 router = APIRouter()
@@ -55,9 +55,7 @@ async def websocket_endpoint(websocket: WebSocket, thread_id: int) -> None:
     try:
         while True:
             data = await websocket.receive_text()
-            message = MessageCreate(
-                created_at=datetime.utcnow(), content=data, sender=Sender.client
-            )  # TODO: make sender recognizer
+            message = MessageCreate(created_at=datetime.utcnow(), content=data)
 
             await ws_manager.broadcast(data, room_id=thread_id, exp=websocket)
             await SupportThreadService.create_message(
