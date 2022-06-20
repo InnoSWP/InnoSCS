@@ -2,8 +2,8 @@ from typing import SupportsIndex
 
 import pytest_asyncio
 
-from app.api.schemas import SupportCreate, VolunteerCreate
 from app.api.repositories import SupportThreadRepository, VolunteerRepository
+from app.api.schemas import SupportCreate, VolunteerCreate
 
 
 @pytest_asyncio.fixture
