@@ -13,7 +13,10 @@ class VolunteerRepository:
 
     @staticmethod
     async def create(volunteer: VolunteerCreate) -> Volunteer:
-        """from function expected that it will store the volunteer in db"""
+        """
+        :param volunteer: new `VolunteerCreate`
+        :return: new `Volunteer`
+        """
         volunteer_new = Volunteer(
             tg_id=volunteer.tg_id,
         )
@@ -24,15 +27,18 @@ class VolunteerRepository:
     @staticmethod
     async def find_all(flt: Optional[Filter] = None) -> list[Volunteer]:
         """
-        from function expected to return all volunteer from db or free volunteers,
-        flt - filter
+        :param flt: filter to sort list of `Volunteer`
+        :return: list of `Volunteer`
         """
 
         return _volunteers
 
     @staticmethod
     async def find_by_tg_id(volunteer_tg_id: int) -> Optional[Volunteer]:
-        """from function expected that it will return volunteer by telegram id"""
+        """
+        :param volunteer_tg_id: id of the volunteer to find
+        :return: `Volunteer`
+        """
         for volunteer in _volunteers:
             if volunteer.tg_id == volunteer_tg_id:
                 return volunteer
@@ -42,8 +48,9 @@ class VolunteerRepository:
     @staticmethod
     async def update(volunteer: VolunteerCreate, volunteer_tg_id: int) -> Volunteer:
         """
-        from function expected that it will update all field of volunteer,
-        volunteer is searched by telegram id
+        :param volunteer:
+        :param volunteer_tg_id:
+        :return:
         """
         volunteer_to_upd = await VolunteerRepository.find_by_tg_id(volunteer_tg_id)
         _volunteers.remove(volunteer_to_upd)  # type: ignore  # will be another implementation
