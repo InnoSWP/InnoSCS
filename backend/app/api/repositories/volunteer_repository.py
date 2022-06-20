@@ -5,7 +5,7 @@ from app.api.schemas import Filter, Volunteer, VolunteerCreate
 _volunteers: list[Volunteer] = []
 
 
-class VolunteerService:
+class VolunteerRepository:
     """
     class for manipulation Volunteer entities.
     Note: some functions should return exactly pydantic model!
@@ -45,7 +45,7 @@ class VolunteerService:
         from function expected that it will update all field of volunteer,
         volunteer is searched by telegram id
         """
-        volunteer_to_upd = await VolunteerService.find_by_tg_id(volunteer_tg_id)
+        volunteer_to_upd = await VolunteerRepository.find_by_tg_id(volunteer_tg_id)
         _volunteers.remove(volunteer_to_upd)  # type: ignore  # will be another implementation
 
         volunteer_upd = Volunteer(
@@ -57,7 +57,7 @@ class VolunteerService:
 
     @staticmethod
     async def delete(volunteer_id: int) -> None:
-        volunteer = await VolunteerService.find_by_tg_id(volunteer_id)
+        volunteer = await VolunteerRepository.find_by_tg_id(volunteer_id)
 
         if volunteer:
             _volunteers.remove(volunteer)
