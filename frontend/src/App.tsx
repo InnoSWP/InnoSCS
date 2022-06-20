@@ -5,7 +5,7 @@ import SideBar from "./components/SideBar";
 import Messenger from "./components/Messenger";
 import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
-import { WebSocketProvider } from "./components/WebSocket-Context";
+import { useWebSocket } from "./components/WebSocket-Context";
 
 /**
  * This component is a root of the application.
@@ -17,6 +17,7 @@ function App() {
   const [currentThreadName, setCurrentThreadName] = useState<string>(
     localStorage.key(0) === null ? "" : localStorage.key(0)!
   ); // Name of the current thread
+  const { dispatchWebSocket } = useWebSocket();
 
   /**
    * Closes {@link currentThreadName} thread
@@ -25,6 +26,10 @@ function App() {
    */
   function closeCurrentThread() {
     if (currentThreadName !== "") {
+      dispatchWebSocket({
+        type: "CLOSE",
+        thread_name: currentThreadName,
+      });
       localStorage.removeItem(currentThreadName!);
       setCurrentThreadName("");
       toggleSideBar(true);
@@ -44,23 +49,21 @@ function App() {
         sideBarActivated={sidebarActivated}
         toggleProblemSolved={toggleProblemSolved}
       />
-      <WebSocketProvider>
-        <SideBar
-          key="sidebar"
-          toggleSideBar={toggleSideBar}
-          sideBarActivated={sidebarActivated}
-          addBubble={addBubble}
-          setCurrentThreadName={setCurrentThreadName}
-          currentThreadName={currentThreadName}
-        />
-        <Messenger
-          key="messenger"
-          sidebarActivated={sidebarActivated}
-          messageBubbles={messageBubbles}
-          addBubble={addBubble}
-          currentThreadName={currentThreadName}
-        />
-      </WebSocketProvider>
+      <SideBar
+        key="sidebar"
+        toggleSideBar={toggleSideBar}
+        sideBarActivated={sidebarActivated}
+        addBubble={addBubble}
+        setCurrentThreadName={setCurrentThreadName}
+        currentThreadName={currentThreadName}
+      />
+      <Messenger
+        key="messenger"
+        sidebarActivated={sidebarActivated}
+        messageBubbles={messageBubbles}
+        addBubble={addBubble}
+        currentThreadName={currentThreadName}
+      />
       <Notification
         id={"problemSolved"}
         active={problemSolvedActivated}
