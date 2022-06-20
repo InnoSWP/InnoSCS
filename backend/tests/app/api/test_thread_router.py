@@ -28,9 +28,9 @@ async def test_create(client):
 
 
 @pytest.mark.asyncio
-async def test_update(client, thread):
+async def test_patch(client, thread):
     thread_to_upd = SupportCreate(question=thread.question, volunteer_id=1)
-    res = client.put(f'/threads/{thread.id}', json=thread_to_upd.dict())
+    res = client.patch(f'/threads/{thread.id}', json=thread_to_upd.dict())
     thread_upd = res.json()
 
     assert res.status_code == HTTPStatus.OK
