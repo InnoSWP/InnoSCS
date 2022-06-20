@@ -31,7 +31,7 @@ class SupportThreadRepository:
         :return: list of `SupportThread`
         """
         if flt and flt == Filter.free:
-            return [t for t in _threads if not t.volunteer_id]
+            return [t for t in _threads if t.volunteer_id is not None]
 
         return _threads
 
@@ -72,7 +72,7 @@ class SupportThreadRepository:
     @staticmethod
     async def delete(thread_id: int) -> None:
         thread = await SupportThreadRepository.find_by_id(thread_id)
-        if thread:
+        if thread is not None:
             _threads.remove(thread)
 
     @staticmethod
