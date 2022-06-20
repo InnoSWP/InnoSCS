@@ -49,22 +49,35 @@ export default function Messenger({
           />,
           ...bubbles,
         ]);
+
+        var currentThread = JSON.parse(
+          localStorage.getItem(currentThreadName)!
+        );
+        currentThread.messages.push({ text: event.data, sender: type });
+        localStorage.setItem(currentThreadName, JSON.stringify(currentThread));
       }
     },
-    [addBubble]
+    [addBubble, currentThreadName]
   );
 
   useEffect(() => {
-    webSocketState.webSocket.addEventListener("message", createVolunteerBubble);
+    dispatchWebSocket({ type: "LISTEN_MESSAGE", func: createVolunteerBubble });
     console.log("mount event");
     return function () {
-      webSocketState.webSocket.removeEventListener(
-        "message",
-        createVolunteerBubble
-      );
+      dispatchWebSocket({
+        type: "REMOVE_LISTENER",
+        func: createVolunteerBubble,
+      });
       console.log("unmount event");
     };
-  }, [webSocketState, createVolunteerBubble]);
+  }, [webSocketState, dispatchWebSocket, createVolunteerBubble]);
+
+  useEffect(() => {
+    if (currentThreadName !== "") {
+      const id = JSON.parse(localStorage.getItem(currentThreadName)!).id;
+      dispatchWebSocket({ type: "CONNECT", id: id });
+    }
+  }, [currentThreadName, dispatchWebSocket]);
 
   /**
    * Scrolls chat to latest message using {@link messagesEndRef} reference

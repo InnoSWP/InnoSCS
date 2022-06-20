@@ -36,7 +36,7 @@ export default function SideBar({
     useState<string>("");
   const [submitProblemActivated, toggleSubmitProblem] = useState(false);
   const [threads, addThread] = useState<JSX.Element[]>([]);
-  const { webSocketState, dispatchWebSocket } = useWebSocket();
+  const { dispatchWebSocket } = useWebSocket();
 
   /**
    * Toggles SideBar and gets messages of the current thread.
@@ -108,6 +108,12 @@ export default function SideBar({
     if (submitProblemTextInput !== "") {
       fetchData().then((t) => {
         dispatchWebSocket({ type: "CONNECT", id: t });
+        const newThread = {
+          status: "resolving",
+          messages: [],
+          id: t,
+        };
+        localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
       });
 
       addThread((threads) => {
@@ -119,12 +125,6 @@ export default function SideBar({
             openThread={openThread}
           />
         );
-
-        const newThread = {
-          status: "resolving",
-          messages: [],
-        };
-        localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
 
         return [...threads, newThreadElement];
       });
