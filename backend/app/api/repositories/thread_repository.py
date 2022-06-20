@@ -1,7 +1,14 @@
 import uuid
 from typing import Optional
 
-from app.api.schemas import Filter, Message, MessageCreate, SupportThreadCreate, SupportThread, SupportThreadPatch
+from app.api.schemas import (
+    Filter,
+    Message,
+    MessageCreate,
+    SupportThread,
+    SupportThreadCreate,
+    SupportThreadPatch,
+)
 
 _threads: list[SupportThread] = []
 
