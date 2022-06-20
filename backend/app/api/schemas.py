@@ -28,22 +28,26 @@ class Message(MessageBase):
     pass
 
 
-class SupportBase(BaseModel):
+class SupportThreadBase(BaseModel):
     question: str
     client_id: Optional[int]  # TODO: add recognize service, fields must be not optional
-    volunteer_id: Optional[int]
-    messages: Optional[list[Message]] = []
 
     class Config:
         orm_mode = True
 
 
-class SupportCreate(SupportBase):
-    id: Optional[int]
+class SupportThreadCreate(SupportThreadBase):
+    pass
 
 
-class SupportThread(SupportBase):
+class SupportThread(SupportThreadBase):
     id: int
+    volunteer_id: Optional[int] = None
+    messages: list[Message] = []
+
+
+class SupportThreadPatch(BaseModel):
+    volunteer_id: int
 
 
 class VolunteerBase(BaseModel):

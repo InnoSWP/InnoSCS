@@ -3,13 +3,13 @@ from typing import SupportsIndex
 import pytest_asyncio
 
 from app.api.repositories import SupportThreadRepository, VolunteerRepository
-from app.api.schemas import SupportCreate, VolunteerCreate
+from app.api.schemas import SupportThreadCreate, VolunteerCreate
 
 
 @pytest_asyncio.fixture
 async def thread():
     thr = await SupportThreadRepository.create(
-        SupportCreate(id=1, question='Test question', client_id=12345)
+        SupportThreadCreate(id=1, question='Test question', client_id=12345)
     )
 
     return thr
