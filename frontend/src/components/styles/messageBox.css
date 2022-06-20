@@ -14,7 +14,6 @@
   margin-left: 16px;
   display: flex;
   flex-direction: row;
-  flex-flow: row;
   justify-content: space-between;
   flex: 1 1 auto;
   height: 46px;
