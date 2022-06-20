@@ -46,23 +46,6 @@ class VolunteerRepository:
         return None
 
     @staticmethod
-    async def update(volunteer: VolunteerCreate, volunteer_tg_id: int) -> Volunteer:
-        """
-        :param volunteer:
-        :param volunteer_tg_id:
-        :return:
-        """
-        volunteer_to_upd = await VolunteerRepository.find_by_tg_id(volunteer_tg_id)
-        _volunteers.remove(volunteer_to_upd)  # type: ignore  # will be another implementation
-
-        volunteer_upd = Volunteer(
-            tg_id=volunteer.tg_id,
-        )
-        _volunteers.append(volunteer_upd)
-
-        return volunteer_upd
-
-    @staticmethod
     async def delete(volunteer_id: int) -> None:
         volunteer = await VolunteerRepository.find_by_tg_id(volunteer_id)
 

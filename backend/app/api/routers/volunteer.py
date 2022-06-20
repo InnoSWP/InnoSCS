@@ -34,13 +34,6 @@ async def find_volunteer(volunteer_tg_id: int) -> Volunteer:
     return volunteer
 
 
-@router.put('/volunteers/{volunteer_id}', response_model=Volunteer)
-async def update_volunteer(volunteer_id: int, volunteer: VolunteerCreate) -> Volunteer:
-    volunteer_upd = await VolunteerRepository.update(volunteer, volunteer_id)
-
-    return volunteer_upd
-
-
 @router.delete('/volunteers/{volunteer_id}')
 async def delete_volunteer(volunteer_id: int) -> None:
     await VolunteerRepository.delete(volunteer_id)
