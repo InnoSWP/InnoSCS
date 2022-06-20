@@ -6,8 +6,8 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.api.exceptions import EntityNotFound
 from app.api.managers import WsConnectionManager
-from app.api.schemas import Filter, MessageCreate, SupportCreate, SupportThread
 from app.api.repositories import SupportThreadRepository
+from app.api.schemas import Filter, MessageCreate, SupportCreate, SupportThread
 
 router = APIRouter()
 ws_manager = WsConnectionManager()
@@ -31,7 +31,7 @@ async def find_all_threads(flt: Optional[Filter] = None) -> list[SupportThread]:
 async def find_thread(thread_id: int) -> SupportThread:
     thread = await SupportThreadRepository.find_by_id(thread_id)
 
-    if not thread:
+    if thread is None:
         raise EntityNotFound('thread')
 
     return thread

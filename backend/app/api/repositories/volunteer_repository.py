@@ -66,5 +66,5 @@ class VolunteerRepository:
     async def delete(volunteer_id: int) -> None:
         volunteer = await VolunteerRepository.find_by_tg_id(volunteer_id)
 
-        if volunteer:
+        if volunteer is not None:
             _volunteers.remove(volunteer)
