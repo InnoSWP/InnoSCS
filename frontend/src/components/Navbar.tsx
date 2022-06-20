@@ -13,16 +13,11 @@ import PopupMenu from "./Menu";
  */
 
 type Props = {
-  sideBarActivated: boolean;
-  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  children: React.ReactNode;
   toggleProblemSolved: (value: boolean) => void;
 };
 
-export default function Navbar({
-  sideBarActivated,
-  toggleSideBar,
-  toggleProblemSolved,
-}: Props) {
+export default function Navbar({ children, toggleProblemSolved }: Props) {
   const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
 
   // KebabMenu config
@@ -45,25 +40,7 @@ export default function Navbar({
   return (
     <nav>
       <div className="navbar-wrapper">
-        <div className="button-back-container">
-          <button
-            className={sideBarActivated ? "button-back rotated" : "button-back"}
-            onClick={() => toggleSideBar((prev) => !prev)}
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M21.6666 9.66667V12.3333H5.66663L13 19.6667L11.1066 21.56L0.546631 11L11.1066 0.440002L13 2.33334L5.66663 9.66667H21.6666Z"
-                fill="black"
-              />
-            </svg>
-          </button>
-        </div>
+        <div className="button-back-container">{children}</div>
 
         <div className="title-container">
           <span className="title-text">Customer Support</span>
