@@ -17,7 +17,7 @@ class Sender(str, Enum):
 class MessageBase(BaseModel):
     created_at: datetime
     content: str
-    sender: Sender
+    sender: Optional[Sender]  # TODO: add recognize service
 
 
 class MessageCreate(MessageBase):
