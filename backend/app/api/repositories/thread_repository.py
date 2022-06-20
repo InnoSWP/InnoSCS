@@ -66,7 +66,7 @@ class SupportThreadRepository:
             _threads.remove(thread)
 
     @staticmethod
-    async def update(thread: SupportCreate, thread_id: int) -> SupportThread:
+    async def patch(thread: SupportCreate, thread_id: int) -> SupportThread:
         """
         from function expected that it will update all field of thread,
         volunteer is searched by telegram id
@@ -74,14 +74,9 @@ class SupportThreadRepository:
         thread_to_upd = await SupportThreadRepository.find_by_id(thread_id)
         _threads.remove(thread_to_upd)  # type: ignore  # will be another implementation
 
-        thread_upd = SupportThread(
-            id=thread_id,
-            question=thread.question,
-            client_id=thread.client_id,
-            volunteer_id=thread.volunteer_id,
-            messages=thread.messages,
-        )
+        if thread.volunteer_id is not None:
+            thread_to_upd.volunteer_id = thread.volunteer_id
 
-        _threads.append(thread_upd)
+        _threads.append(thread_to_upd)
 
-        return thread_upd
+        return thread_to_upd
