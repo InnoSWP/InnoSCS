@@ -1,4 +1,4 @@
-import { useState, createRef, useEffect, useCallback } from "react";
+import { useState, createRef } from "react";
 
 import MessageBubble from "./MessageBubble";
 import Main from "./Main";
@@ -29,55 +29,7 @@ export default function Messenger({
 }: Props) {
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef<HTMLDivElement>();
-  const { webSocketState, dispatchWebSocket } = useWebSocket();
-
-  /**
-   * Creates Volunteer Bubble
-   *
-   * In current implementation is used for {@link webSocket} listener event
-   */
-  const createVolunteerBubble = useCallback(
-    (event: MessageEvent<string>) => {
-      const type = "message-bubble-volunteer";
-      if (event.data) {
-        addBubble((bubbles) => [
-          <MessageBubble
-            key={`message-${bubbles.length + 1}`}
-            text={event.data}
-            type={type}
-            prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-          />,
-          ...bubbles,
-        ]);
-
-        var currentThread = JSON.parse(
-          localStorage.getItem(currentThreadName)!
-        );
-        currentThread.messages.push({ text: event.data, sender: type });
-        localStorage.setItem(currentThreadName, JSON.stringify(currentThread));
-      }
-    },
-    [addBubble, currentThreadName]
-  );
-
-  useEffect(() => {
-    dispatchWebSocket({ type: "LISTEN_MESSAGE", func: createVolunteerBubble });
-    console.log("mount event");
-    return function () {
-      dispatchWebSocket({
-        type: "REMOVE_LISTENER",
-        func: createVolunteerBubble,
-      });
-      console.log("unmount event");
-    };
-  }, [webSocketState, dispatchWebSocket, createVolunteerBubble]);
-
-  useEffect(() => {
-    if (currentThreadName !== "") {
-      const id = JSON.parse(localStorage.getItem(currentThreadName)!).id;
-      dispatchWebSocket({ type: "CONNECT", id: id });
-    }
-  }, [currentThreadName, dispatchWebSocket]);
+  const { dispatchWebSocket } = useWebSocket();
 
   /**
    * Scrolls chat to latest message using {@link messagesEndRef} reference
@@ -93,7 +45,11 @@ export default function Messenger({
     const type = "message-bubble-user";
 
     if (messageTextInput !== "") {
-      webSocketState.webSocket.send(messageTextInput);
+      dispatchWebSocket({
+        type: "SEND_MESSAGE",
+        message: messageTextInput,
+        thread_name: currentThreadName,
+      });
       addBubble((bubbles) => {
         return [
           <MessageBubble

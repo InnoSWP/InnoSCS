@@ -6,6 +6,10 @@ import {
   useReducer,
 } from "react";
 
+const getThreadIdByName = (threadName: string) => {
+  return JSON.parse(localStorage.getItem(threadName)!).id;
+};
+
 const WebSocketContext = createContext<
   | {
       webSocketState: WebSocketState;
@@ -19,39 +23,62 @@ const WebSocketConfig = {
   port: "8000",
 };
 
-const initWebSocketState = {
-  webSocket: new WebSocket("ws://localhost:8000"),
+const initState = () => {
+  var webSockets = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)!;
+    webSockets = {
+      ...webSockets,
+      [key]: new WebSocket(
+        `ws://${WebSocketConfig.address}:${
+          WebSocketConfig.port
+        }/ws/${getThreadIdByName(key)}`
+      ),
+    };
+  }
+  return webSockets;
+};
+
+const initWebSocketState: WebSocketState = {
+  webSocket: initState(),
 };
 
 type WebSocketState = {
-  webSocket: WebSocket;
+  webSocket: {
+    [id: string]: WebSocket;
+  };
 };
 
 type WebSocketAction =
-  | { type: "CONNECT"; id: string }
-  | { type: "LISTEN_MESSAGE"; func: (e: MessageEvent<string>) => void }
-  | { type: "SEND_MESSAGE"; message: string }
-  | { type: "REMOVE_LISTENER"; func: (e: MessageEvent<string>) => void };
+  | {
+      type: "CONNECT";
+      thread_name: string;
+      func: (event: MessageEvent<string>, thread_name: string) => void;
+    }
+  | { type: "SEND_MESSAGE"; message: string; thread_name: string }
+  | { type: "CLOSE"; thread_name: string };
 
 const WebSocketReducer = (state: WebSocketState, action: WebSocketAction) => {
   switch (action.type) {
     case "CONNECT":
-      state.webSocket.close();
       const newWebSocket = new WebSocket(
-        `ws://${WebSocketConfig.address}:${WebSocketConfig.port}/ws/${action.id}`
+        `ws://${WebSocketConfig.address}:${
+          WebSocketConfig.port
+        }/ws/${getThreadIdByName(action.thread_name)}`
       );
-      return { webSocket: newWebSocket };
-
-    case "LISTEN_MESSAGE":
-      state.webSocket.addEventListener("message", action.func);
-      return state;
-
-    case "REMOVE_LISTENER":
-      state.webSocket.removeEventListener("message", action.func);
-      return state;
+      newWebSocket.onmessage = (ev: MessageEvent<string>) =>
+        action.func(ev, action.thread_name);
+      return {
+        webSocket: { ...state.webSocket, [action.thread_name]: newWebSocket },
+      };
 
     case "SEND_MESSAGE":
-      state.webSocket.send(action.message);
+      state.webSocket[action.thread_name].send(action.message);
+      return state;
+
+    case "CLOSE":
+      state.webSocket[action.thread_name].close();
+      delete state.webSocket[action.thread_name];
       return state;
   }
 };
@@ -83,4 +110,4 @@ const useWebSocket = () => {
   return context;
 };
 
-export { useWebSocket, WebSocketProvider, WebSocketConfig };
+export { useWebSocket, WebSocketProvider, WebSocketConfig, getThreadIdByName };
