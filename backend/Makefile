@@ -37,11 +37,10 @@ format: ## Formats all files
 ci:	lint test ## Lint code then run tests
 
 
-.PHONY: up
-up: ## Launch
+.PHONY: api
+api: ## Launch the api service
 	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
 
 
-.PHOMY: docker
 docker: ## Launch up in docker
 	docker-compose up
