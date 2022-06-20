@@ -6,7 +6,7 @@ from app.api.schemas import Filter, Message, MessageCreate, SupportCreate, Suppo
 _threads: list[SupportThread] = []
 
 
-class SupportThreadService:
+class SupportThreadRepository:
     """
     class for manipulation SupportThread entities.
     Note: some functions should return exactly pydantic model!
@@ -51,7 +51,7 @@ class SupportThreadService:
             sender=message.sender,
         )
 
-        thread = await SupportThreadService.find_by_id(thread_id)
+        thread = await SupportThreadRepository.find_by_id(thread_id)
         _threads.remove(thread)  # type: ignore  # will be another implementation
 
         thread.messages.append(message_new)  # type: ignore  # will be another implementation
@@ -61,7 +61,7 @@ class SupportThreadService:
 
     @staticmethod
     async def delete(thread_id: int) -> None:
-        thread = await SupportThreadService.find_by_id(thread_id)
+        thread = await SupportThreadRepository.find_by_id(thread_id)
         if thread:
             _threads.remove(thread)
 
@@ -71,7 +71,7 @@ class SupportThreadService:
         from function expected that it will update all field of thread,
         volunteer is searched by telegram id
         """
-        thread_to_upd = await SupportThreadService.find_by_id(thread_id)
+        thread_to_upd = await SupportThreadRepository.find_by_id(thread_id)
         _threads.remove(thread_to_upd)  # type: ignore  # will be another implementation
 
         thread_upd = SupportThread(
