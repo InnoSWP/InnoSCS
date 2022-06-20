@@ -7,7 +7,13 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.api.exceptions import EntityNotFound
 from app.api.managers import WsConnectionManager
 from app.api.repositories import SupportThreadRepository
-from app.api.schemas import Filter, MessageCreate, SupportThreadCreate, SupportThread, SupportThreadPatch
+from app.api.schemas import (
+    Filter,
+    MessageCreate,
+    SupportThread,
+    SupportThreadCreate,
+    SupportThreadPatch,
+)
 
 router = APIRouter()
 ws_manager = WsConnectionManager()
