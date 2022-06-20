@@ -1,7 +1,7 @@
 # SCS
 
 ### Description:
-    backend for scs
+    backend part of seampless customer support: api, bot
 
 ### Run in docker
     make docker
