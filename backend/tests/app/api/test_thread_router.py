@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 import pytest
 
-from app.api.schemas import SupportThreadCreate
+from app.api.schemas import SupportThreadCreate, SupportThreadPatch
 
 
 @pytest.mark.asyncio
@@ -29,7 +29,7 @@ async def test_create(client):
 
 @pytest.mark.asyncio
 async def test_patch(client, thread):
-    thread_to_upd = SupportThreadCreate(question=thread.question, volunteer_id=1)
+    thread_to_upd = SupportThreadPatch(volunteer_id=1)
     res = client.patch(f'/threads/{thread.id}', json=thread_to_upd.dict())
     thread_upd = res.json()
 

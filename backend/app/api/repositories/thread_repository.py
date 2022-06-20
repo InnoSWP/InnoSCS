@@ -76,17 +76,17 @@ class SupportThreadRepository:
             _threads.remove(thread)
 
     @staticmethod
-    async def patch(thread: SupportThreadPatch, thread_id: int) -> SupportThread:
+    async def patch(thread_ptc: SupportThreadPatch, thread_id: int) -> SupportThread:
         """
-        :param thread: updated `SupportCreate`
+        :param thread_ptc: updated `SupportCreate`
         :param thread_id: id of the thread to be updated
         :return: updated `SupportThread`
         """
-        thread_to_upd = await SupportThreadRepository.find_by_id(thread_id)
-        _threads.remove(thread_to_upd)  # type: ignore  # will be another implementation
+        thread = await SupportThreadRepository.find_by_id(thread_id)
+        _threads.remove(thread)  # type: ignore  # will be another implementation
 
-        thread_to_upd.volunteer_id = thread.volunteer_id
+        thread.volunteer_id = thread_ptc.volunteer_id
 
-        _threads.append(thread_to_upd)
+        _threads.append(thread)
 
-        return thread_to_upd
+        return thread

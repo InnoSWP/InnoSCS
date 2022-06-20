@@ -38,14 +38,24 @@ async def find_thread(thread_id: int) -> SupportThread:
 
 
 @router.patch('/threads/{thread_id}', response_model=SupportThread)
-async def patch_thread(thread_id: int, thread: SupportThreadPatch) -> SupportThread:
-    thread_upd = await SupportThreadRepository.patch(thread, thread_id)
+async def patch_thread(thread_id: int, thread_ptc: SupportThreadPatch) -> SupportThread:
+    thread = await SupportThreadRepository.find_by_id(thread_id)
 
-    return thread_upd
+    if thread is None:
+        raise EntityNotFound('thread')
+
+    thread = await SupportThreadRepository.patch(thread_ptc, thread_id)
+
+    return thread
 
 
 @router.delete('/threads/{thread_id}')
 async def delete_thread(thread_id: int) -> None:
+    thread = await SupportThreadRepository.find_by_id(thread_id)
+
+    if thread is None:
+        raise EntityNotFound('thread')
+
     await SupportThreadRepository.delete(thread_id)
 
 
