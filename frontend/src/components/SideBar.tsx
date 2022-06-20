@@ -94,8 +94,11 @@ export default function SideBar({
         body: JSON.stringify({ question: submitProblemTextInput }),
       }
     );
-    const { id } = await response.json();
-    return BigInt(id).toString();
+    // !!! SCARY PARSING !!!
+    const json_data = await response.text();
+    const json_data2 = json_data.split(":");
+    const id = json_data2[json_data2.length - 1].replace("}", "");
+    return id;
   };
 
   /**
