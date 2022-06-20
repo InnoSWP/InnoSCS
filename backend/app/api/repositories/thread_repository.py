@@ -14,7 +14,10 @@ class SupportThreadRepository:
 
     @staticmethod
     async def create(thread: SupportCreate) -> SupportThread:
-        """from function expected that it will store the thread in db"""
+        """
+        :param thread: new`SupportCreate`
+        :return: new `SupportThread`
+        """
         thread.id = uuid.uuid4().int
         thread_new = SupportThread(id=thread.id, question=thread.question)
         _threads.append(thread_new)
@@ -23,7 +26,10 @@ class SupportThreadRepository:
 
     @staticmethod
     async def find_all(flt: Optional[Filter] = None) -> list[SupportThread]:
-        """from function expected to return all thread entities from db"""
+        """
+        :param flt: filter to sort list of `SupportThread`
+        :return: list of `SupportThread`
+        """
         if flt and flt == Filter.free:
             return [t for t in _threads if not t.volunteer_id]
 
@@ -31,7 +37,10 @@ class SupportThreadRepository:
 
     @staticmethod
     async def find_by_id(thread_id: int) -> Optional[SupportThread]:
-        """from function expected that it will return SupportThread by id"""
+        """
+        :param thread_id: id of the thread to find
+        :return: `SupportThread`
+        """
         for thread in _threads:
             if thread.id == thread_id:
                 return thread
@@ -41,8 +50,9 @@ class SupportThreadRepository:
     @staticmethod
     async def create_message(message: MessageCreate, thread_id: int) -> Message:
         """
-        from function expected that it will store message for
-        specific thread
+        :param message: new `MessageCreate`
+        :param thread_id: id of the thread in which to save the message
+        :return: new `Message`
         """
 
         message_new = Message(
@@ -68,8 +78,9 @@ class SupportThreadRepository:
     @staticmethod
     async def patch(thread: SupportCreate, thread_id: int) -> SupportThread:
         """
-        from function expected that it will update all field of thread,
-        volunteer is searched by telegram id
+        :param thread: updated `SupportCreate`
+        :param thread_id: id of the thread to be updated
+        :return: updated `SupportThread`
         """
         thread_to_upd = await SupportThreadRepository.find_by_id(thread_id)
         _threads.remove(thread_to_upd)  # type: ignore  # will be another implementation
