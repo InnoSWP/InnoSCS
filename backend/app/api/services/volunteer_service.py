@@ -16,7 +16,6 @@ class VolunteerService:
         """from function expected that it will store the volunteer in db"""
         volunteer_new = Volunteer(
             tg_id=volunteer.tg_id,
-            thread_id=volunteer.thread_id,
         )
         _volunteers.append(volunteer_new)
 
@@ -28,10 +27,6 @@ class VolunteerService:
         from function expected to return all volunteer from db or free volunteers,
         flt - filter
         """
-        if flt and flt == Filter.free:
-            return [
-                volunteer for volunteer in _volunteers if volunteer.thread_id is None
-            ]
 
         return _volunteers
 
@@ -55,7 +50,6 @@ class VolunteerService:
 
         volunteer_upd = Volunteer(
             tg_id=volunteer.tg_id,
-            thread_id=volunteer.thread_id,
         )
         _volunteers.append(volunteer_upd)
 
