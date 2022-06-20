@@ -48,7 +48,6 @@ class SupportThread(SupportBase):
 
 class VolunteerBase(BaseModel):
     tg_id: int
-    thread_id: Optional[int]
 
     class Config:
         orm_mode = True
