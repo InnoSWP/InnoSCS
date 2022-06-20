@@ -17,7 +17,7 @@ class Sender(str, Enum):
 class MessageBase(BaseModel):
     created_at: datetime
     content: str
-    sender: Optional[Sender]  # TODO: add recognize service
+    sender: Optional[Sender]  # TODO: add recognize service, fields must be not optional
 
 
 class MessageCreate(MessageBase):
@@ -30,7 +30,7 @@ class Message(MessageBase):
 
 class SupportBase(BaseModel):
     question: str
-    client_id: Optional[int]
+    client_id: Optional[int]  # TODO: add recognize service, fields must be not optional
     volunteer_id: Optional[int]
     messages: Optional[list[Message]] = []
 
