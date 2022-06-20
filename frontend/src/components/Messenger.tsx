@@ -1,8 +1,9 @@
-import { useState, createRef } from "react";
+import { useState, createRef, useEffect, useCallback } from "react";
 
 import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
+import { useWebSocket } from "./WebSocket-Context";
 /**
  * Messenger component is a main part of the application. It contains Main and MessageBox.
  * @param {{sidebarActivated: boolean, webSocket: WebSocket, addBubble: function, messageBubbles: Array.<MessageBubble>, currentThreadName: string}} props
@@ -14,12 +15,11 @@ import MessageBox from "./MessageBox";
  */
 
 type Props = {
-  sidebarActivated: boolean,
-  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
-  messageBubbles: JSX.Element[],
-  currentThreadName: string
-
-}
+  sidebarActivated: boolean;
+  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
+  messageBubbles: JSX.Element[];
+  currentThreadName: string;
+};
 
 export default function Messenger({
   sidebarActivated,
@@ -29,25 +29,42 @@ export default function Messenger({
 }: Props) {
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef<HTMLDivElement>();
+  const { webSocketState, dispatchWebSocket } = useWebSocket();
+
   /**
    * Creates Volunteer Bubble
    *
    * In current implementation is used for {@link webSocket} listener event
    */
-  function createVolunteerBubble(event: MessageEvent<string>) {
-    const type = "message-bubble-volunteer";
-    if (event.data) {
-      addBubble((bubbles) => [
-        <MessageBubble
-          key={`message-${bubbles.length + 1}`}
-          text={event.data}
-          type={type}
-          prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-        />,
-        ...bubbles,
-      ]);
-    }
-  }
+  const createVolunteerBubble = useCallback(
+    (event: MessageEvent<string>) => {
+      const type = "message-bubble-volunteer";
+      if (event.data) {
+        addBubble((bubbles) => [
+          <MessageBubble
+            key={`message-${bubbles.length + 1}`}
+            text={event.data}
+            type={type}
+            prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
+          />,
+          ...bubbles,
+        ]);
+      }
+    },
+    [addBubble]
+  );
+
+  useEffect(() => {
+    webSocketState.webSocket.addEventListener("message", createVolunteerBubble);
+    console.log("mount event");
+    return function () {
+      webSocketState.webSocket.removeEventListener(
+        "message",
+        createVolunteerBubble
+      );
+      console.log("unmount event");
+    };
+  }, [webSocketState, createVolunteerBubble]);
 
   /**
    * Scrolls chat to latest message using {@link messagesEndRef} reference
@@ -63,7 +80,7 @@ export default function Messenger({
     const type = "message-bubble-user";
 
     if (messageTextInput !== "") {
-
+      webSocketState.webSocket.send(messageTextInput);
       addBubble((bubbles) => {
         return [
           <MessageBubble
