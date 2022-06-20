@@ -22,7 +22,7 @@ test: ## Runs pytest
 .PHONY: lint
 lint: ## Lint code
 	$(VENV)/bin/flake8 --jobs 4 --statistics --show-source $(CODE)
-	$(VENV)/bin/pylint --jobs 4 --rcfile=setup.cfg $(CODE)
+	#$(VENV)/bin/pylint --jobs 4 --rcfile=setup.cfg $(CODE)
 	$(VENV)/bin/mypy $(CODE)
 	$(VENV)/bin/black --skip-string-normalization --check $(CODE)
 
