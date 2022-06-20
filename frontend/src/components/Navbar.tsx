@@ -1,10 +1,55 @@
+import React, { useState } from "react";
+
 import "./styles/navbar.css";
-export default function Navbar() {
+
+import PopupMenu from "./Menu";
+
+/**
+ * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
+ * @param {{sideBarActivated: boolean, toggleSideBar: function, closeCurrentThread: function}} props
+ * @param {boolean} sideBarActivated represents the state of the SideBar component
+ * @param {function} toggleSideBar function that changes the state of the SideBar component
+ * @param {function} closeCurrentThread function that closes the current thread
+ */
+
+type Props = {
+  sideBarActivated: boolean;
+  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleProblemSolved: (value: boolean) => void;
+};
+
+export default function Navbar({
+  sideBarActivated,
+  toggleSideBar,
+  toggleProblemSolved,
+}: Props) {
+  const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
+
+  // KebabMenu config
+  // TODO: add functionality to <Settings> and <Change Volunteer>
+  const opts = [
+    {
+      optionName: "Close thread",
+      onClick: () => toggleProblemSolved(true),
+    },
+    {
+      optionName: "Settings",
+      onClick: () => console.log("Settings opened"),
+    },
+    {
+      optionName: "Change Volunteer",
+      onClick: () => console.log("Volunteer changed"),
+    },
+  ];
+
   return (
     <nav>
       <div className="navbar-wrapper">
         <div className="button-back-container">
-          <button className="button-back">
+          <button
+            className={sideBarActivated ? "button-back rotated" : "button-back"}
+            onClick={() => toggleSideBar((prev) => !prev)}
+          >
             <svg
               width="22"
               height="22"
@@ -27,7 +72,7 @@ export default function Navbar() {
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu">
+        <button className="button-menu" onClick={() => toggleMenuPopup(true)}>
           <svg
             width="6"
             height="22"
@@ -42,6 +87,13 @@ export default function Navbar() {
           </svg>
         </button>
       </div>
+      <PopupMenu
+        key="kebab-menu"
+        id="kebab-menu"
+        active={menuActivated}
+        togglePopup={toggleMenuPopup}
+        optionsData={opts}
+      />
     </nav>
   );
 }

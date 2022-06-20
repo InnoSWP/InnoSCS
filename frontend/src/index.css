@@ -1,7 +1,46 @@
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
   font-family: 'Inter', sans-serif;
   background-color: #F4F4F4;
 }
+
+#root, #app {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 300 !important;
+  transition: backdrop-filter 1s;
+}
+
+.modal-container.blurred {
+  backdrop-filter: blur(4px) brightness(90%);
+  transition: backdrop-filter 1s;
+}
+
+.popup-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 7;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s linear 0.3s;
+}
+
+.popup-wrapper.activated {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+

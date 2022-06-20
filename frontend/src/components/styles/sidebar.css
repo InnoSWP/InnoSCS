@@ -1,0 +1,76 @@
+.sidebar-wrapper {
+  position: fixed;
+  background-color: #F4F4F4;
+  height: calc(100vh - 75px);
+  width: 100vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: scroll;
+  padding-bottom: 16px;
+  padding-top: 16px;
+  box-sizing: border-box;
+
+}
+
+.thread-container {
+  background-color: white;
+  height: 75px;
+  filter: drop-shadow(0px 4px 9px rgba(0, 0, 0, 0.05));
+  border-radius: 10px;
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  align-items: center;
+  overflow: hidden;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.thread-container span {
+  font-size: 18px;
+  padding-left: 16px;
+
+}
+
+.thread-status {
+  height: 100%;
+  width: 8px;
+
+}
+
+.thread-status.resolving {
+  background-color: #FFD27B;
+}
+
+.thread-status.solved {
+  background-color: #9EFF7B;
+}
+
+.thread-status.unsolved {
+  background-color: #FF7B7B;
+}
+
+.add-button {
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  z-index: 3;
+  bottom: 0;
+  right: 0;
+  border-width: 0;
+  background-color: #349EFF;
+  border-radius: 100px;
+  margin: 16px;
+  padding: 0;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+  visibility: visible;
+  transition: 0.5s;
+}
+
+.add-button.removed {
+  visibility: hidden;
+  transition: 0.2s;
+}
+
