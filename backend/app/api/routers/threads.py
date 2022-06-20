@@ -7,14 +7,14 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.api.exceptions import EntityNotFound
 from app.api.managers import WsConnectionManager
 from app.api.repositories import SupportThreadRepository
-from app.api.schemas import Filter, MessageCreate, SupportCreate, SupportThread
+from app.api.schemas import Filter, MessageCreate, SupportThreadCreate, SupportThread, SupportThreadPatch
 
 router = APIRouter()
 ws_manager = WsConnectionManager()
 
 
 @router.post('/threads', response_model=SupportThread, status_code=HTTPStatus.CREATED)
-async def create_thread(thread: SupportCreate) -> SupportThread:
+async def create_thread(thread: SupportThreadCreate) -> SupportThread:
     thread_new = await SupportThreadRepository.create(thread)
 
     return thread_new
@@ -38,14 +38,24 @@ async def find_thread(thread_id: int) -> SupportThread:
 
 
 @router.patch('/threads/{thread_id}', response_model=SupportThread)
-async def patch_thread(thread_id: int, thread: SupportCreate) -> SupportThread:
-    thread_upd = await SupportThreadRepository.patch(thread, thread_id)
+async def patch_thread(thread_id: int, thread_ptc: SupportThreadPatch) -> SupportThread:
+    thread = await SupportThreadRepository.find_by_id(thread_id)
 
-    return thread_upd
+    if thread is None:
+        raise EntityNotFound('thread')
+
+    thread = await SupportThreadRepository.patch(thread_ptc, thread_id)
+
+    return thread
 
 
 @router.delete('/threads/{thread_id}')
 async def delete_thread(thread_id: int) -> None:
+    thread = await SupportThreadRepository.find_by_id(thread_id)
+
+    if thread is None:
+        raise EntityNotFound('thread')
+
     await SupportThreadRepository.delete(thread_id)
 
 

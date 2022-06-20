@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 
-from app.api.schemas import Filter, Message, MessageCreate, SupportCreate, SupportThread
+from app.api.schemas import Filter, Message, MessageCreate, SupportThreadCreate, SupportThread, SupportThreadPatch
 
 _threads: list[SupportThread] = []
 
@@ -13,13 +13,13 @@ class SupportThreadRepository:
     """
 
     @staticmethod
-    async def create(thread: SupportCreate) -> SupportThread:
+    async def create(thread: SupportThreadCreate) -> SupportThread:
         """
         :param thread: new`SupportCreate`
         :return: new `SupportThread`
         """
-        thread.id = uuid.uuid4().int
-        thread_new = SupportThread(id=thread.id, question=thread.question)
+        thread_id = uuid.uuid4().int
+        thread_new = SupportThread(id=thread_id, question=thread.question)
         _threads.append(thread_new)
 
         return thread_new
@@ -30,7 +30,7 @@ class SupportThreadRepository:
         :param flt: filter to sort list of `SupportThread`
         :return: list of `SupportThread`
         """
-        if flt and flt == Filter.free:
+        if flt == Filter.free:
             return [t for t in _threads if t.volunteer_id is not None]
 
         return _threads
@@ -76,18 +76,17 @@ class SupportThreadRepository:
             _threads.remove(thread)
 
     @staticmethod
-    async def patch(thread: SupportCreate, thread_id: int) -> SupportThread:
+    async def patch(thread_ptc: SupportThreadPatch, thread_id: int) -> SupportThread:
         """
-        :param thread: updated `SupportCreate`
+        :param thread_ptc: updated `SupportCreate`
         :param thread_id: id of the thread to be updated
         :return: updated `SupportThread`
         """
-        thread_to_upd = await SupportThreadRepository.find_by_id(thread_id)
-        _threads.remove(thread_to_upd)  # type: ignore  # will be another implementation
+        thread = await SupportThreadRepository.find_by_id(thread_id)
+        _threads.remove(thread)  # type: ignore  # will be another implementation
 
-        if thread.volunteer_id is not None:
-            thread_to_upd.volunteer_id = thread.volunteer_id
+        thread.volunteer_id = thread_ptc.volunteer_id
 
-        _threads.append(thread_to_upd)
+        _threads.append(thread)
 
-        return thread_to_upd
+        return thread
