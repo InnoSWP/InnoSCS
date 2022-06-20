@@ -68,8 +68,10 @@ jobs:
           uses: snok/install-poetry@v1
 
         - name: Install dependences
+          working-directory: ./backend
           run: poetry install
 
         - name: Run tests
+          working-directory: ./backend
           run: |
             poetry run pytest -v tests
