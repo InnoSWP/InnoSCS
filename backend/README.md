@@ -3,14 +3,14 @@
 ### Description:
     backend part of seampless customer support: api, bot
 
-### Run in docker
+### Run the app in docker
     make docker
 
 ### Create venv:
     make venv
 
-### Run API
-    make up
+### Run the api service
+    make api
 
 ### Run tests:
     make test
