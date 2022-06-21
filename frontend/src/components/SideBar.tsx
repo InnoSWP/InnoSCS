@@ -69,6 +69,23 @@ export default function SideBar({
     [addBubble]
   );
 
+  const toggleCurrentThreadValue = (
+    futureThread: string,
+    previousThread: string
+  ) => {
+    const currentThread = JSON.parse(localStorage.getItem(futureThread)!);
+    const prevThread =
+      previousThread !== ""
+        ? JSON.parse(localStorage.getItem(previousThread)!)
+        : null;
+    const currentThreadNew = { ...currentThread, current: true };
+    localStorage.setItem(futureThread, JSON.stringify(currentThreadNew));
+    if (prevThread !== null) {
+      const prevThreadNew = { ...prevThread, current: false };
+      localStorage.setItem(previousThread, JSON.stringify(prevThreadNew));
+    }
+  };
+
   /**
    * Toggles SideBar and gets messages of the current thread.
    * @param {string} problemName name of the current thread
@@ -77,10 +94,6 @@ export default function SideBar({
     (problemName: string) => {
       toggleSideBar((prev) => !prev);
       const currentThread = JSON.parse(localStorage.getItem(problemName)!);
-      const prevThread =
-        currentThreadName !== ""
-          ? JSON.parse(localStorage.getItem(currentThreadName)!)
-          : null;
       const threadMessages = [];
       for (let m = 0; m < currentThread.messages.length; m++) {
         threadMessages.push(
@@ -93,13 +106,7 @@ export default function SideBar({
         );
       }
       addBubble(threadMessages.reverse());
-      const currentThreadNew = { ...currentThread, current: true };
-      localStorage.setItem(problemName, JSON.stringify(currentThreadNew));
-      if (prevThread !== null) {
-        const prevThreadNew = { ...prevThread, current: false };
-        localStorage.setItem(currentThreadName, JSON.stringify(prevThreadNew));
-      }
-
+      toggleCurrentThreadValue(problemName, currentThreadName);
       setCurrentThreadName(problemName);
     },
     [addBubble, toggleSideBar, setCurrentThreadName, currentThreadName]
@@ -125,6 +132,15 @@ export default function SideBar({
     toggleSideBar(!submitProblemActivated);
   }, [submitProblemActivated, toggleSideBar]);
 
+  const parseBigInt = async (response: Response) => {
+    // !!! SCARY PARSING !!!
+    const json_data = await response.text();
+    const json_data2 = json_data.split(":");
+    const id = json_data2[json_data2.length - 1].replace("}", "");
+    return id;
+    // !!! SCARY PARSING !!!
+  };
+
   const fetchData = async () => {
     const response = await fetch(
       `http://${WebSocketConfig.address}:${WebSocketConfig.port}/threads/`,
@@ -136,13 +152,7 @@ export default function SideBar({
         body: JSON.stringify({ question: submitProblemTextInput }),
       }
     );
-    // !!! SCARY PARSING !!!
-    const json_data = await response.text();
-    const json_data2 = json_data.split(":");
-    const id = json_data2[json_data2.length - 1].replace("}", "");
-    // !!! SCARY PARSING !!!
-
-    return id;
+    return parseBigInt(response);
   };
 
   /**
