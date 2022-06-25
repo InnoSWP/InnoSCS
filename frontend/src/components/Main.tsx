@@ -7,13 +7,17 @@ import "./styles/main.css";
  */
 
 type Props = {
-  bubbles: JSX.Element[],
-  messagesEndRef: React.RefObject<any>
-}
+  bubbles: JSX.Element[];
+  messagesEndRef: React.RefObject<any>;
+};
 export default function Main({ bubbles, messagesEndRef }: Props) {
   return (
-    <div className="message-container">
-      <div ref={messagesEndRef} className="dummy-div"></div>
+    <div data-testid="message-container" className="message-container">
+      <div
+        data-testid="dummy-div"
+        ref={messagesEndRef}
+        className="dummy-div"
+      ></div>
       {bubbles}
     </div>
   );

@@ -14,8 +14,15 @@ type Props = {
 
 export default function Thread({ problemName, status, openThread }: Props) {
   return (
-    <div className="thread-container" onClick={() => openThread(problemName)}>
-      <div className={`thread-status ${status}`}></div>
+    <div
+      data-testid="thread-container"
+      className="thread-container"
+      onClick={() => openThread(problemName)}
+    >
+      <div
+        data-testid="thread-status"
+        className={`thread-status ${status}`}
+      ></div>
       <span>{problemName}</span>
     </div>
   );

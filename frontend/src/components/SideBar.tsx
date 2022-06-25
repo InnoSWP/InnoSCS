@@ -6,13 +6,16 @@ import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblem from "./SubmitProblem";
 import Notification from "./Notification";
-import { useWebSocket, WebSocketConfig } from "./WebSocket-Context";
+import { useWebSocket } from "./WebSocket-Context";
+import { WebSocketConfig } from "./config";
 
 type Props = {
-  toggleSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSideBar: (value: boolean | ((prev: boolean) => boolean)) => void;
   sideBarActivated: boolean;
-  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
-  setCurrentThreadName: React.Dispatch<React.SetStateAction<string>>;
+  addBubble: (
+    func: ((prev: JSX.Element[]) => JSX.Element[]) | JSX.Element[]
+  ) => void;
+  setCurrentThreadName: (func: ((prev: string) => string) | string) => void;
   currentThreadName: string;
 };
 /**
@@ -50,15 +53,17 @@ export default function SideBar({
       if (event.data) {
         const isCurrent = JSON.parse(localStorage.getItem(threadName)!).current;
         if (isCurrent) {
-          addBubble((bubbles) => [
-            <MessageBubble
-              key={`message-${bubbles.length + 1}`}
-              text={event.data}
-              type={type}
-              prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-            />,
-            ...bubbles,
-          ]);
+          addBubble((bubbles) => {
+            return [
+              <MessageBubble
+                key={`message-${bubbles.length + 1}`}
+                text={event.data}
+                type={type}
+                prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
+              />,
+              ...bubbles,
+            ];
+          });
         }
 
         var currentThread = JSON.parse(localStorage.getItem(threadName)!);
@@ -69,6 +74,7 @@ export default function SideBar({
     [addBubble]
   );
 
+  // TODO: rewrite using previous value of setCurrentThreadName function (GENIUS)
   const toggleCurrentThreadValue = (
     futureThread: string,
     previousThread: string
@@ -195,6 +201,7 @@ export default function SideBar({
     <div>
       <div className="sidebar-wrapper">{threads}</div>
       <button
+        data-testid="add-button"
         className={sideBarActivated ? "add-button" : "add-button removed"}
         onClick={() => toggleSubmitProblem(true)}
       >

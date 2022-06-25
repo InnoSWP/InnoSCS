@@ -16,7 +16,7 @@ import { useWebSocket } from "./WebSocket-Context";
 
 type Props = {
   sidebarActivated: boolean;
-  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
+  addBubble: (func: (prev: JSX.Element[]) => JSX.Element[]) => void;
   messageBubbles: JSX.Element[];
   currentThreadName: string;
 };

@@ -66,6 +66,7 @@ export default function Notification({
     >
       <div className={"notification-wrapper " + id}>
         <div
+          data-testid="notification-container"
           className={`notification-container ${popupActive ? "activated" : ""}`}
           onClick={(e) => e.stopPropagation()}
           onTransitionEnd={() => {
