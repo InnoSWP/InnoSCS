@@ -1,5 +1,6 @@
 from typing import Optional
 
+from app.api.exceptions import EntityNotFound
 from app.api.schemas import Filter, Volunteer, VolunteerCreate
 
 _volunteers: list[Volunteer] = []
@@ -34,7 +35,7 @@ class VolunteerRepository:
         return _volunteers
 
     @staticmethod
-    async def find_by_tg_id(volunteer_tg_id: int) -> Optional[Volunteer]:
+    async def find_by_tg_id(volunteer_tg_id: int) -> Volunteer:
         """
         :param volunteer_tg_id: id of the volunteer to find
         :return: `Volunteer`
@@ -43,11 +44,9 @@ class VolunteerRepository:
             if volunteer.tg_id == volunteer_tg_id:
                 return volunteer
 
-        return None
+        raise EntityNotFound()
 
     @staticmethod
     async def delete(volunteer_id: int) -> None:
         volunteer = await VolunteerRepository.find_by_tg_id(volunteer_id)
-
-        if volunteer is not None:
-            _volunteers.remove(volunteer)
+        _volunteers.remove(volunteer)
