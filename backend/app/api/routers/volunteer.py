@@ -3,7 +3,6 @@ from typing import Optional
 
 from fastapi import APIRouter
 
-from app.api.exceptions import EntityNotFound
 from app.api.repositories import VolunteerRepository
 from app.api.schemas import Filter, Volunteer, VolunteerCreate
 
@@ -27,9 +26,6 @@ async def find_all_volunteers(flt: Optional[Filter] = None) -> list[Volunteer]:
 @router.get('/volunteers/{volunteer_tg_id}', response_model=Volunteer)
 async def find_volunteer(volunteer_tg_id: int) -> Volunteer:
     volunteer = await VolunteerRepository.find_by_tg_id(volunteer_tg_id)
-
-    if volunteer is None:
-        raise EntityNotFound('volunteer')
 
     return volunteer
 

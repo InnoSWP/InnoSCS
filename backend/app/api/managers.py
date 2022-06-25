@@ -2,20 +2,12 @@ from typing import List
 
 from fastapi import WebSocket
 
-from app.config import settings
-
 
 class WsConnectionManager:
     def __init__(self) -> None:
         self.active_connections: dict[int, List[WebSocket]] = {}
 
     async def connect(self, websocket: WebSocket, room_id: int) -> None:
-        if (
-            self.active_connections.get(room_id)
-            and len(self.active_connections[room_id]) == settings.max_ws_connections
-        ):
-            await websocket.close(reason='Room is full')
-
         await websocket.accept()
 
         self.active_connections[room_id] = self.active_connections.get(room_id, []) + [

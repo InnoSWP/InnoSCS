@@ -1,5 +1,6 @@
 from typing import Optional
 
+from app.api.exceptions import EntityAlreadyExists, EntityNotFound
 from app.api.schemas import Filter, Volunteer, VolunteerCreate
 
 _volunteers: list[Volunteer] = []
@@ -17,12 +18,17 @@ class VolunteerRepository:
         :param volunteer: new `VolunteerCreate`
         :return: new `Volunteer`
         """
-        volunteer_new = Volunteer(
-            tg_id=volunteer.tg_id,
-        )
-        _volunteers.append(volunteer_new)
+        try:
+            await VolunteerRepository.find_by_tg_id(volunteer.tg_id)
+        except EntityNotFound:
+            volunteer_new = Volunteer(
+                tg_id=volunteer.tg_id,
+            )
+            _volunteers.append(volunteer_new)
 
-        return volunteer_new
+            return volunteer_new
+        else:
+            raise EntityAlreadyExists()
 
     @staticmethod
     async def find_all(flt: Optional[Filter] = None) -> list[Volunteer]:
@@ -34,7 +40,7 @@ class VolunteerRepository:
         return _volunteers
 
     @staticmethod
-    async def find_by_tg_id(volunteer_tg_id: int) -> Optional[Volunteer]:
+    async def find_by_tg_id(volunteer_tg_id: int) -> Volunteer:
         """
         :param volunteer_tg_id: id of the volunteer to find
         :return: `Volunteer`
@@ -43,11 +49,9 @@ class VolunteerRepository:
             if volunteer.tg_id == volunteer_tg_id:
                 return volunteer
 
-        return None
+        raise EntityNotFound()
 
     @staticmethod
     async def delete(volunteer_id: int) -> None:
         volunteer = await VolunteerRepository.find_by_tg_id(volunteer_id)
-
-        if volunteer is not None:
-            _volunteers.remove(volunteer)
+        _volunteers.remove(volunteer)

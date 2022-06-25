@@ -1,6 +1,7 @@
 import uuid
 from typing import Optional
 
+from app.api.exceptions import EntityNotFound
 from app.api.schemas import (
     Filter,
     Message,
@@ -38,12 +39,12 @@ class SupportThreadRepository:
         :return: list of `SupportThread`
         """
         if flt == Filter.free:
-            return [t for t in _threads if t.volunteer_id is not None]
+            return [t for t in _threads if t.volunteer_id is None]
 
         return _threads
 
     @staticmethod
-    async def find_by_id(thread_id: int) -> Optional[SupportThread]:
+    async def find_by_id(thread_id: int) -> SupportThread:
         """
         :param thread_id: id of the thread to find
         :return: `SupportThread`
@@ -52,7 +53,7 @@ class SupportThreadRepository:
             if thread.id == thread_id:
                 return thread
 
-        return None
+        raise EntityNotFound()
 
     @staticmethod
     async def create_message(message: MessageCreate, thread_id: int) -> Message:
@@ -79,8 +80,8 @@ class SupportThreadRepository:
     @staticmethod
     async def delete(thread_id: int) -> None:
         thread = await SupportThreadRepository.find_by_id(thread_id)
-        if thread is not None:
-            _threads.remove(thread)
+
+        _threads.remove(thread)
 
     @staticmethod
     async def patch(thread_ptc: SupportThreadPatch, thread_id: int) -> SupportThread:
