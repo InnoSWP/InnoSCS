@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.exceptions import EntityNotFound
-from app.api.exceptions.errorhandlers import entity_not_found_handler
+from app.api.exceptions import EntityAlreadyExists, EntityNotFound
+from app.api.exceptions.errorhandlers import (
+    entity_already_exists_handler,
+    entity_not_found_handler,
+)
 from app.api.routers import threads, volunteer
 
 
@@ -21,5 +24,6 @@ def create_app() -> FastAPI:
     app.include_router(threads.router)
 
     app.add_exception_handler(EntityNotFound, entity_not_found_handler)
+    app.add_exception_handler(EntityAlreadyExists, entity_already_exists_handler)
 
     return app

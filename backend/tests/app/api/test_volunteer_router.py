@@ -21,6 +21,14 @@ async def test_create(client):
 
 
 @pytest.mark.asyncio
+async def test_create_existing(client, volunteer):
+    volunteer_new = VolunteerCreate(tg_id=volunteer.tg_id)
+    res = client.post(f'/{VOLUNTEER_URL}', json=volunteer_new.dict())
+
+    assert res.status_code == HTTPStatus.CONFLICT
+
+
+@pytest.mark.asyncio
 async def test_find_all(client, volunteers):
     res = client.get(f'/{VOLUNTEER_URL}')
     volunteers_res = res.json()
