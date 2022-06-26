@@ -5,6 +5,7 @@ import {
   useMemo,
   useReducer,
 } from "react";
+import { WebSocketConfig } from "./config";
 
 const getThreadIdByName = (threadName: string) => {
   return JSON.parse(localStorage.getItem(threadName)!).id;
@@ -17,11 +18,6 @@ const WebSocketContext = createContext<
     }
   | undefined
 >(undefined);
-
-const WebSocketConfig = {
-  address: process.env.REACT_APP_IP,
-  port: process.env.REACT_APP_PORT,
-};
 
 const initState = () => {
   var webSockets = {};
