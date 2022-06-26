@@ -39,7 +39,7 @@ class SupportThreadRepository:
         :return: list of `SupportThread`
         """
         if flt == Filter.free:
-            return [t for t in _threads if t.volunteer_id is not None]
+            return [t for t in _threads if t.volunteer_id is None]
 
         return _threads
 
