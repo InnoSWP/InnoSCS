@@ -9,13 +9,12 @@ import Notification from "./Notification";
 import { useWebSocket } from "./WebSocket-Context";
 import { WebSocketConfig } from "./config";
 import { useRecoilState } from "recoil";
-import { currentThreadNameState, sidebarState } from "./atoms";
+import {
+  currentThreadNameState,
+  messageBubblesState,
+  sidebarState,
+} from "./atoms";
 
-type Props = {
-  addBubble: (
-    func: ((prev: JSX.Element[]) => JSX.Element[]) | JSX.Element[]
-  ) => void;
-};
 /**
  * SideBar component contains list of all threads
  * @param {function} toggleSideBar toggles SideBar component
@@ -26,7 +25,8 @@ type Props = {
  * @param {string} currentThreadName represents the name of the current thread
  */
 
-export default function SideBar({ addBubble }: Props) {
+export default function SideBar() {
+  const [, addBubble] = useRecoilState(messageBubblesState);
   const [sideBarActivated, toggleSideBar] = useRecoilState(sidebarState);
   const [submitProblemTextInput, changeSubmitProblemText] =
     useState<string>("");
