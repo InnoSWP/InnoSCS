@@ -9,14 +9,12 @@ import Notification from "./Notification";
 import { useWebSocket } from "./WebSocket-Context";
 import { WebSocketConfig } from "./config";
 import { useRecoilState } from "recoil";
-import { sidebarState } from "./atoms";
+import { currentThreadNameState, sidebarState } from "./atoms";
 
 type Props = {
   addBubble: (
     func: ((prev: JSX.Element[]) => JSX.Element[]) | JSX.Element[]
   ) => void;
-  setCurrentThreadName: (func: ((prev: string) => string) | string) => void;
-  currentThreadName: string;
 };
 /**
  * SideBar component contains list of all threads
@@ -28,11 +26,7 @@ type Props = {
  * @param {string} currentThreadName represents the name of the current thread
  */
 
-export default function SideBar({
-  addBubble,
-  setCurrentThreadName,
-  currentThreadName,
-}: Props) {
+export default function SideBar({ addBubble }: Props) {
   const [sideBarActivated, toggleSideBar] = useRecoilState(sidebarState);
   const [submitProblemTextInput, changeSubmitProblemText] =
     useState<string>("");
@@ -40,6 +34,9 @@ export default function SideBar({
     useState<boolean>(false);
   const [threads, addThread] = useState<JSX.Element[]>([]);
   const { dispatchWebSocket } = useWebSocket();
+  const [currentThreadName, setCurrentThreadName] = useRecoilState(
+    currentThreadNameState
+  );
 
   /**
    * Creates Volunteer Bubble

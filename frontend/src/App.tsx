@@ -7,7 +7,7 @@ import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
 import { useWebSocket } from "./components/WebSocket-Context";
 import { useRecoilState } from "recoil";
-import { sidebarState } from "./components/atoms";
+import { currentThreadNameState, sidebarState } from "./components/atoms";
 
 /**
  * This component is a root of the application.
@@ -16,9 +16,9 @@ function App() {
   const [, toggleSideBar] = useRecoilState(sidebarState);
   const [problemSolvedActivated, toggleProblemSolved] = useState(false);
   const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
-  const [currentThreadName, setCurrentThreadName] = useState<string>(
-    localStorage.key(0) === null ? "" : localStorage.key(0)!
-  ); // Name of the current thread
+  const [currentThreadName, setCurrentThreadName] = useRecoilState(
+    currentThreadNameState
+  );
   const { dispatchWebSocket } = useWebSocket();
 
   /**
@@ -46,17 +46,11 @@ function App() {
   return (
     <div id="app">
       <Navbar key="navbar" toggleProblemSolved={toggleProblemSolved} />
-      <SideBar
-        key="sidebar"
-        addBubble={addBubble}
-        setCurrentThreadName={setCurrentThreadName}
-        currentThreadName={currentThreadName}
-      />
+      <SideBar key="sidebar" addBubble={addBubble} />
       <Messenger
         key="messenger"
         messageBubbles={messageBubbles}
         addBubble={addBubble}
-        currentThreadName={currentThreadName}
       />
       <Notification
         id="problemSolved"
