@@ -1,6 +1,6 @@
 from typing import Optional
 
-from app.api.exceptions import EntityNotFound
+from app.api.exceptions import EntityAlreadyExists, EntityNotFound
 from app.api.schemas import Filter, Volunteer, VolunteerCreate
 
 _volunteers: list[Volunteer] = []
@@ -18,12 +18,17 @@ class VolunteerRepository:
         :param volunteer: new `VolunteerCreate`
         :return: new `Volunteer`
         """
-        volunteer_new = Volunteer(
-            tg_id=volunteer.tg_id,
-        )
-        _volunteers.append(volunteer_new)
+        try:
+            await VolunteerRepository.find_by_tg_id(volunteer.tg_id)
+            raise EntityAlreadyExists()
 
-        return volunteer_new
+        except EntityNotFound:
+            volunteer_new = Volunteer(
+                tg_id=volunteer.tg_id,
+            )
+            _volunteers.append(volunteer_new)
+
+            return volunteer_new
 
     @staticmethod
     async def find_all(flt: Optional[Filter] = None) -> list[Volunteer]:
