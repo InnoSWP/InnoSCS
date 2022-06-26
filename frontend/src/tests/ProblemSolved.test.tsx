@@ -5,7 +5,7 @@ import ProblemSolved from "../components/ProblemSolved";
 it("problem solved buttons test", () => {
   const onSubmit = jest.fn();
   const onCancel = jest.fn();
-  var notification = true;
+  let notification = true;
   const toggleNotification = jest.fn((val: boolean) => {
     notification = val;
   });

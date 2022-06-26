@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import BackButton from "../components/BackButton";
 
 it("toggle on click test", () => {
-  var active = false;
+  let active = false;
   const toggle = jest.fn((func: (val: boolean) => boolean) => {
     active = func(active);
   });

@@ -15,7 +15,14 @@ it("toggleNotification test", () => {
       blur={true}
       toggleNotification={toggleNotification}
     >
-      <ProblemSolved onCancel={() => {}} onSubmit={() => {}} />
+      <ProblemSolved
+        onCancel={() => {
+          // mock
+        }}
+        onSubmit={() => {
+          // mock
+        }}
+      />
     </Notification>
   );
   const notificationContainer = screen.getByTestId("notification-container");
@@ -39,7 +46,7 @@ it("onTransitionEnd test", async () => {
   Notification.prototype.toggleModal = jest.fn(
     Notification.prototype.toggleModal
   );
-  var active = true;
+  let active = true;
   render(
     <Notification
       id="test-id"
@@ -47,7 +54,14 @@ it("onTransitionEnd test", async () => {
       blur={true}
       toggleNotification={toggleNotification}
     >
-      <ProblemSolved onCancel={() => {}} onSubmit={() => {}} />
+      <ProblemSolved
+        onCancel={() => {
+          // mock
+        }}
+        onSubmit={() => {
+          // mock
+        }}
+      />
     </Notification>
   );
 

@@ -2,6 +2,17 @@ import React, { useEffect } from "react";
 import { render } from "@testing-library/react";
 import WS from "jest-websocket-mock";
 let ws: WS;
+const setThread = (name: string, messages: Object[]) => {
+  localStorage.setItem(
+    name,
+    JSON.stringify({
+      messages: messages,
+      current: true,
+      status: "resolving",
+      id: "1342342342323",
+    })
+  );
+};
 beforeAll(async () => {
   ws = new WS("ws://localhost:8080/ws/1342342342323");
   jest.mock("../components/config", () => ({
@@ -11,39 +22,16 @@ beforeAll(async () => {
     },
   }));
 });
+
 afterEach(() => {
   WS.clean();
 });
 it("Websocket test", async () => {
-  console.log("SETTING UP LOCAL_STORAGE");
-  localStorage.setItem(
-    "test",
-    JSON.stringify({
-      messages: [{ text: "test text", sender: "message-bubble-user" }],
-      current: true,
-      status: "resolving",
-      id: "12321324123",
-    })
-  );
-
-  localStorage.setItem(
-    "testing",
-    JSON.stringify({
-      messages: [{ text: "test message", sender: "message-bubble-volunteer" }],
-      current: true,
-      status: "resolving",
-      id: "1342342342323",
-    })
-  );
-  localStorage.setItem(
-    "testing test",
-    JSON.stringify({
-      messages: [],
-      current: true,
-      status: "resolving",
-      id: "1242323423423423",
-    })
-  );
+  setThread("test", [{ text: "test text", sender: "message-bubble-user" }]);
+  setThread("testing", [
+    { text: "test message", sender: "message-bubble-volunteer" },
+  ]);
+  setThread("testing test", []);
   const {
     useWebSocket,
     WebSocketProvider,
@@ -55,7 +43,9 @@ it("Websocket test", async () => {
       dispatchWebSocket({
         type: "CONNECT",
         thread_name: "testing",
-        func: () => {},
+        func: () => {
+          // mock
+        },
       });
 
       dispatchWebSocket({
@@ -78,10 +68,7 @@ it("Websocket test", async () => {
 });
 
 it("throw error test", () => {
-  const {
-    useWebSocket,
-    WebSocketProvider,
-  } = require("../components/WebSocket-Context");
+  const { useWebSocket } = require("../components/WebSocket-Context");
   const MockComponent = () => {
     expect(useWebSocket).toThrowError();
 

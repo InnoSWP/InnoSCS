@@ -6,7 +6,7 @@ it("test App", () => {
   localStorage.setItem(
     "thread",
     JSON.stringify({
-      id: "fwefwefw",
+      id: "foo",
       messages: [],
       current: true,
     })
@@ -15,7 +15,9 @@ it("test App", () => {
     <WebSocketProvider
       debugValue={{
         webSocketState: { webSocket: {} },
-        dispatchWebSocket: () => {},
+        dispatchWebSocket: () => {
+          // mock
+        },
       }}
     >
       <App />

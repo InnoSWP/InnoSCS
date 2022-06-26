@@ -13,15 +13,11 @@ jest.mock("../components/WebSocket-Context", () => ({
     dispatchWebSocket: jest.fn(),
   }),
 }));
+let jsx_list: JSX.Element[];
+let addBubble: jest.Mock<void, [func: (prev: JSX.Element[]) => JSX.Element[]]>;
 
-afterEach(cleanup);
-
-it("messenger test", async () => {
-  let jsx_list: JSX.Element[] = [];
-  const addBubble = jest.fn((func: (prev: JSX.Element[]) => JSX.Element[]) => {
-    jsx_list = func(jsx_list);
-  });
-  window.HTMLElement.prototype.scrollIntoView = function () {};
+beforeAll(() => {
+  jsx_list = [];
   localStorage.setItem(
     "test",
     JSON.stringify({
@@ -31,6 +27,19 @@ it("messenger test", async () => {
       id: "1232132123",
     })
   );
+});
+
+beforeEach(() => {
+  addBubble = jest.fn((func: (prev: JSX.Element[]) => JSX.Element[]) => {
+    jsx_list = func(jsx_list);
+  });
+  window.HTMLElement.prototype.scrollIntoView = function () {
+    // mock
+  };
+});
+afterEach(cleanup);
+
+it("messenger test", async () => {
   render(
     <Messenger
       sidebarActivated={false}
@@ -53,22 +62,10 @@ it("messenger test", async () => {
 });
 
 it("empty input test", () => {
-  let jsx_list: JSX.Element[] = [
+  jsx_list = [
     <MessageBubble text="test" type="message-bubble-user" prevSender={null} />,
   ];
-  const addBubble = jest.fn((func: (prev: JSX.Element[]) => JSX.Element[]) => {
-    jsx_list = func(jsx_list);
-  });
-  window.HTMLElement.prototype.scrollIntoView = function () {};
-  localStorage.setItem(
-    "test",
-    JSON.stringify({
-      messages: [],
-      current: true,
-      status: "resolving",
-      id: "1232132123",
-    })
-  );
+
   render(
     <Messenger
       sidebarActivated={false}
@@ -83,22 +80,10 @@ it("empty input test", () => {
 });
 
 it("prevSender test", async () => {
-  let jsx_list: JSX.Element[] = [
+  jsx_list = [
     <MessageBubble text="test" type="message-bubble-user" prevSender={null} />,
   ];
-  const addBubble = jest.fn((func: (prev: JSX.Element[]) => JSX.Element[]) => {
-    jsx_list = func(jsx_list);
-  });
-  window.HTMLElement.prototype.scrollIntoView = function () {};
-  localStorage.setItem(
-    "test",
-    JSON.stringify({
-      messages: [],
-      current: true,
-      status: "resolving",
-      id: "1232132123",
-    })
-  );
+
   render(
     <Messenger
       sidebarActivated={false}
@@ -118,20 +103,8 @@ it("prevSender test", async () => {
 });
 
 it("sidebar test", () => {
-  let jsx_list: JSX.Element[] = [];
-  const addBubble = jest.fn((func: (prev: JSX.Element[]) => JSX.Element[]) => {
-    jsx_list = func(jsx_list);
-  });
-  window.HTMLElement.prototype.scrollIntoView = function () {};
-  localStorage.setItem(
-    "test",
-    JSON.stringify({
-      messages: [],
-      current: true,
-      status: "resolving",
-      id: "1232132123",
-    })
-  );
+  jsx_list = [];
+
   render(
     <Messenger
       sidebarActivated={true}

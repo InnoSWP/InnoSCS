@@ -18,8 +18,36 @@ type WebSocketAction =
     }
   | { type: "SEND_MESSAGE"; message: string; thread_name: string }
   | { type: "CLOSE"; thread_name: string };
+const dispatchWebSocketMockImplementation = (
+  action: WebSocketAction,
+  event: MessageEvent<string>,
+  name: string
+) => {
+  if (action.type === "CONNECT") {
+    action.func(event, name);
+  }
+};
 
-afterAll(() => {
+const setThread = (name: string, messages: Object[]) => {
+  localStorage.setItem(
+    name,
+    JSON.stringify({
+      messages: messages,
+      current: true,
+      status: "resolving",
+      id: "1232132123",
+    })
+  );
+};
+
+beforeEach(() => {
+  setThread("test", [{ text: "test text", sender: "message-bubble-user" }]);
+  setThread("testing", [
+    { text: "test message", sender: "message-bubble-volunteer" },
+  ]);
+  setThread("testing test", []);
+});
+afterEach(() => {
   cleanup();
 });
 
@@ -29,38 +57,33 @@ it("sidebar test", async () => {
   const mockDispatchWebSocket = jest
     .fn()
     .mockImplementationOnce((action: WebSocketAction) => {
-      switch (action.type) {
-        case "CONNECT":
-          bubbles = [<div>Hi</div>];
-          action.func(
-            new MessageEvent<string>("hello test", { data: "hello there" }),
-            "testing"
-          );
-      }
+      bubbles = [<div>Hi</div>];
+      dispatchWebSocketMockImplementation(
+        action,
+        new MessageEvent<string>("hello test", { data: "hello there" }),
+        "testing"
+      );
     })
     .mockImplementationOnce((action: WebSocketAction) => {
-      switch (action.type) {
-        case "CONNECT":
-          action.func(new MessageEvent<string>("hello test"), "testing 2");
-      }
+      dispatchWebSocketMockImplementation(
+        action,
+        new MessageEvent<string>("hello test"),
+        "testing 2"
+      );
     })
     .mockImplementationOnce((action: WebSocketAction) => {
-      switch (action.type) {
-        case "CONNECT":
-          action.func(
-            new MessageEvent<string>("hello test", { data: "something" }),
-            "test"
-          );
-      }
+      dispatchWebSocketMockImplementation(
+        action,
+        new MessageEvent<string>("hello test", { data: "something" }),
+        "test"
+      );
     })
     .mockImplementationOnce((action: WebSocketAction) => {
-      switch (action.type) {
-        case "CONNECT":
-          action.func(
-            new MessageEvent<string>("hello test", { data: "hello there" }),
-            "testing test"
-          );
-      }
+      dispatchWebSocketMockImplementation(
+        action,
+        new MessageEvent<string>("hello test", { data: "hello there" }),
+        "testing test"
+      );
     });
 
   jest.mock("../components/config", () => ({
@@ -69,46 +92,19 @@ it("sidebar test", async () => {
       port: "8000",
     },
   }));
-  localStorage.setItem(
-    "test",
-    JSON.stringify({
-      messages: [{ text: "test text", sender: "message-bubble-user" }],
-      current: true,
-      status: "resolving",
-      id: "1232132123",
-    })
-  );
 
-  localStorage.setItem(
-    "testing",
-    JSON.stringify({
-      messages: [{ text: "test message", sender: "message-bubble-volunteer" }],
-      current: true,
-      status: "resolving",
-      id: "123",
-    })
-  );
-  localStorage.setItem(
-    "testing test",
-    JSON.stringify({
-      messages: [],
-      current: true,
-      status: "resolving",
-      id: "123",
-    })
-  );
   const mock_api = { id: 54534534 };
   global.fetch = jest.fn().mockImplementation(
     () =>
       new Promise((resolve) => {
         resolve({
           json: () =>
-            new Promise((resolve) => {
-              resolve(mock_api);
+            new Promise((resolveJson) => {
+              resolveJson(mock_api);
             }),
           text: () =>
-            new Promise((resolve) => {
-              resolve(JSON.stringify(mock_api));
+            new Promise((resolveText) => {
+              resolveText(JSON.stringify(mock_api));
             }),
         });
       })

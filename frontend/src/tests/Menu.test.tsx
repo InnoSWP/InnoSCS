@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import MenuPopup from "../components/Menu";
 
 it("menu popup props and funcs test", () => {
-  var popup = true;
+  let popup = true;
   const togglePopup = jest.fn((value: boolean) => {
     popup = value;
   });
