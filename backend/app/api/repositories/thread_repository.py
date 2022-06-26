@@ -94,6 +94,7 @@ class SupportThreadRepository:
         _threads.remove(thread)  # type: ignore  # will be another implementation
 
         thread.volunteer_id = thread_ptc.volunteer_id
+        print(thread)
 
         _threads.append(thread)
 

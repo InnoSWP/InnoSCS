@@ -6,7 +6,6 @@ from fastapi import APIRouter
 from app.api.repositories import VolunteerRepository
 from app.api.schemas import Filter, Volunteer, VolunteerCreate
 
-
 router = APIRouter()
 
 
