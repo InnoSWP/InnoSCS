@@ -5,18 +5,20 @@ import SideBar from "./components/SideBar";
 import Messenger from "./components/Messenger";
 import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
+import { useWebSocket } from "./components/WebSocket-Context";
+import BackButton from "./components/BackButton";
 
 /**
  * This component is a root of the application.
  */
 function App() {
   const [sidebarActivated, toggleSideBar] = useState<boolean>(true); // toggles SideBar component
-  const [ws, setWebSocket] = useState(null);
   const [problemSolvedActivated, toggleProblemSolved] = useState(false);
   const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
   const [currentThreadName, setCurrentThreadName] = useState<string>(
     localStorage.key(0) === null ? "" : localStorage.key(0)!
   ); // Name of the current thread
+  const { dispatchWebSocket } = useWebSocket();
 
   /**
    * Closes {@link currentThreadName} thread
@@ -25,6 +27,10 @@ function App() {
    */
   function closeCurrentThread() {
     if (currentThreadName !== "") {
+      dispatchWebSocket({
+        type: "CLOSE",
+        thread_name: currentThreadName,
+      });
       localStorage.removeItem(currentThreadName!);
       setCurrentThreadName("");
       toggleSideBar(true);
@@ -38,12 +44,9 @@ function App() {
 
   return (
     <div id="app">
-      <Navbar
-        key="navbar"
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={sidebarActivated}
-        toggleProblemSolved={toggleProblemSolved}
-      />
+      <Navbar key="navbar" toggleProblemSolved={toggleProblemSolved}>
+        <BackButton active={sidebarActivated} toggle={toggleSideBar} />
+      </Navbar>
       <SideBar
         key="sidebar"
         toggleSideBar={toggleSideBar}
@@ -60,7 +63,7 @@ function App() {
         currentThreadName={currentThreadName}
       />
       <Notification
-        id={"problemSolved"}
+        id="problemSolved"
         active={problemSolvedActivated}
         toggleNotification={toggleProblemSolved}
         blur={true}

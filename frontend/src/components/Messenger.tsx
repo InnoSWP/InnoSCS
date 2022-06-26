@@ -3,6 +3,7 @@ import { useState, createRef } from "react";
 import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
+import { useWebSocket } from "./WebSocket-Context";
 /**
  * Messenger component is a main part of the application. It contains Main and MessageBox.
  * @param {{sidebarActivated: boolean, webSocket: WebSocket, addBubble: function, messageBubbles: Array.<MessageBubble>, currentThreadName: string}} props
@@ -14,12 +15,11 @@ import MessageBox from "./MessageBox";
  */
 
 type Props = {
-  sidebarActivated: boolean,
-  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>
-  messageBubbles: JSX.Element[],
-  currentThreadName: string
-
-}
+  sidebarActivated: boolean;
+  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
+  messageBubbles: JSX.Element[];
+  currentThreadName: string;
+};
 
 export default function Messenger({
   sidebarActivated,
@@ -29,25 +29,7 @@ export default function Messenger({
 }: Props) {
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef<HTMLDivElement>();
-  /**
-   * Creates Volunteer Bubble
-   *
-   * In current implementation is used for {@link webSocket} listener event
-   */
-  function createVolunteerBubble(event: MessageEvent<string>) {
-    const type = "message-bubble-volunteer";
-    if (event.data) {
-      addBubble((bubbles) => [
-        <MessageBubble
-          key={`message-${bubbles.length + 1}`}
-          text={event.data}
-          type={type}
-          prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-        />,
-        ...bubbles,
-      ]);
-    }
-  }
+  const { dispatchWebSocket } = useWebSocket();
 
   /**
    * Scrolls chat to latest message using {@link messagesEndRef} reference
@@ -63,7 +45,11 @@ export default function Messenger({
     const type = "message-bubble-user";
 
     if (messageTextInput !== "") {
-
+      dispatchWebSocket({
+        type: "SEND_MESSAGE",
+        message: messageTextInput,
+        thread_name: currentThreadName,
+      });
       addBubble((bubbles) => {
         return [
           <MessageBubble
