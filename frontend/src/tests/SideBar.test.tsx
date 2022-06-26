@@ -92,7 +92,6 @@ it("sidebar test", async () => {
       port: "8000",
     },
   }));
-
   const mock_api = { id: 54534534 };
   global.fetch = jest.fn().mockImplementation(
     () =>

@@ -8,10 +8,10 @@ import SubmitProblem from "./SubmitProblem";
 import Notification from "./Notification";
 import { useWebSocket } from "./WebSocket-Context";
 import { WebSocketConfig } from "./config";
+import { useRecoilState } from "recoil";
+import { sidebarState } from "./atoms";
 
 type Props = {
-  toggleSideBar: (value: boolean | ((prev: boolean) => boolean)) => void;
-  sideBarActivated: boolean;
   addBubble: (
     func: ((prev: JSX.Element[]) => JSX.Element[]) | JSX.Element[]
   ) => void;
@@ -29,12 +29,11 @@ type Props = {
  */
 
 export default function SideBar({
-  toggleSideBar,
-  sideBarActivated,
   addBubble,
   setCurrentThreadName,
   currentThreadName,
 }: Props) {
+  const [sideBarActivated, toggleSideBar] = useRecoilState(sidebarState);
   const [submitProblemTextInput, changeSubmitProblemText] =
     useState<string>("");
   const [submitProblemActivated, toggleSubmitProblem] =

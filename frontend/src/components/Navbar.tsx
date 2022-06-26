@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import "./styles/navbar.css";
 
 import PopupMenu from "./Menu";
+import BackButton from "./BackButton";
+
+import { useRecoilState } from "recoil";
+import { sidebarState } from "./atoms";
 
 /**
  * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
@@ -13,12 +17,12 @@ import PopupMenu from "./Menu";
  */
 
 type Props = {
-  children: React.ReactNode;
   toggleProblemSolved: (value: boolean) => void;
 };
 
-export default function Navbar({ children, toggleProblemSolved }: Props) {
+export default function Navbar({ toggleProblemSolved }: Props) {
   const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
+  const [sidebarActivated, toggleSideBar] = useRecoilState(sidebarState);
 
   // KebabMenu config
   // TODO: add functionality to <Settings> and <Change Volunteer>
@@ -40,8 +44,9 @@ export default function Navbar({ children, toggleProblemSolved }: Props) {
   return (
     <nav>
       <div className="navbar-wrapper">
-        <div className="button-back-container">{children}</div>
-
+        <div className="button-back-container">
+          <BackButton active={sidebarActivated} toggle={toggleSideBar} />
+        </div>
         <div className="title-container">
           <span className="title-text">Customer Support</span>
           <span className="title-status">Online</span>

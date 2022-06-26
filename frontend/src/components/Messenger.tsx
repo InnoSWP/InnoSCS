@@ -4,6 +4,8 @@ import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
 import { useWebSocket } from "./WebSocket-Context";
+import { useRecoilValue } from "recoil";
+import { sidebarState } from "./atoms";
 /**
  * Messenger component is a main part of the application. It contains Main and MessageBox.
  * @param {{sidebarActivated: boolean, webSocket: WebSocket, addBubble: function, messageBubbles: Array.<MessageBubble>, currentThreadName: string}} props
@@ -15,18 +17,17 @@ import { useWebSocket } from "./WebSocket-Context";
  */
 
 type Props = {
-  sidebarActivated: boolean;
   addBubble: (func: (prev: JSX.Element[]) => JSX.Element[]) => void;
   messageBubbles: JSX.Element[];
   currentThreadName: string;
 };
 
 export default function Messenger({
-  sidebarActivated,
   addBubble,
   messageBubbles,
   currentThreadName,
 }: Props) {
+  const sidebarActivated = useRecoilValue(sidebarState);
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef<HTMLDivElement>();
   const { dispatchWebSocket } = useWebSocket();

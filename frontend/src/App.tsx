@@ -6,13 +6,14 @@ import Messenger from "./components/Messenger";
 import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
 import { useWebSocket } from "./components/WebSocket-Context";
-import BackButton from "./components/BackButton";
+import { useRecoilState } from "recoil";
+import { sidebarState } from "./components/atoms";
 
 /**
  * This component is a root of the application.
  */
 function App() {
-  const [sidebarActivated, toggleSideBar] = useState<boolean>(true); // toggles SideBar component
+  const [, toggleSideBar] = useRecoilState(sidebarState);
   const [problemSolvedActivated, toggleProblemSolved] = useState(false);
   const [messageBubbles, addBubble] = useState<JSX.Element[]>([]); // Messages of the current threads
   const [currentThreadName, setCurrentThreadName] = useState<string>(
@@ -40,24 +41,19 @@ function App() {
 
   useEffect(() => {
     toggleSideBar(!problemSolvedActivated);
-  }, [problemSolvedActivated]);
+  }, [problemSolvedActivated, toggleSideBar]);
 
   return (
     <div id="app">
-      <Navbar key="navbar" toggleProblemSolved={toggleProblemSolved}>
-        <BackButton active={sidebarActivated} toggle={toggleSideBar} />
-      </Navbar>
+      <Navbar key="navbar" toggleProblemSolved={toggleProblemSolved} />
       <SideBar
         key="sidebar"
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={sidebarActivated}
         addBubble={addBubble}
         setCurrentThreadName={setCurrentThreadName}
         currentThreadName={currentThreadName}
       />
       <Messenger
         key="messenger"
-        sidebarActivated={sidebarActivated}
         messageBubbles={messageBubbles}
         addBubble={addBubble}
         currentThreadName={currentThreadName}
