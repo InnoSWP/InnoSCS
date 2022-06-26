@@ -19,8 +19,8 @@ const WebSocketContext = createContext<
 >(undefined);
 
 const WebSocketConfig = {
-  address: "77.91.73.240",
-  port: "8000",
+  address: process.env.REACT_APP_IP,
+  port: process.env.REACT_APP_PORT,
 };
 
 const initState = () => {
