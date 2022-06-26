@@ -9,6 +9,7 @@ class WsConnectionManager:
 
     async def connect(self, websocket: WebSocket, room_id: int) -> None:
         await websocket.accept()
+
         self.active_connections[room_id] = self.active_connections.get(room_id, []) + [
             websocket
         ]

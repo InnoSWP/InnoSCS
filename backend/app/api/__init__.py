@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.exceptions import EntityNotFound
+from app.api.exceptions.errorhandlers import entity_not_found_handler
 from app.api.routers import threads, volunteer
 
 
@@ -17,5 +19,7 @@ def create_app() -> FastAPI:
 
     app.include_router(volunteer.router)
     app.include_router(threads.router)
+
+    app.add_exception_handler(EntityNotFound, entity_not_found_handler)
 
     return app

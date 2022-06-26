@@ -22,7 +22,7 @@ test: ## Runs pytest
 .PHONY: lint
 lint: ## Lint code
 	$(VENV)/bin/flake8 --jobs 4 --statistics --show-source $(CODE)
-	$(VENV)/bin/pylint --jobs 4 --rcfile=setup.cfg $(CODE)
+	#$(VENV)/bin/pylint --jobs 4 --rcfile=setup.cfg $(CODE)
 	$(VENV)/bin/mypy $(CODE)
 	$(VENV)/bin/black --skip-string-normalization --check $(CODE)
 
@@ -37,6 +37,7 @@ format: ## Formats all files
 ci:	lint test ## Lint code then run tests
 
 
+<<<<<<< HEAD
 .PHONY: up
 up: ## Launch api service
 	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
@@ -49,4 +50,12 @@ bot: ## Launch the bot
 
 .PHOMY: docker
 docker: ## Launch api service in docker
+=======
+.PHONY: api
+api: ## Launch the api service
+	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
+
+
+docker: ## Launch up in docker
+>>>>>>> backend
 	docker-compose up

@@ -17,7 +17,7 @@ class Sender(str, Enum):
 class MessageBase(BaseModel):
     created_at: datetime
     content: str
-    sender: Sender
+    sender: Optional[Sender]  # TODO: add recognize service, fields must be not optional
 
 
 class MessageCreate(MessageBase):
@@ -28,27 +28,30 @@ class Message(MessageBase):
     pass
 
 
-class SupportBase(BaseModel):
+class SupportThreadBase(BaseModel):
     question: str
-    client_id: Optional[int]
-    volunteer_id: Optional[int]
-    messages: Optional[list[Message]] = []
+    client_id: Optional[int]  # TODO: add recognize service, fields must be not optional
 
     class Config:
         orm_mode = True
 
 
-class SupportCreate(SupportBase):
-    id: Optional[int]
+class SupportThreadCreate(SupportThreadBase):
+    pass
 
 
-class SupportThread(SupportBase):
+class SupportThread(SupportThreadBase):
     id: int
+    volunteer_id: Optional[int] = None
+    messages: list[Message] = []
+
+
+class SupportThreadPatch(BaseModel):
+    volunteer_id: int
 
 
 class VolunteerBase(BaseModel):
     tg_id: int
-    thread_id: Optional[int]
 
     class Config:
         orm_mode = True
