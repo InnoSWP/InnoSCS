@@ -1,14 +1,9 @@
-import asyncio
 import logging
-from asyncio import Task
 from typing import Any
 
-import websockets
 from pyrogram import Client, emoji, filters
 from pyrogram.types import Message
-from websockets import WebSocketClientProtocol  # type: ignore
 
-from app.api.schemas import SupportThread
 from app.bot.exceptions import InvalidInput
 from app.bot.utils import (
     close_support_thread,
@@ -16,6 +11,7 @@ from app.bot.utils import (
     delete_volunteer,
     fetch_threads,
     for_volunteer,
+    get_ws,
     open_support_thread,
 )
 from app.config import settings
@@ -29,10 +25,6 @@ app = Client(
     bot_token=settings.bot_token.get_secret_value(),
 )
 
-chat_ws: dict[int, WebSocketClientProtocol] = {}  # storing ws for specific chat
-chat_task: dict[int, Task[Any]] = {}  # storing task(ws listening) for specific chat
-chat_thread: dict[int, SupportThread] = {}  # storing thread for specific chat
-
 
 @app.on_message(filters=filters.command('start'))  # type: ignore
 async def start(_: Any, message: Message) -> None:
@@ -42,6 +34,25 @@ async def start(_: Any, message: Message) -> None:
     await message.reply(text=response)
 
     logger.info('%s sent the start message', username)
+
+
+@app.on_message(filters=filters.command('help'))  # type: ignore
+async def get_help(_: Any, message: Message) -> None:
+    username = message.from_user.username
+    response = '\n'.join(
+        (
+            emoji.OPEN_BOOK,
+            '/register - to become a volunteer',
+            '/quit - to quit a volunteer role',
+            '/questions to get question',
+            '/resolve - to close thread',
+            '/give_up - to close thread without resolving',
+        )
+    )
+
+    await message.reply(text=response)
+
+    logger.info('%s asked for help list', username)
 
 
 @app.on_message(filters=filters.command('register'))  # type: ignore
@@ -69,39 +80,15 @@ async def quit_volunteer(_: Any, message: Message) -> None:
     username = message.from_user.username
     response = f'You are not a volunteer now {emoji.CRYING_FACE}'
 
-    await delete_volunteer(user_id)
+    try:
+        await delete_volunteer(chat_id, user_id)
 
-    # delete ws task if it present
-    if chat_task.get(chat_id):
-        chat_task[chat_id].cancel()
-        del chat_task[chat_id]
-
-    # close a thread if it was assigned
-    if (thread := chat_thread.get(chat_id)) is not None:
-        await close_support_thread(thread.id, solved=False)
+    except InvalidInput as e:
+        response = e.args[0]
 
     await message.reply(text=response)
 
     logger.info('%s quit volunteer role', username)
-
-
-@app.on_message(filters=filters.command('help'))  # type: ignore
-async def get_help(_: Any, message: Message) -> None:
-    username = message.from_user.username
-    response = '\n'.join(
-        (
-            emoji.OPEN_BOOK,
-            '/register - to become a volunteer',
-            '/quit - to quit a volunteer role',
-            '/questions to get question',
-            '/resolve - to close thread',
-            '/give_up - to close thread without resolving',
-        )
-    )
-
-    await message.reply(text=response)
-
-    logger.info('%s asked for help list', username)
 
 
 @app.on_message(filters=filters.command('questions'))  # type: ignore
@@ -131,21 +118,15 @@ async def assign_support_thread(client: Client, message: Message) -> None:
     )
 
     try:
-        if chat_thread.get(chat_id):
-            raise InvalidInput('You are already has the question')
-
+        # get the thread corresponding to position number
         thread_number = int(message.text.split()[1])
         threads = await fetch_threads(flt='free')
         thread = threads[thread_number]
-        chat_thread[chat_id] = thread
 
-        await open_support_thread(thread.id, user_id)
-
-        response = response.format(thread.question)
-
-        chat_task[chat_id] = asyncio.create_task(
-            listen_to_ws(client, thread.id, chat_id)
+        await open_support_thread(
+            client=client, chat_id=chat_id, thread_id=thread.id, volunteer_tg_id=user_id
         )
+        response = response.format(thread.question)
 
     except InvalidInput as err:
         response = err.args[0]
@@ -166,16 +147,7 @@ async def resolve_support_thread(_: Any, message: Message) -> None:
     response = f'You are disconnected from a client, thank you {emoji.SMILING_FACE} !'
 
     try:
-        if not chat_thread.get(chat_id):
-            raise InvalidInput('You don not have an assigned question')
-
-        thread = chat_thread[chat_id]
-
-        await close_support_thread(thread.id, solved=True)
-
-        # delete ws task
-        chat_task[chat_id].cancel()
-        del chat_task[chat_id]
+        await close_support_thread(chat_id=chat_id, solved=True)
 
     except InvalidInput as err:
         response = err.args[0]
@@ -193,16 +165,7 @@ async def disconnect_support_thread(_: Any, message: Message) -> None:
     response = f'You are disconnected from a client, {emoji.SAD_BUT_RELIEVED_FACE}'
 
     try:
-        if chat_thread.get(chat_id) is None:
-            raise InvalidInput('You don not have an assigned question')
-
-        thread = chat_thread[chat_id]
-
-        await close_support_thread(thread.id, solved=False)
-
-        # delete ws task
-        chat_task[chat_id].cancel()
-        del chat_task[chat_id]
+        await close_support_thread(chat_id=chat_id, solved=False)
 
     except InvalidInput as err:
         response = err.args[0]
@@ -217,17 +180,6 @@ async def disconnect_support_thread(_: Any, message: Message) -> None:
 async def support(_: Any, message: Message) -> None:
     chat_id = message.chat.id
 
-    ws = chat_ws[chat_id]
+    ws = get_ws(chat_id)
 
     await ws.send(message.text)
-
-
-async def listen_to_ws(client: Client, thread_id: int, chat_id: int) -> None:
-    async with websockets.connect(  # type: ignore  #pylint: disable=no-member
-        f'ws://{settings.host}:{settings.port}/ws/{thread_id}'
-    ) as ws:
-        chat_ws[chat_id] = ws
-
-        while True:
-            data = await ws.recv()
-            await client.send_message(chat_id=chat_id, text=data)
