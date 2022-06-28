@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from "react";
+import Notification from "./Notification";
 import "./styles/submitProblem.css";
 /**
  * SubmitProblem component is a Popup Menu that contains input field and submit button. The component creates new Thread.
@@ -12,20 +13,27 @@ type Props = {
   changeText: (value: string) => void;
   inputText: string;
   submitThread: () => void;
-  toggleNotification?: (value: boolean) => void;
+  toggle: (value: boolean) => void;
+  active: boolean;
 };
 
 export default function SubmitProblem({
   changeText,
   inputText,
   submitThread,
-  toggleNotification,
+  toggle,
+  active,
 }: Props) {
   function getText(event: ChangeEvent<HTMLInputElement>) {
     changeText(event.target.value);
   }
   return (
-    <React.Fragment>
+    <Notification
+      id="submit-problem"
+      active={active}
+      toggle={toggle}
+      blur={true}
+    >
       <span className="notification-text">Describe your problem</span>
       <div className="message-wrapper notification">
         <input
@@ -52,14 +60,14 @@ export default function SubmitProblem({
       <button
         data-testid="submit-button"
         className="submit-button"
-        onClick={(event) => {
+        onClick={() => {
           submitThread();
-          toggleNotification!(false);
+          toggle(false);
           changeText("");
         }}
       >
         <span>Submit</span>
       </button>
-    </React.Fragment>
+    </Notification>
   );
 }

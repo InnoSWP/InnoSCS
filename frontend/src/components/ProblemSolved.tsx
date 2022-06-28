@@ -1,19 +1,27 @@
 import React from "react";
 import "./styles/problemSolved.css";
+import Notification from "./Notification";
 
 type Props = {
-  toggleNotification?: (value: boolean) => void;
+  toggle: (value: boolean) => void;
+  active: boolean;
   onCancel: () => void;
   onSubmit: () => void;
 };
 
 export default function ProblemSolved({
-  toggleNotification,
+  toggle,
   onCancel,
   onSubmit,
+  active,
 }: Props) {
   return (
-    <React.Fragment>
+    <Notification
+      id="problem-solved"
+      toggle={toggle}
+      active={active}
+      blur={true}
+    >
       <span className="notification-text">Is your Problem Solved?</span>
       <div className="problem-solved-buttons">
         <button
@@ -21,7 +29,7 @@ export default function ProblemSolved({
           className="no-button"
           onClick={() => {
             onCancel();
-            toggleNotification!(false);
+            toggle(false);
           }}
         >
           <span>No</span>
@@ -31,12 +39,12 @@ export default function ProblemSolved({
           className="yes-button"
           onClick={() => {
             onSubmit();
-            toggleNotification!(false);
+            toggle!(false);
           }}
         >
           <span>Yes</span>
         </button>
       </div>
-    </React.Fragment>
+    </Notification>
   );
 }

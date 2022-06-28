@@ -20,13 +20,5 @@
   padding-top: 25px;
   padding-left: 25px;
   padding-right: 25px;
-  opacity: 0;
-  visibility:hidden;
   transition: 0.5s;
-}
-
-.notification-container.activated {
-  opacity: 1;
-  visibility: visible;
-  transition: 2s;
 }

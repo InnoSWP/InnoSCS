@@ -12,6 +12,7 @@ import {
   messageBubblesState,
   sidebarState,
 } from "./components/atoms";
+import SubmitProblem from "./components/SubmitProblem";
 
 /**
  * This component is a root of the application.
@@ -52,17 +53,12 @@ function App() {
       <Navbar key="navbar" toggleProblemSolved={toggleProblemSolved} />
       <SideBar key="sidebar" />
       <Messenger key="messenger" />
-      <Notification
-        id="problemSolved"
+      <ProblemSolved
+        toggle={toggleProblemSolved}
+        onCancel={() => console.log("no")}
+        onSubmit={closeCurrentThread}
         active={problemSolvedActivated}
-        toggleNotification={toggleProblemSolved}
-        blur={true}
-      >
-        <ProblemSolved
-          onCancel={() => console.log("No")}
-          onSubmit={closeCurrentThread}
-        />
-      </Notification>
+      />
     </div>
   );
 }

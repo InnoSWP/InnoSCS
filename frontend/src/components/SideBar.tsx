@@ -214,18 +214,13 @@ export default function SideBar() {
           />
         </svg>
       </button>
-      <Notification
-        id="submitProblem"
+      <SubmitProblem
+        changeText={changeSubmitProblemText}
+        inputText={submitProblemTextInput}
+        submitThread={submitThread}
+        toggle={toggleSubmitProblem}
         active={submitProblemActivated}
-        toggleNotification={toggleSubmitProblem}
-        blur={true}
-      >
-        <SubmitProblem
-          changeText={changeSubmitProblemText}
-          inputText={submitProblemTextInput}
-          submitThread={submitThread}
-        />
-      </Notification>
+      />
     </div>
   );
 }
