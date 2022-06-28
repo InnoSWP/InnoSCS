@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import "./styles/navbar.css";
 
-import PopupMenu from "./Menu";
+import PopupMenu from "./PopupMenu";
 import BackButton from "./BackButton";
 
 import { useRecoilState } from "recoil";

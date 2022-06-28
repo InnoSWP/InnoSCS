@@ -26,15 +26,6 @@ body {
   width: 100vw;
   height: 100vh;
   z-index: 7;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s, visibility 0s linear 0.3s;
-}
-
-.popup-wrapper.activated {
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s;
 }
 
 
