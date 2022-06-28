@@ -1,5 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import ReactDOM from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
 /**
  * Modal component is a wrapper for Popup menus such as {@link KebabMenu} and {@link SubmitProblemNotification}
  * @param {{isOpen: boolean, onClose: function}} props
@@ -12,18 +13,27 @@ type Props = {
   isOpen: boolean;
   onClose: MouseEventHandler<HTMLDivElement>;
   children?: React.ReactNode;
+  blur?: boolean;
 };
 
-export default function Modal({ id, isOpen, onClose, children }: Props) {
+export default function Modal({ id, isOpen, onClose, children, blur }: Props) {
   return ReactDOM.createPortal(
-    <div
-      data-testid="modal-container"
-      className={"modal-container " + id + "-modal"}
-      onClick={onClose}
-      style={{ visibility: isOpen ? "visible" : "hidden" }}
-    >
-      {children}
-    </div>,
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          data-testid="modal-container"
+          className={"modal-container " + id + "-modal"}
+          onClick={onClose}
+          initial={{ backdropFilter: "blur(0px) brightness(100%)" }}
+          animate={blur && { backdropFilter: "blur(4px) brightness(90%)" }}
+          exit={{ backdropFilter: "blur(0px) brightness(100%)" }}
+          transition={{ duration: 0.5 }}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>,
+
     document.body
   );
 }
