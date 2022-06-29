@@ -3,16 +3,19 @@ import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
 import Messenger from "./components/Messenger";
-import Notification from "./components/Notification";
 import ProblemSolved from "./components/ProblemSolved";
-import { useWebSocket } from "./components/WebSocket-Context";
+import { WebSocketConfig } from "./components/config";
+import {
+  getThreadIdByName,
+  useWebSocket,
+} from "./components/WebSocket-Context";
+
 import { useRecoilState } from "recoil";
 import {
   currentThreadNameState,
   messageBubblesState,
   sidebarState,
 } from "./components/atoms";
-import SubmitProblem from "./components/SubmitProblem";
 
 /**
  * This component is a root of the application.
@@ -33,14 +36,23 @@ function App() {
    */
   function closeCurrentThread() {
     if (currentThreadName !== "") {
-      dispatchWebSocket({
-        type: "CLOSE",
-        thread_name: currentThreadName,
+      fetch(
+        `http://${WebSocketConfig.address}:${
+          WebSocketConfig.port
+        }/threads/${getThreadIdByName(currentThreadName)}`,
+        {
+          method: "DELETE",
+        }
+      ).then((t) => {
+        dispatchWebSocket({
+          type: "CLOSE",
+          thread_name: currentThreadName,
+        });
+        localStorage.removeItem(currentThreadName!);
+        setCurrentThreadName("");
+        toggleSideBar(true);
+        addBubble([]);
       });
-      localStorage.removeItem(currentThreadName!);
-      setCurrentThreadName("");
-      toggleSideBar(true);
-      addBubble([]);
     }
   }
 
