@@ -17,6 +17,11 @@ nav {
   justify-content: center;
 }
 
+.button-menu-svg {
+  align-items: center;
+  justify-content: center;
+}
+
 .button-menu-container {
   padding-top: 21px;
   padding-right: 16px;
