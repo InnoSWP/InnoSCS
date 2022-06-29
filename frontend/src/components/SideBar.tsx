@@ -5,7 +5,6 @@ import "./styles/sidebar.css";
 import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblem from "./SubmitProblem";
-import Notification from "./Notification";
 import { useWebSocket } from "./WebSocket-Context";
 import { WebSocketConfig } from "./config";
 import { useRecoilState } from "recoil";
@@ -137,9 +136,15 @@ export default function SideBar() {
   const parseBigInt = async (response: Response) => {
     // !!! SCARY PARSING !!!
     const json_data = await response.text();
-    const json_data2 = json_data.split(":");
-    const id = json_data2[json_data2.length - 1].replace("}", "");
-    return id;
+    const json_data2 = json_data
+      .split(",")
+      .map((val) => val.replace("}", "").replace("{", "").split(":"));
+    for (let [field, value] of json_data2) {
+      if (field === `"id"`) return value;
+    }
+
+    throw new Error("Couldn't get an id");
+
     // !!! SCARY PARSING !!!
   };
 
