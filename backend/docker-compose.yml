@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     restart: on-failure
-
+    
   bot:
     image: api_image
     links:
@@ -20,3 +20,4 @@ services:
       - .env
     command: python -m app.bot
     restart: on-failure
+

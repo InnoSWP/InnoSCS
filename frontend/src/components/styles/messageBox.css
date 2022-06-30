@@ -1,4 +1,6 @@
 .message-box-wrapper {
+  bottom: 0;
+  width: 100vw;
   height: 85px;
   display: flex;
   flex-direction: row;
@@ -12,7 +14,6 @@
   margin-left: 16px;
   display: flex;
   flex-direction: row;
-  flex-flow: row;
   justify-content: space-between;
   flex: 1 1 auto;
   height: 46px;
@@ -58,3 +59,4 @@
   border: 0;
   outline: 0;
 }
+

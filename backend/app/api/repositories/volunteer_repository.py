@@ -20,8 +20,6 @@ class VolunteerRepository:
         """
         try:
             await VolunteerRepository.find_by_tg_id(volunteer.tg_id)
-            raise EntityAlreadyExists()
-
         except EntityNotFound:
             volunteer_new = Volunteer(
                 tg_id=volunteer.tg_id,
@@ -29,6 +27,8 @@ class VolunteerRepository:
             _volunteers.append(volunteer_new)
 
             return volunteer_new
+        else:
+            raise EntityAlreadyExists()
 
     @staticmethod
     async def find_all(flt: Optional[Filter] = None) -> list[Volunteer]:

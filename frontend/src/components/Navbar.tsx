@@ -1,24 +1,46 @@
+import React, { useState } from "react";
+
 import "./styles/navbar.css";
-export default function Navbar() {
+
+import PopupMenu from "./Menu";
+
+/**
+ * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
+ * @param {{sideBarActivated: boolean, toggleSideBar: function, closeCurrentThread: function}} props
+ * @param {boolean} sideBarActivated represents the state of the SideBar component
+ * @param {function} toggleSideBar function that changes the state of the SideBar component
+ * @param {function} closeCurrentThread function that closes the current thread
+ */
+
+type Props = {
+  children: React.ReactNode;
+  toggleProblemSolved: (value: boolean) => void;
+};
+
+export default function Navbar({ children, toggleProblemSolved }: Props) {
+  const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
+
+  // KebabMenu config
+  // TODO: add functionality to <Settings> and <Change Volunteer>
+  const opts = [
+    {
+      optionName: "Close thread",
+      onClick: () => toggleProblemSolved(true),
+    },
+    {
+      optionName: "Settings",
+      onClick: () => console.log("Settings opened"),
+    },
+    {
+      optionName: "Change Volunteer",
+      onClick: () => console.log("Volunteer changed"),
+    },
+  ];
+
   return (
     <nav>
       <div className="navbar-wrapper">
-        <div className="button-back-container">
-          <button className="button-back">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M21.6666 9.66667V12.3333H5.66663L13 19.6667L11.1066 21.56L0.546631 11L11.1066 0.440002L13 2.33334L5.66663 9.66667H21.6666Z"
-                fill="black"
-              />
-            </svg>
-          </button>
-        </div>
+        <div className="button-back-container">{children}</div>
 
         <div className="title-container">
           <span className="title-text">Customer Support</span>
@@ -27,7 +49,7 @@ export default function Navbar() {
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu">
+        <button className="button-menu" onClick={() => toggleMenuPopup(true)}>
           <svg
             width="6"
             height="22"
@@ -42,6 +64,13 @@ export default function Navbar() {
           </svg>
         </button>
       </div>
+      <PopupMenu
+        key="kebab-menu"
+        id="kebab-menu"
+        active={menuActivated}
+        togglePopup={toggleMenuPopup}
+        optionsData={opts}
+      />
     </nav>
   );
 }
