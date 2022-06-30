@@ -141,3 +141,7 @@ cython_debug/
 
 .vscode
 .idea
+
+# db, session files
+*.db
+*.session
