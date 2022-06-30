@@ -1,0 +1,38 @@
+.no-button {
+  border: 2px solid #ff5959;
+  background-color: white;
+}
+
+.yes-button {
+  border-width: 0px;
+  background-color: #349eff;
+}
+
+.yes-button, .no-button {
+  width: 114px;
+  height: 43px;
+  border-radius: 10px;
+}
+
+.no-button > span, .yes-button > span {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.no-button > span {
+  color: #ff5959;
+}
+
+.yes-button > span {
+  color: white
+}
+
+.problem-solved-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 74px
+}

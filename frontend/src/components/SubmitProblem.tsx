@@ -1,16 +1,37 @@
-import "./styles/messageBox.css";
-export default function MessageBox(props) {
-  function getText(event) {
-    props.changeText(() => event.target.value);
-  }
+import React, { ChangeEvent } from "react";
+import "./styles/submitProblem.css";
+/**
+ * SubmitProblem component is a Popup Menu that contains input field and submit button. The component creates new Thread.
+ * @param {{changeText: function, show: boolean, inputText: string, submitThread: function}} props
+ * @param {function} changeText function that changes state of the input field text
+ * @param {string} inputText text of the input field
+ * @param {function} submitThread function that submits new thread
+ */
 
+type Props = {
+  changeText: (value: string) => void;
+  inputText: string;
+  submitThread: () => void;
+  toggleNotification?: (value: boolean) => void;
+};
+
+export default function SubmitProblem({
+  changeText,
+  inputText,
+  submitThread,
+  toggleNotification,
+}: Props) {
+  function getText(event: ChangeEvent<HTMLInputElement>) {
+    changeText(event.target.value);
+  }
   return (
-    <div className="message-box-wrapper">
-      <div className="message-wrapper">
+    <React.Fragment>
+      <span className="notification-text">Describe your problem</span>
+      <div className="message-wrapper notification">
         <input
           placeholder="Type your message here..."
           onChange={getText}
-          value={props.inputText}
+          value={inputText}
         />
         <div className="button-attach">
           <svg
@@ -28,23 +49,15 @@ export default function MessageBox(props) {
         </div>
       </div>
       <button
-        className="button-send"
-        onClick={() => {
-          props.createBubble();
-          props.scrollToBottom();
-          props.changeText(() => "");
+        className="submit-button"
+        onClick={(event) => {
+          submitThread();
+          toggleNotification!(false);
+          changeText("");
         }}
       >
-        <svg
-          width="21"
-          height="18"
-          viewBox="0 0 21 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M0 18L21 9L0 0V7L15 9L0 11V18Z" fill="white" />
-        </svg>
+        <span>Submit</span>
       </button>
-    </div>
+    </React.Fragment>
   );
 }

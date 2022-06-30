@@ -1,0 +1,32 @@
+.notification-text {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.submit-button {
+  width: 170px;
+  height: 43px;
+  border-radius: 10px;
+  background: #349EFF;
+  border-width: 0;
+
+}
+
+.submit-button > span {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: white;
+}
+
+.message-wrapper.notification {
+  flex: 0 0 auto;
+  width: 100%;
+  margin-top: 0px;
+  margin-right: 15px;
+  margin-bottom: 25px;
+}
+
