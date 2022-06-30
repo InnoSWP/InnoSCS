@@ -29,6 +29,7 @@ export default function SubmitProblem({
       <span className="notification-text">Describe your problem</span>
       <div className="message-wrapper notification">
         <input
+          data-testid="submit-problem-input"
           placeholder="Type your message here..."
           onChange={getText}
           value={inputText}
@@ -49,6 +50,7 @@ export default function SubmitProblem({
         </div>
       </div>
       <button
+        data-testid="submit-button"
         className="submit-button"
         onClick={(event) => {
           submitThread();

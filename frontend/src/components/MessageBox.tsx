@@ -28,6 +28,7 @@ export default function MessageBox({
     <div className="message-box-wrapper">
       <div className="message-wrapper">
         <input
+          data-testid="message-input"
           placeholder="Type your message here..."
           onChange={getText}
           value={inputText}
@@ -47,7 +48,11 @@ export default function MessageBox({
           </svg>
         </div>
       </div>
-      <button className="button-send" onClick={sendMessage}>
+      <button
+        data-testid="button-send"
+        className="button-send"
+        onClick={sendMessage}
+      >
         <svg
           width="21"
           height="18"

@@ -49,7 +49,11 @@ export default function Navbar({ children, toggleProblemSolved }: Props) {
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu" onClick={() => toggleMenuPopup(true)}>
+        <button
+          data-testid="button-menu"
+          className="button-menu"
+          onClick={() => toggleMenuPopup(true)}
+        >
           <svg
             width="6"
             height="22"

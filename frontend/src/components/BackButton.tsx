@@ -5,6 +5,7 @@ type Props = {
 export default function BackButton({ active, toggle }: Props) {
   return (
     <button
+      data-testid="button-back"
       className={active ? "button-back rotated" : "button-back"}
       onClick={() => toggle((prev) => !prev)}
     >

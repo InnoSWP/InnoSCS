@@ -8,17 +8,22 @@ import "./styles/messageBubble.css";
  */
 
 type Props = {
-  text: string,
-  type: "message-bubble-volunteer" | "message-bubble-user",
-  prevSender: "message-bubble-volunteer" | "message-bubble-user"
-}
+  text: string;
+  type: "message-bubble-volunteer" | "message-bubble-user";
+  prevSender: "message-bubble-volunteer" | "message-bubble-user" | null;
+};
 
 export default function MessageBubble({ text, type, prevSender }: Props) {
-  const flexibleMargin =
-    prevSender === null ? 16 : prevSender === type ? 8 : 16; // the margin is being calculated depending on the previous sender
+  const calculateMargin = () => {
+    return prevSender === null ? 16 : prevSender === type ? 8 : 16; // the margin is being calculated depending on the previous sender
+  };
   return (
     <div className={`${type}-wrapper`}>
-      <div className={type} style={{ marginTop: `${flexibleMargin}px` }}>
+      <div
+        data-testid="message-bubble"
+        className={type}
+        style={{ marginTop: `${calculateMargin()}px` }}
+      >
         <p>{text}</p>
       </div>
     </div>

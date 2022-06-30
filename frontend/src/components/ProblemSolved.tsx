@@ -17,6 +17,7 @@ export default function ProblemSolved({
       <span className="notification-text">Is your Problem Solved?</span>
       <div className="problem-solved-buttons">
         <button
+          data-testid="no-button"
           className="no-button"
           onClick={() => {
             onCancel();
@@ -26,6 +27,7 @@ export default function ProblemSolved({
           <span>No</span>
         </button>
         <button
+          data-testid="yes-button"
           className="yes-button"
           onClick={() => {
             onSubmit();
