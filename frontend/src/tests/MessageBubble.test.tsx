@@ -28,11 +28,11 @@ it("margin test same types", () => {
   expect(messageBubble.style.marginTop).toBe("8px");
 });
 
-it("margin test prevSender null", () => {
+it("margin test prevSender volunteer", () => {
   render(
     <MessageBubble
       text={"Test"}
-      prevSender={null}
+      prevSender={"message-bubble-volunteer"}
       type={"message-bubble-user"}
     />
   );

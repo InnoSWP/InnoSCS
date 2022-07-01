@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WebSocketProvider } from "../components/WebSocket-Context";
 import App from "../App";
+import { RecoilRoot } from "recoil";
 
 it("test App", () => {
   localStorage.setItem(
@@ -12,16 +13,18 @@ it("test App", () => {
     })
   );
   render(
-    <WebSocketProvider
-      debugValue={{
-        webSocketState: { webSocket: {} },
-        dispatchWebSocket: () => {
-          // mock
-        },
-      }}
-    >
-      <App />
-    </WebSocketProvider>
+    <RecoilRoot>
+      <WebSocketProvider
+        debugValue={{
+          webSocketState: { webSocket: {} },
+          dispatchWebSocket: () => {
+            // mock
+          },
+        }}
+      >
+        <App />
+      </WebSocketProvider>
+    </RecoilRoot>
   );
   const menuOptions = screen.getAllByTestId("menu-option");
   for (let i = 0; i < menuOptions.length; i++) {

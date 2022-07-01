@@ -9,6 +9,18 @@ import {
 import SideBar from "../components/SideBar";
 import { WebSocketProvider } from "../components/WebSocket-Context";
 import { act } from "react-dom/test-utils";
+import { useEffect } from "react";
+import {
+  useRecoilState,
+  useRecoilValue,
+  RecoilState,
+  RecoilRoot,
+} from "recoil";
+import {
+  sidebarState,
+  messageBubblesState,
+  currentThreadNameState,
+} from "../components/atoms";
 
 type WebSocketAction =
   | {
@@ -50,6 +62,36 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
 });
+
+type RecoilObserverProps = {
+  node: RecoilState<any>;
+  onChange: Function;
+};
+
+const RecoilObserver = ({ node, onChange }: RecoilObserverProps) => {
+  const value = useRecoilValue(node);
+  useEffect(() => onChange(value), [onChange, value]);
+  return null;
+};
+
+type RecoilStateHelperProps = {
+  sidebarActivated: boolean;
+  messageBubbles: JSX.Element[];
+  currentThreadName: string;
+};
+const RecoilTestHelper = ({
+  sidebarActivated,
+  messageBubbles,
+  currentThreadName,
+}: RecoilStateHelperProps) => {
+  const [, toggleSideBar] = useRecoilState(sidebarState);
+  const [, addBubble] = useRecoilState(messageBubblesState);
+  const [, setCurrentThreadName] = useRecoilState(currentThreadNameState);
+  toggleSideBar(sidebarActivated);
+  addBubble(messageBubbles);
+  setCurrentThreadName(currentThreadName);
+  return <div></div>;
+};
 
 it("sidebar test", async () => {
   let bubbles: JSX.Element[] = [];
@@ -131,34 +173,41 @@ it("sidebar test", async () => {
   );
 
   const { rerender } = render(
-    <WebSocketProvider
-      debugValue={{
-        dispatchWebSocket: mockDispatchWebSocket,
-        webSocketState: { webSocket: {} },
-      }}
-    >
-      <SideBar
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={activated}
-        addBubble={addBubble}
-        setCurrentThreadName={setCurrentThreadName}
-        currentThreadName={currentThreadName}
-      />
-    </WebSocketProvider>
+    <RecoilRoot>
+      <WebSocketProvider
+        debugValue={{
+          dispatchWebSocket: mockDispatchWebSocket,
+          webSocketState: { webSocket: {} },
+        }}
+      >
+        <RecoilObserver node={sidebarState} onChange={toggleSideBar} />
+        <RecoilObserver
+          node={currentThreadNameState}
+          onChange={setCurrentThreadName}
+        />
+        <RecoilObserver node={messageBubblesState} onChange={addBubble} />
+        <SideBar />
+      </WebSocketProvider>
+    </RecoilRoot>
   );
-
-  const addButton = screen.getByTestId("add-button");
-  const inputSubmit: HTMLInputElement = screen.getByTestId(
+  let inputSubmit: HTMLInputElement | null = screen.queryByTestId(
     "submit-problem-input"
   );
-  const submitButton = screen.getByTestId("submit-button");
+  let submitButton = screen.queryByTestId("submit-button");
+  const addButton = screen.getByTestId("add-button");
+
+  await waitFor(() => {
+    inputSubmit = screen.queryByTestId("submit-problem-input");
+    submitButton = screen.queryByTestId("submit-button");
+  });
 
   fireEvent.click(addButton);
-  fireEvent.change(inputSubmit, { target: { value: "testing 2" } });
+  fireEvent.change(inputSubmit!, { target: { value: "testing 2" } });
+
   await waitFor(() => {
-    expect(inputSubmit.value).toBe("testing 2");
+    expect(inputSubmit!.value).toBe("testing 2");
   });
-  fireEvent.click(submitButton);
+  fireEvent.click(submitButton!);
 
   const threads = await screen.findAllByTestId("thread-container");
 
@@ -170,20 +219,22 @@ it("sidebar test", async () => {
   });
 
   rerender(
-    <WebSocketProvider
-      debugValue={{
-        dispatchWebSocket: mockDispatchWebSocket,
-        webSocketState: { webSocket: {} },
-      }}
-    >
-      <SideBar
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={activated}
-        addBubble={addBubble}
-        setCurrentThreadName={setCurrentThreadName}
-        currentThreadName={currentThreadName}
-      />
-    </WebSocketProvider>
+    <RecoilRoot>
+      <WebSocketProvider
+        debugValue={{
+          dispatchWebSocket: mockDispatchWebSocket,
+          webSocketState: { webSocket: {} },
+        }}
+      >
+        <RecoilObserver node={sidebarState} onChange={toggleSideBar} />
+        <RecoilObserver
+          node={currentThreadNameState}
+          onChange={setCurrentThreadName}
+        />
+        <RecoilObserver node={messageBubblesState} onChange={addBubble} />
+        <SideBar />
+      </WebSocketProvider>
+    </RecoilRoot>
   );
 
   expect(setCurrentThreadName).toBeCalled();
@@ -192,11 +243,11 @@ it("sidebar test", async () => {
 
   for (let i = 3; i < 6; i++) {
     fireEvent.click(addButton);
-    fireEvent.change(inputSubmit, { target: { value: `testing ${i}` } });
+    fireEvent.change(inputSubmit!, { target: { value: `testing ${i}` } });
     await waitFor(() => {
-      expect(inputSubmit.value).toBe(`testing ${i}`);
+      expect(inputSubmit!.value).toBe(`testing ${i}`);
     });
-    fireEvent.click(submitButton);
+    fireEvent.click(submitButton!);
   }
 
   fireEvent.click(threads[1]);
@@ -204,23 +255,25 @@ it("sidebar test", async () => {
   expect(addButton.className).toBe("add-button removed");
 
   fireEvent.click(addButton);
-  fireEvent.click(submitButton);
+  fireEvent.click(submitButton!);
 
   rerender(
-    <WebSocketProvider
-      debugValue={{
-        dispatchWebSocket: mockDispatchWebSocket,
-        webSocketState: { webSocket: {} },
-      }}
-    >
-      <SideBar
-        toggleSideBar={toggleSideBar}
-        sideBarActivated={!activated}
-        addBubble={addBubble}
-        setCurrentThreadName={setCurrentThreadName}
-        currentThreadName={currentThreadName}
-      />
-    </WebSocketProvider>
+    <RecoilRoot>
+      <WebSocketProvider
+        debugValue={{
+          dispatchWebSocket: mockDispatchWebSocket,
+          webSocketState: { webSocket: {} },
+        }}
+      >
+        <RecoilObserver node={sidebarState} onChange={toggleSideBar} />
+        <RecoilObserver
+          node={currentThreadNameState}
+          onChange={setCurrentThreadName}
+        />
+        <RecoilObserver node={messageBubblesState} onChange={addBubble} />
+        <SideBar />
+      </WebSocketProvider>
+    </RecoilRoot>
   );
 
   expect(addButton.className).toBe("add-button");

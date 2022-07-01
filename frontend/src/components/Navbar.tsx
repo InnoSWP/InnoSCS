@@ -7,7 +7,7 @@ import BackButton from "./BackButton";
 
 import { useRecoilState } from "recoil";
 import { sidebarState } from "./atoms";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 /**
  * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
