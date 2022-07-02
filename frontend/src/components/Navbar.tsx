@@ -6,7 +6,14 @@ import PopupMenu from "./PopupMenu";
 import BackButton from "./BackButton";
 
 import { useRecoilState } from "recoil";
-import { sidebarState } from "./atoms";
+import {
+  messageBubblesState,
+  problemSolvedState,
+  selectedThreadsState,
+  sidebarState,
+  threadDeletionState,
+  threadsState,
+} from "./atoms";
 import { motion } from "framer-motion";
 
 /**
@@ -17,28 +24,32 @@ import { motion } from "framer-motion";
  * @param {function} closeCurrentThread function that closes the current thread
  */
 
-type Props = {
-  toggleProblemSolved: (value: boolean) => void;
-};
-
-export default function Navbar({ toggleProblemSolved }: Props) {
-  const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
-  const [sidebarActivated, toggleSideBar] = useRecoilState(sidebarState);
+export default function Navbar() {
+  const [menuActive, toggleMenuPopup] = useState<boolean>(false);
+  const [sidebarActive, toggleSideBar] = useRecoilState(sidebarState);
+  const [threadDeletionActive, toggleThreadDeletion] =
+    useRecoilState(threadDeletionState);
+  const [, setThreads] = useRecoilState(threadsState);
+  const [, toggleProblemSolved] = useRecoilState(problemSolvedState);
+  const [, setMessageBubbles] = useRecoilState(messageBubblesState);
+  const [selectedThreads, setSelectedThreads] =
+    useRecoilState(selectedThreadsState);
 
   // KebabMenu config
-  // TODO: add functionality to <Settings> and <Change Volunteer>
-  const opts = [
+  const kebabOpts = [
     {
       optionName: "Close thread",
       onClick: () => toggleProblemSolved(true),
     },
+  ];
+  // Hamburger config
+  const hamburgerOpts = [
     {
-      optionName: "Settings",
-      onClick: () => console.log("Settings opened"),
-    },
-    {
-      optionName: "Change Volunteer",
-      onClick: () => console.log("Volunteer changed"),
+      optionName: "Delete thread",
+      onClick: () => {
+        setSelectedThreads([]);
+        toggleThreadDeletion(true);
+      },
     },
   ];
 
@@ -48,6 +59,7 @@ export default function Navbar({ toggleProblemSolved }: Props) {
       x: 0,
       rx: 1.9553,
       height: 3.2,
+      opacity: 1,
     },
 
     kebab: {
@@ -55,14 +67,61 @@ export default function Navbar({ toggleProblemSolved }: Props) {
       x: 9.84613,
       rx: 1.88462,
       height: 3.91061,
+      opacity: 1,
+    },
+
+    cross_top: {
+      rotate: "45deg",
+      translateY: 8,
+    },
+
+    cross_middle: {
+      opacity: 0,
+    },
+
+    cross_bottom: {
+      rotate: "-45deg",
+      translateY: -8,
+      translateX: -2,
     },
   };
+
+  function deleteThreads() {
+    console.log("Deleted: ", selectedThreads);
+    if (selectedThreads.length > 0) {
+      for (let threadName of selectedThreads) {
+        setThreads((prev) => {
+          let index = -1;
+          const newThreads = Array.from(prev);
+          for (let i = 0; i < newThreads.length; i++) {
+            if (newThreads[i].props.problemName === threadName) {
+              index = i;
+              break;
+            }
+          }
+
+          if (index !== -1) {
+            newThreads.splice(index, 1);
+            return newThreads;
+          }
+          return prev;
+        });
+        localStorage.removeItem(threadName);
+      }
+      setSelectedThreads([]);
+      toggleSideBar(true);
+      setMessageBubbles([]);
+    }
+  }
 
   return (
     <nav>
       <div className="navbar-wrapper">
         <div className="button-back-container">
-          <BackButton active={sidebarActivated} toggle={toggleSideBar} />
+          <BackButton
+            active={sidebarActive}
+            toggle={threadDeletionActive ? toggleThreadDeletion : toggleSideBar}
+          />
         </div>
         <div className="title-container">
           <span className="title-text">Customer Support</span>
@@ -74,35 +133,63 @@ export default function Navbar({ toggleProblemSolved }: Props) {
         <button
           data-testid="button-menu"
           className="button-menu"
-          onClick={() => toggleMenuPopup(true)}
+          onClick={() => {
+            if (threadDeletionActive) {
+              toggleThreadDeletion(false);
+              deleteThreads();
+            } else toggleMenuPopup(true);
+          }}
         >
           <motion.svg
             className="button-menu-svg"
             width="28"
-            height="22"
+            height="28"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <motion.rect
+              key="menu-bottom"
               variants={variants}
-              animate={sidebarActivated ? "hamburger" : "kebab"}
-              transition={{ duration: 0.5 }}
               y="18.0894"
+              style={{ originX: "14", originY: "18.0894" }}
+              animate={
+                sidebarActive
+                  ? threadDeletionActive
+                    ? "cross_bottom"
+                    : "hamburger"
+                  : "kebab"
+              }
+              transition={{ duration: 0.5 }}
               fill="black"
             />
             <motion.rect
+              key="menu-middle"
               variants={variants}
-              animate={sidebarActivated ? "hamburger" : "kebab"}
-              transition={{ duration: 0.4 }}
               y="10.04468"
+              animate={
+                sidebarActive
+                  ? threadDeletionActive
+                    ? "cross_middle"
+                    : "hamburger"
+                  : "kebab"
+              }
+              transition={{ duration: 0.4 }}
               fill="black"
             />
             <motion.rect
+              key="menu-top"
               variants={variants}
-              animate={sidebarActivated ? "hamburger" : "kebab"}
+              y="2"
+              style={{ originX: "14", originY: "2" }}
+              animate={
+                sidebarActive
+                  ? threadDeletionActive
+                    ? "cross_top"
+                    : "hamburger"
+                  : "kebab"
+              }
               transition={{ duration: 0.3 }}
               fill="black"
-              y="2"
             />
           </motion.svg>
         </button>
@@ -110,9 +197,9 @@ export default function Navbar({ toggleProblemSolved }: Props) {
       <PopupMenu
         key="kebab-menu"
         id="kebab-menu"
-        active={menuActivated}
+        active={menuActive}
         togglePopup={toggleMenuPopup}
-        optionsData={opts}
+        optionsData={sidebarActive ? hamburgerOpts : kebabOpts}
       />
     </nav>
   );

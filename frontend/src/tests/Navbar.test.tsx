@@ -4,10 +4,9 @@ import Navbar from "../components/Navbar";
 import { RecoilRoot } from "recoil";
 
 it("toggle menu popup test", () => {
-  const toggleProblemSolved = jest.fn();
   render(
     <RecoilRoot>
-      <Navbar toggleProblemSolved={toggleProblemSolved} />
+      <Navbar />
     </RecoilRoot>
   );
 

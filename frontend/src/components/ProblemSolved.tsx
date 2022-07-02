@@ -5,8 +5,8 @@ import Notification from "./Notification";
 type Props = {
   toggle: (value: boolean) => void;
   active: boolean;
-  onCancel: () => void;
-  onSubmit: () => void;
+  onCancel: (status: string) => void;
+  onSubmit: (status: string) => void;
 };
 
 export default function ProblemSolved({
@@ -28,7 +28,7 @@ export default function ProblemSolved({
           data-testid="no-button"
           className="no-button"
           onClick={() => {
-            onCancel();
+            onCancel("unsolved");
             toggle(false);
           }}
         >
@@ -38,7 +38,7 @@ export default function ProblemSolved({
           data-testid="yes-button"
           className="yes-button"
           onClick={() => {
-            onSubmit();
+            onSubmit("resolved");
             toggle!(false);
           }}
         >

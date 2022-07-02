@@ -14,3 +14,23 @@ export const messageBubblesState = atom<JSX.Element[]>({
   key: "messageBubblesState",
   default: [],
 });
+
+export const threadDeletionState = atom({
+  key: "threadDeletionState",
+  default: false,
+});
+
+export const threadsState = atom<JSX.Element[]>({
+  key: "threadsState",
+  default: [],
+});
+
+export const selectedThreadsState = atom<string[]>({
+  key: "selectedThreadsState",
+  default: [],
+});
+
+export const problemSolvedState = atom({
+  key: "problemSolvedState",
+  default: false,
+});

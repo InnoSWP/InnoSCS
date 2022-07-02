@@ -5,14 +5,18 @@ import "./styles/sidebar.css";
 import Thread from "./Thread";
 import MessageBubble from "./MessageBubble";
 import SubmitProblem from "./SubmitProblem";
-import { useWebSocket } from "./WebSocket-Context";
+import ProblemSolved from "./ProblemSolved";
+import { useWebSocket, getThreadIdByName } from "./WebSocket-Context";
 import { WebSocketConfig } from "./config";
 import { useRecoilState } from "recoil";
 import {
   currentThreadNameState,
   messageBubblesState,
   sidebarState,
+  threadsState,
+  problemSolvedState,
 } from "./atoms";
+import { AnimatePresence } from "framer-motion";
 
 /**
  * SideBar component contains list of all threads
@@ -31,11 +35,14 @@ export default function SideBar() {
     useState<string>("");
   const [submitProblemActivated, toggleSubmitProblem] =
     useState<boolean>(false);
-  const [threads, addThread] = useState<JSX.Element[]>([]);
+  const [threads, addThread] = useRecoilState(threadsState);
   const { dispatchWebSocket } = useWebSocket();
   const [currentThreadName, setCurrentThreadName] = useRecoilState(
     currentThreadNameState
   );
+  const [problemSolvedActivated, toggleProblemSolved] =
+    useRecoilState(problemSolvedState);
+  const [isSyncing, setSyncing] = useState(false);
 
   /**
    * Creates Volunteer Bubble
@@ -69,7 +76,6 @@ export default function SideBar() {
     [addBubble]
   );
 
-  // TODO: rewrite using previous value of setCurrentThreadName function (GENIUS)
   const toggleCurrentThreadValue = (
     futureThread: string,
     previousThread: string
@@ -112,26 +118,38 @@ export default function SideBar() {
     },
     [addBubble, toggleSideBar, setCurrentThreadName, currentThreadName]
   );
-
   // Thread list sync with localStorage, whenever current thread is changed
-  useEffect(() => {
+  const syncThreads = useCallback(() => {
+    setSyncing(true);
     addThread([]);
     for (let i = 0; i < localStorage.length; i++) {
+      const threadJson = JSON.parse(
+        localStorage.getItem(localStorage.key(i)!)!
+      );
       addThread((threads) => [
         ...threads,
         <Thread
-          key={`thread-${threads.length + 1}`}
+          key={`thread-${localStorage.key(i)!}`}
           problemName={localStorage.key(i)!}
-          status={"resolving"}
+          status={threadJson.status}
           openThread={openThread}
         />,
       ]);
     }
-  }, [currentThreadName, openThread]);
+    setSyncing(false);
+  }, [addThread, openThread]);
+
+  useEffect(() => {
+    syncThreads();
+  }, [currentThreadName, syncThreads]);
 
   useEffect(() => {
     toggleSideBar(!submitProblemActivated);
   }, [submitProblemActivated, toggleSideBar]);
+
+  useEffect(() => {
+    toggleSideBar(!problemSolvedActivated);
+  }, [problemSolvedActivated, toggleSideBar]);
 
   const parseBigInt = async (response: Response) => {
     // !!! SCARY PARSING !!!
@@ -186,7 +204,7 @@ export default function SideBar() {
       addThread((threads) => {
         const newThreadElement = (
           <Thread
-            key={`thread-${threads.length + 1}`}
+            key={`thread-${submitProblemTextInput}`}
             problemName={submitProblemTextInput}
             status={"resolving"}
             openThread={openThread}
@@ -198,9 +216,45 @@ export default function SideBar() {
     }
   }
 
+  /**
+   * Closes {@link currentThreadName} thread
+   *
+   * If {@link currentThreadName} is empty (The current thread is not chosen), then nothing happens.
+   */
+  const closeCurrentThread = useCallback(
+    (status: string) => {
+      const thread = JSON.parse(localStorage.getItem(currentThreadName)!);
+      if (currentThreadName !== "" && thread.status === "resolving") {
+        fetch(
+          `http://${WebSocketConfig.address}:${
+            WebSocketConfig.port
+          }/threads/${getThreadIdByName(currentThreadName)}`,
+          {
+            method: "DELETE",
+          }
+        ).then(() => {
+          thread.status = status;
+          localStorage.setItem(currentThreadName, JSON.stringify(thread));
+          dispatchWebSocket({
+            type: "CLOSE",
+            thread_name: currentThreadName,
+          });
+          syncThreads();
+        });
+      }
+    },
+    [currentThreadName, dispatchWebSocket, syncThreads]
+  );
+
   return (
     <div>
-      <div className="sidebar-wrapper">{threads}</div>
+      <div className="sidebar-wrapper">
+        {isSyncing ? (
+          <span>Loading...</span>
+        ) : (
+          <AnimatePresence>{threads}</AnimatePresence>
+        )}
+      </div>
       <button
         data-testid="add-button"
         className={sideBarActivated ? "add-button" : "add-button removed"}
@@ -225,6 +279,12 @@ export default function SideBar() {
         submitThread={submitThread}
         toggle={toggleSubmitProblem}
         active={submitProblemActivated}
+      />
+      <ProblemSolved
+        toggle={toggleProblemSolved}
+        onCancel={closeCurrentThread}
+        onSubmit={closeCurrentThread}
+        active={problemSolvedActivated}
       />
     </div>
   );
