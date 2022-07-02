@@ -15,15 +15,9 @@ type Props = {
   problemName: string;
   status: "resolving" | "resolved" | "unsolved";
   openThread: (problemName: string) => void;
-  key?: string;
 };
 
-export default function Thread({
-  problemName,
-  status,
-  openThread,
-  key,
-}: Props) {
+export default function Thread({ problemName, status, openThread }: Props) {
   const threadDeletionActive = useRecoilValue(threadDeletionState);
   const [selectedThreads, setSelectedThreads] =
     useRecoilState(selectedThreadsState);

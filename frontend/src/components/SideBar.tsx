@@ -20,27 +20,20 @@ import { AnimatePresence } from "framer-motion";
 
 /**
  * SideBar component contains list of all threads
- * @param {function} toggleSideBar toggles SideBar component
- * @param {boolean} sideBarActivated represents the state of the SideBar component
- * @param {function} setWebSocket changes current WebSocket
- * @param {function} addBubble changes the MessageBubble List
- * @param {function} setCurrentThreadName changes current thread name
- * @param {string} currentThreadName represents the name of the current thread
  */
 
 export default function SideBar() {
   const [, addBubble] = useRecoilState(messageBubblesState);
-  const [sideBarActivated, toggleSideBar] = useRecoilState(sidebarState);
+  const [sidebarActive, toggleSideBar] = useRecoilState(sidebarState);
   const [submitProblemTextInput, changeSubmitProblemText] =
     useState<string>("");
-  const [submitProblemActivated, toggleSubmitProblem] =
-    useState<boolean>(false);
-  const [threads, addThread] = useRecoilState(threadsState);
+  const [submitProblemActive, toggleSubmitProblem] = useState<boolean>(false);
+  const [threads, setThreads] = useRecoilState(threadsState);
   const { dispatchWebSocket } = useWebSocket();
   const [currentThreadName, setCurrentThreadName] = useRecoilState(
     currentThreadNameState
   );
-  const [problemSolvedActivated, toggleProblemSolved] =
+  const [problemSolvedActivate, toggleProblemSolved] =
     useRecoilState(problemSolvedState);
   const [isSyncing, setSyncing] = useState(false);
 
@@ -51,7 +44,7 @@ export default function SideBar() {
    */
   const createVolunteerBubble = useCallback(
     (event: MessageEvent<string>, threadName: string) => {
-      const type = "message-bubble-volunteer";
+      const sender = "message-bubble-volunteer";
       if (event.data) {
         const isCurrent = JSON.parse(localStorage.getItem(threadName)!).current;
         if (isCurrent) {
@@ -60,7 +53,7 @@ export default function SideBar() {
               <MessageBubble
                 key={`message-${bubbles.length + 1}`}
                 text={event.data}
-                type={type}
+                sender={sender}
                 prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
               />,
               ...bubbles,
@@ -69,7 +62,7 @@ export default function SideBar() {
         }
 
         var currentThread = JSON.parse(localStorage.getItem(threadName)!);
-        currentThread.messages.push({ text: event.data, sender: type });
+        currentThread.messages.push({ text: event.data, sender: sender });
         localStorage.setItem(threadName, JSON.stringify(currentThread));
       }
     },
@@ -107,7 +100,7 @@ export default function SideBar() {
           <MessageBubble
             key={`message-${threadMessages.length + 1}`}
             text={currentThread.messages[m].text}
-            type={currentThread.messages[m].sender}
+            sender={currentThread.messages[m].sender}
             prevSender={m - 1 < 0 ? null : currentThread.messages[m - 1].sender}
           />
         );
@@ -118,15 +111,16 @@ export default function SideBar() {
     },
     [addBubble, toggleSideBar, setCurrentThreadName, currentThreadName]
   );
+
   // Thread list sync with localStorage, whenever current thread is changed
   const syncThreads = useCallback(() => {
     setSyncing(true);
-    addThread([]);
+    setThreads([]);
     for (let i = 0; i < localStorage.length; i++) {
       const threadJson = JSON.parse(
         localStorage.getItem(localStorage.key(i)!)!
       );
-      addThread((threads) => [
+      setThreads((threads) => [
         ...threads,
         <Thread
           key={`thread-${localStorage.key(i)!}`}
@@ -137,19 +131,19 @@ export default function SideBar() {
       ]);
     }
     setSyncing(false);
-  }, [addThread, openThread]);
+  }, [setThreads, openThread]);
 
   useEffect(() => {
     syncThreads();
   }, [currentThreadName, syncThreads]);
 
   useEffect(() => {
-    toggleSideBar(!submitProblemActivated);
-  }, [submitProblemActivated, toggleSideBar]);
+    toggleSideBar(!submitProblemActive);
+  }, [submitProblemActive, toggleSideBar]);
 
   useEffect(() => {
-    toggleSideBar(!problemSolvedActivated);
-  }, [problemSolvedActivated, toggleSideBar]);
+    toggleSideBar(!problemSolvedActivate);
+  }, [problemSolvedActivate, toggleSideBar]);
 
   const parseBigInt = async (response: Response) => {
     // !!! SCARY PARSING !!!
@@ -201,7 +195,7 @@ export default function SideBar() {
         });
       });
 
-      addThread((threads) => {
+      setThreads((threads) => {
         const newThreadElement = (
           <Thread
             key={`thread-${submitProblemTextInput}`}
@@ -257,7 +251,7 @@ export default function SideBar() {
       </div>
       <button
         data-testid="add-button"
-        className={sideBarActivated ? "add-button" : "add-button removed"}
+        className={sidebarActive ? "add-button" : "add-button removed"}
         onClick={() => toggleSubmitProblem(true)}
       >
         <svg
@@ -278,13 +272,13 @@ export default function SideBar() {
         inputText={submitProblemTextInput}
         submitThread={submitThread}
         toggle={toggleSubmitProblem}
-        active={submitProblemActivated}
+        active={submitProblemActive}
       />
       <ProblemSolved
         toggle={toggleProblemSolved}
         onCancel={closeCurrentThread}
         onSubmit={closeCurrentThread}
-        active={problemSolvedActivated}
+        active={problemSolvedActivate}
       />
     </div>
   );
