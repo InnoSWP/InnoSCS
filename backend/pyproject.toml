@@ -11,6 +11,9 @@ pydantic = "^1.9.1"
 uvicorn = "^0.17.6"
 websockets = "^10.2"
 python-telegram-bot = {extras = ["20.0a0"], version = "^13.12"}
+Pyrogram = "^2.0.27"
+TgCrypto = "^1.2.3"
+aiohttp = "^3.8.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"

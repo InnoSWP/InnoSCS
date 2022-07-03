@@ -42,5 +42,10 @@ api: ## Launch the api service
 	$(VENV)/bin/uvicorn --factory app.api:create_app --reload
 
 
+.PHOMY: bot
+bot: ## Launch the bot
+	$(VENV)/bin/python -m app.bot
+
+
 docker: ## Launch up in docker
 	docker-compose up

@@ -65,4 +65,5 @@ async def websocket_endpoint(websocket: WebSocket, thread_id: int) -> None:
             )
 
     except WebSocketDisconnect:
+        await ws_manager.broadcast('User from another side is out you can leave thread', room_id=thread_id, exp=websocket)
         ws_manager.disconnect(websocket, room_id=thread_id)

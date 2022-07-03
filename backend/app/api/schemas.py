@@ -47,7 +47,7 @@ class SupportThread(SupportThreadBase):
 
 
 class SupportThreadPatch(BaseModel):
-    volunteer_id: int
+    volunteer_id: Optional[int] = None
 
 
 class VolunteerBase(BaseModel):
