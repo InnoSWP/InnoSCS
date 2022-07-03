@@ -127,3 +127,28 @@
   color: white;
 }
 
+.thread-closed {
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 95vw;
+  padding-top: 8px;
+}
+
+.thread-closed > span {
+  position: absolute;
+  font-family: 'Inter', sans-serif;
+  color: #b2b2b2;
+  background-color: #F4F4F4;
+}
+
+.thread-closed-divider {
+  height: 1px;
+  width: 100%;
+  background-color: #b2b2b2;
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
