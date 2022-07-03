@@ -51,7 +51,7 @@ export default function Messenger() {
             prevSender={
               bubbles.length === 0
                 ? "message-bubble-volunteer"
-                : bubbles[0].props.type
+                : bubbles[0].props.sender
             }
           />,
           ...bubbles,
