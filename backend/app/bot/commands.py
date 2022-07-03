@@ -12,6 +12,7 @@ from app.bot.utils import (
     fetch_threads,
     for_volunteer,
     get_ws,
+    close_connection,
     open_support_thread,
 )
 from app.config import settings
@@ -150,7 +151,10 @@ async def resolve_support_thread(_: Any, message: Message) -> None:
         await close_support_thread(chat_id=chat_id, solved=True)
 
     except InvalidInput as err:
-        response = err.args[0]
+        if get_ws(chat_id) is None:
+            response = err.args[0]
+        else:
+            close_connection(chat_id)
 
     await message.reply(text=response)
 

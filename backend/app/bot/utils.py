@@ -156,6 +156,22 @@ async def open_support_thread(
             )
 
 
+def close_connection(
+    chat_id: int,
+):
+    # delete thread for chat
+    if chat_thread.get(chat_id) is not None:
+        del chat_thread[chat_id]
+
+    # delete ws object
+    if chat_ws.get(chat_id) is not None:
+        del chat_ws[chat_id]
+
+    # delete ws task
+    if chat_task.get(chat_id) is not None:
+        del chat_task[chat_id]
+
+
 async def close_support_thread(
     chat_id: int,
     solved: bool = True,
@@ -193,18 +209,7 @@ async def close_support_thread(
                 headers={'content-type': 'application/json'},
             )
 
-        # delete ws task
-        if chat_task.get(chat_id) is not None:
-            chat_task[chat_id].cancel()
-            del chat_task[chat_id]
-
-        # delete thread for chat
-        if chat_thread.get(chat_id) is not None:
-            del chat_thread[chat_id]
-
-        # delete ws object
-        if chat_ws.get(chat_id) is not None:
-            del chat_ws[chat_id]
+        close_connection(chat_id)
 
 
 async def listen_to_ws(client: Client, thread_id: int, chat_id: int) -> None:
