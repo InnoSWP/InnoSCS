@@ -1,5 +1,6 @@
-import { MouseEventHandler, useState, useEffect } from "react";
+import { MouseEventHandler } from "react";
 import Modal from "./Modal";
+import { motion } from "framer-motion";
 import "./styles/kebabMenu.css";
 /**
  * KebabMenu component is a vertical dots button that toggles Popup Menu
@@ -25,7 +26,6 @@ export default function PopupMenu({
   togglePopup,
   id,
 }: PopupMenuProps) {
-  const [modal, toggleModal] = useState<boolean>(false);
   const options = optionsData.map((opt) => (
     <MenuOption
       key={opt.optionName}
@@ -37,23 +37,19 @@ export default function PopupMenu({
     />
   ));
 
-  useEffect(() => {
-    if (modal) {
-      togglePopup(true);
-    }
-  }, [modal, togglePopup]);
-
   return (
-    <Modal id={id} isOpen={modal} onClose={() => togglePopup(false)}>
-      <div
-        className={active ? "popup-wrapper activated" : "popup-wrapper"}
+    <Modal id={id} isOpen={active} onClose={() => togglePopup(false)}>
+      <motion.div
+        data-testid="popup-wrapper"
+        className="popup-wrapper"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
         onClick={() => togglePopup(false)}
-        onTransitionEnd={() => {
-          if (!active) toggleModal(false);
-        }}
       >
         <div className={id}>{options}</div>
-      </div>
+      </motion.div>
     </Modal>
   );
 }
@@ -65,7 +61,7 @@ type MenuOptionProps = {
 
 function MenuOption({ onClick, optionName }: MenuOptionProps) {
   return (
-    <div className="menu-option" onClick={onClick}>
+    <div data-testid="menu-option" className="menu-option" onClick={onClick}>
       <span>{optionName}</span>
     </div>
   );

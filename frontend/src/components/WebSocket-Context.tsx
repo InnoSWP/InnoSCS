@@ -69,21 +69,36 @@ const WebSocketReducer = (state: WebSocketState, action: WebSocketAction) => {
       };
 
     case "SEND_MESSAGE":
-      state.webSocket[action.thread_name].send(action.message);
+      try {
+        state.webSocket[action.thread_name].send(action.message);
+      } catch (error) {
+        console.log("Couldn't send message");
+      }
       return state;
 
     case "CLOSE":
-      state.webSocket[action.thread_name].close();
-      delete state.webSocket[action.thread_name];
+      try {
+        state.webSocket[action.thread_name].close();
+        delete state.webSocket[action.thread_name];
+      } catch (error) {
+        console.log("Couldn't close the websocket");
+      }
       return state;
   }
 };
 
 type WebSocketProviderProps = {
   children: React.ReactNode;
+  debugValue?: {
+    webSocketState: WebSocketState;
+    dispatchWebSocket: Dispatch<WebSocketAction>;
+  };
 };
 
-const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
+const WebSocketProvider = ({
+  children,
+  debugValue,
+}: WebSocketProviderProps) => {
   const [webSocketState, dispatchWebSocket] = useReducer(
     WebSocketReducer,
     initWebSocketState
@@ -92,7 +107,7 @@ const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     return { webSocketState, dispatchWebSocket };
   }, [webSocketState]);
   return (
-    <WebSocketContext.Provider value={value}>
+    <WebSocketContext.Provider value={debugValue || value}>
       {children}
     </WebSocketContext.Provider>
   );
@@ -106,4 +121,4 @@ const useWebSocket = () => {
   return context;
 };
 
-export { useWebSocket, WebSocketProvider, WebSocketConfig, getThreadIdByName };
+export { useWebSocket, WebSocketProvider, getThreadIdByName };

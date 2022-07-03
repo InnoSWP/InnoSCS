@@ -17,8 +17,13 @@ nav {
   justify-content: center;
 }
 
+.button-menu-svg {
+  align-items: center;
+  justify-content: center;
+}
+
 .button-menu-container {
-  padding-top: 21px;
+  padding-top: 24px;
   padding-right: 16px;
   height: 32px;
   width: 32px;
@@ -49,11 +54,12 @@ nav {
 .button-back {
   background-color: white;
   border-width: 0;
+  opacity: 0;
   transition: 0.5s;
 }
 
-.button-back.rotated {
-  transform: rotate(-180deg);
+.button-back.active {
+  opacity: 1;
   transition: 0.5s;
 }
 

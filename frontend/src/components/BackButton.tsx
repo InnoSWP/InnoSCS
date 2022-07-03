@@ -1,12 +1,13 @@
 type Props = {
   active: boolean;
-  toggle: (func: (value: boolean) => boolean) => void;
+  toggle: (value: boolean) => void;
 };
 export default function BackButton({ active, toggle }: Props) {
   return (
     <button
-      className={active ? "button-back rotated" : "button-back"}
-      onClick={() => toggle((prev) => !prev)}
+      data-testid="button-back"
+      className={active ? "button-back active" : "button-back"}
+      onClick={() => toggle(true)}
     >
       <svg
         width="22"

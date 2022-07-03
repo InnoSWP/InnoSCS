@@ -2,7 +2,19 @@ import React, { useState } from "react";
 
 import "./styles/navbar.css";
 
-import PopupMenu from "./Menu";
+import PopupMenu from "./PopupMenu";
+import BackButton from "./BackButton";
+
+import { useRecoilState } from "recoil";
+import {
+  messageBubblesState,
+  problemSolvedState,
+  selectedThreadsState,
+  sidebarState,
+  threadDeletionState,
+  threadsState,
+} from "./atoms";
+import { motion } from "framer-motion";
 
 /**
  * Navbar component is a header of the application. It contains back-button that toggles SideBar, KebabMenu and status of the Customer Support.
@@ -12,36 +24,109 @@ import PopupMenu from "./Menu";
  * @param {function} closeCurrentThread function that closes the current thread
  */
 
-type Props = {
-  children: React.ReactNode;
-  toggleProblemSolved: (value: boolean) => void;
-};
-
-export default function Navbar({ children, toggleProblemSolved }: Props) {
-  const [menuActivated, toggleMenuPopup] = useState<boolean>(false);
+export default function Navbar() {
+  const [menuActive, toggleMenuPopup] = useState<boolean>(false);
+  const [sidebarActive, toggleSideBar] = useRecoilState(sidebarState);
+  const [threadDeletionActive, toggleThreadDeletion] =
+    useRecoilState(threadDeletionState);
+  const [, setThreads] = useRecoilState(threadsState);
+  const [, toggleProblemSolved] = useRecoilState(problemSolvedState);
+  const [, setMessageBubbles] = useRecoilState(messageBubblesState);
+  const [selectedThreads, setSelectedThreads] =
+    useRecoilState(selectedThreadsState);
 
   // KebabMenu config
-  // TODO: add functionality to <Settings> and <Change Volunteer>
-  const opts = [
+  const kebabOpts = [
     {
       optionName: "Close thread",
       onClick: () => toggleProblemSolved(true),
     },
+  ];
+  // Hamburger config
+  const hamburgerOpts = [
     {
-      optionName: "Settings",
-      onClick: () => console.log("Settings opened"),
-    },
-    {
-      optionName: "Change Volunteer",
-      onClick: () => console.log("Volunteer changed"),
+      optionName: "Delete thread",
+      onClick: () => {
+        setSelectedThreads([]);
+        toggleThreadDeletion(true);
+      },
     },
   ];
+
+  const variants = {
+    hamburger: {
+      width: 28,
+      x: 0,
+      rx: 1.9553,
+      height: 3.2,
+      opacity: 1,
+    },
+
+    kebab: {
+      width: 3.76923,
+      x: 9.84613,
+      rx: 1.88462,
+      height: 3.91061,
+      opacity: 1,
+    },
+
+    cross_top: {
+      rotate: "45deg",
+      translateY: 8,
+    },
+
+    cross_middle: {
+      opacity: 0,
+    },
+
+    cross_bottom: {
+      rotate: "-45deg",
+      translateY: -8,
+      translateX: -2,
+    },
+  };
+
+  function deleteThreads() {
+    console.log("Deleted: ", selectedThreads);
+    if (selectedThreads.length > 0) {
+      for (let threadName of selectedThreads) {
+        setThreads((prev) => {
+          let index = -1;
+          const newThreads = Array.from(prev);
+          for (let i = 0; i < newThreads.length; i++) {
+            if (newThreads[i].props.problemName === threadName) {
+              index = i;
+              break;
+            }
+          }
+
+          if (index !== -1) {
+            newThreads.splice(index, 1);
+            return newThreads;
+          }
+          return prev;
+        });
+        localStorage.removeItem(threadName);
+      }
+      setSelectedThreads([]);
+      toggleSideBar(true);
+      setMessageBubbles([]);
+    }
+  }
 
   return (
     <nav>
       <div className="navbar-wrapper">
-        <div className="button-back-container">{children}</div>
-
+        <div className="button-back-container">
+          <BackButton
+            active={!sidebarActive || threadDeletionActive}
+            toggle={
+              threadDeletionActive
+                ? (value: boolean) => toggleThreadDeletion(!value)
+                : toggleSideBar
+            }
+          />
+        </div>
         <div className="title-container">
           <span className="title-text">Customer Support</span>
           <span className="title-status">Online</span>
@@ -49,27 +134,76 @@ export default function Navbar({ children, toggleProblemSolved }: Props) {
       </div>
 
       <div className="button-menu-container">
-        <button className="button-menu" onClick={() => toggleMenuPopup(true)}>
-          <svg
-            width="6"
-            height="22"
-            viewBox="0 0 6 22"
+        <button
+          data-testid="button-menu"
+          className="button-menu"
+          onClick={() => {
+            if (threadDeletionActive) {
+              toggleThreadDeletion(false);
+              deleteThreads();
+            } else toggleMenuPopup(true);
+          }}
+        >
+          <motion.svg
+            className="button-menu-svg"
+            width="28"
+            height="28"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              d="M2.99998 16.3333C3.70722 16.3333 4.3855 16.6143 4.8856 17.1144C5.38569 17.6145 5.66665 18.2927 5.66665 19C5.66665 19.7072 5.38569 20.3855 4.8856 20.8856C4.3855 21.3857 3.70722 21.6666 2.99998 21.6666C2.29274 21.6666 1.61446 21.3857 1.11436 20.8856C0.614265 20.3855 0.333313 19.7072 0.333313 19C0.333313 18.2927 0.614265 17.6145 1.11436 17.1144C1.61446 16.6143 2.29274 16.3333 2.99998 16.3333ZM2.99998 8.33331C3.70722 8.33331 4.3855 8.61427 4.8856 9.11436C5.38569 9.61446 5.66665 10.2927 5.66665 11C5.66665 11.7072 5.38569 12.3855 4.8856 12.8856C4.3855 13.3857 3.70722 13.6666 2.99998 13.6666C2.29274 13.6666 1.61446 13.3857 1.11436 12.8856C0.614265 12.3855 0.333313 11.7072 0.333313 11C0.333313 10.2927 0.614265 9.61446 1.11436 9.11436C1.61446 8.61427 2.29274 8.33331 2.99998 8.33331ZM2.99998 0.333313C3.70722 0.333313 4.3855 0.614264 4.8856 1.11436C5.38569 1.61446 5.66665 2.29274 5.66665 2.99998C5.66665 3.70722 5.38569 4.3855 4.8856 4.8856C4.3855 5.38569 3.70722 5.66665 2.99998 5.66665C2.29274 5.66665 1.61446 5.38569 1.11436 4.8856C0.614265 4.3855 0.333313 3.70722 0.333313 2.99998C0.333313 2.29274 0.614265 1.61446 1.11436 1.11436C1.61446 0.614264 2.29274 0.333313 2.99998 0.333313Z"
+            <motion.rect
+              key="menu-bottom"
+              variants={variants}
+              y="18.0894"
+              style={{ originX: "14", originY: "18.0894" }}
+              animate={
+                sidebarActive
+                  ? threadDeletionActive
+                    ? "cross_bottom"
+                    : "hamburger"
+                  : "kebab"
+              }
+              transition={{ duration: 0.5 }}
               fill="black"
             />
-          </svg>
+            <motion.rect
+              key="menu-middle"
+              variants={variants}
+              y="10.04468"
+              animate={
+                sidebarActive
+                  ? threadDeletionActive
+                    ? "cross_middle"
+                    : "hamburger"
+                  : "kebab"
+              }
+              transition={{ duration: 0.4 }}
+              fill="black"
+            />
+            <motion.rect
+              key="menu-top"
+              variants={variants}
+              y="2"
+              style={{ originX: "14", originY: "2" }}
+              animate={
+                sidebarActive
+                  ? threadDeletionActive
+                    ? "cross_top"
+                    : "hamburger"
+                  : "kebab"
+              }
+              transition={{ duration: 0.3 }}
+              fill="black"
+            />
+          </motion.svg>
         </button>
       </div>
       <PopupMenu
         key="kebab-menu"
         id="kebab-menu"
-        active={menuActivated}
+        active={menuActive}
         togglePopup={toggleMenuPopup}
-        optionsData={opts}
+        optionsData={sidebarActive ? hamburgerOpts : kebabOpts}
       />
     </nav>
   );

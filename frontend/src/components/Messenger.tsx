@@ -4,29 +4,21 @@ import MessageBubble from "./MessageBubble";
 import Main from "./Main";
 import MessageBox from "./MessageBox";
 import { useWebSocket } from "./WebSocket-Context";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  currentThreadNameState,
+  messageBubblesState,
+  sidebarState,
+} from "./atoms";
 /**
  * Messenger component is a main part of the application. It contains Main and MessageBox.
- * @param {{sidebarActivated: boolean, webSocket: WebSocket, addBubble: function, messageBubbles: Array.<MessageBubble>, currentThreadName: string}} props
- * @param {boolean} sidebarActivated represents the state of the SideBar component
- * @param {WebSocket} webSocket current WebSocket connection
- * @param {function} addBubble changes the state of the MessageBubble list
- * @param {Array.<MessageBubble>} messageBubbles list of the messageBubbles
- * @param {string} currentThreadName name of the current thread
  */
 
-type Props = {
-  sidebarActivated: boolean;
-  addBubble: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
-  messageBubbles: JSX.Element[];
-  currentThreadName: string;
-};
-
-export default function Messenger({
-  sidebarActivated,
-  addBubble,
-  messageBubbles,
-  currentThreadName,
-}: Props) {
+export default function Messenger() {
+  const sidebarActivated = useRecoilValue(sidebarState);
+  const currentThreadName = useRecoilValue(currentThreadNameState);
+  const [messageBubbles, setMessageBubbles] =
+    useRecoilState(messageBubblesState);
   const [messageTextInput, changeMessageText] = useState("");
   const messagesEndRef = createRef<HTMLDivElement>();
   const { dispatchWebSocket } = useWebSocket();
@@ -41,8 +33,8 @@ export default function Messenger({
   /**
    * Creates new User Bubble from {@link messageTextInput}
    */
-  function createBubble() {
-    const type = "message-bubble-user";
+  function createUserBubble() {
+    const sender = "message-bubble-user";
 
     if (messageTextInput !== "") {
       dispatchWebSocket({
@@ -50,20 +42,24 @@ export default function Messenger({
         message: messageTextInput,
         thread_name: currentThreadName,
       });
-      addBubble((bubbles) => {
+      setMessageBubbles((bubbles) => {
         return [
           <MessageBubble
             key={`message-${bubbles.length + 1}`}
             text={messageTextInput}
-            type={type}
-            prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
+            sender={sender}
+            prevSender={
+              bubbles.length === 0
+                ? "message-bubble-volunteer"
+                : bubbles[0].props.sender
+            }
           />,
           ...bubbles,
         ];
       });
 
       var currentThread = JSON.parse(localStorage.getItem(currentThreadName)!);
-      currentThread.messages.push({ text: messageTextInput, sender: type });
+      currentThread.messages.push({ text: messageTextInput, sender: sender });
       localStorage.setItem(currentThreadName, JSON.stringify(currentThread));
     }
   }
@@ -71,7 +67,7 @@ export default function Messenger({
    * Creates message bubble, scrolls to bottom and changes input field text.
    */
   function sendMessage() {
-    createBubble();
+    createUserBubble();
     scrollToBottom();
     changeMessageText(() => "");
   }
