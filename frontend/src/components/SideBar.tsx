@@ -16,7 +16,7 @@ import {
   threadsState,
   problemSolvedState,
 } from "./atoms";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * SideBar component contains list of all threads
@@ -35,7 +35,6 @@ export default function SideBar() {
   );
   const [problemSolvedActivate, toggleProblemSolved] =
     useRecoilState(problemSolvedState);
-  const [isSyncing, setSyncing] = useState(false);
 
   /**
    * Creates Volunteer Bubble
@@ -114,7 +113,6 @@ export default function SideBar() {
 
   // Thread list sync with localStorage, whenever current thread is changed
   const syncThreads = useCallback(() => {
-    setSyncing(true);
     setThreads([]);
     for (let i = 0; i < localStorage.length; i++) {
       const threadJson = JSON.parse(
@@ -130,7 +128,6 @@ export default function SideBar() {
         />,
       ]);
     }
-    setSyncing(false);
   }, [setThreads, openThread]);
 
   useEffect(() => {
@@ -243,11 +240,21 @@ export default function SideBar() {
   return (
     <div>
       <div className="sidebar-wrapper">
-        {isSyncing ? (
-          <span>Loading...</span>
-        ) : (
-          <AnimatePresence>{threads}</AnimatePresence>
-        )}
+        <AnimatePresence exitBeforeEnter>
+          {threads.length > 0 ? (
+            threads
+          ) : (
+            <motion.div
+              className="no-threads-container"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span>There is no threads yet</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <button
         data-testid="add-button"
