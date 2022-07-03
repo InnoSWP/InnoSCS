@@ -20,8 +20,8 @@ it("margin test same types", () => {
   render(
     <MessageBubble
       text={"test"}
-      prevSender={"message-bubble-user"}
       sender={"message-bubble-user"}
+      prevSender={"message-bubble-user"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");
@@ -31,9 +31,9 @@ it("margin test same types", () => {
 it("margin test prevSender volunteer", () => {
   render(
     <MessageBubble
-      text={"Test"}
       prevSender={"message-bubble-volunteer"}
       sender={"message-bubble-user"}
+      text={"Test"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");

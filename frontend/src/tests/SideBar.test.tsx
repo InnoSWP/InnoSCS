@@ -9,18 +9,13 @@ import {
 import SideBar from "../components/SideBar";
 import { WebSocketProvider } from "../components/WebSocket-Context";
 import { act } from "react-dom/test-utils";
-import { useEffect } from "react";
-import {
-  useRecoilState,
-  useRecoilValue,
-  RecoilState,
-  RecoilRoot,
-} from "recoil";
+import { RecoilRoot } from "recoil";
 import {
   sidebarState,
   messageBubblesState,
   currentThreadNameState,
 } from "../components/atoms";
+import { RecoilObserver } from "./RecoilStateHelper";
 
 type WebSocketAction =
   | {
@@ -62,36 +57,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
 });
-
-type RecoilObserverProps = {
-  node: RecoilState<any>;
-  onChange: Function;
-};
-
-const RecoilObserver = ({ node, onChange }: RecoilObserverProps) => {
-  const value = useRecoilValue(node);
-  useEffect(() => onChange(value), [onChange, value]);
-  return null;
-};
-
-type RecoilStateHelperProps = {
-  sidebarActivated: boolean;
-  messageBubbles: JSX.Element[];
-  currentThreadName: string;
-};
-const RecoilTestHelper = ({
-  sidebarActivated,
-  messageBubbles,
-  currentThreadName,
-}: RecoilStateHelperProps) => {
-  const [, toggleSideBar] = useRecoilState(sidebarState);
-  const [, addBubble] = useRecoilState(messageBubblesState);
-  const [, setCurrentThreadName] = useRecoilState(currentThreadNameState);
-  toggleSideBar(sidebarActivated);
-  addBubble(messageBubbles);
-  setCurrentThreadName(currentThreadName);
-  return <div></div>;
-};
 
 it("sidebar test", async () => {
   let bubbles: JSX.Element[] = [];
@@ -151,7 +116,6 @@ it("sidebar test", async () => {
       })
   );
 
-  const activated = false;
   let currentThreadName = "";
   const toggleSideBar = jest.fn();
   const addBubble = jest.fn(
