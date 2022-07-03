@@ -240,7 +240,4 @@ def get_ws(chat_id: int) -> WebSocketClientProtocol:
     """
     ws = chat_ws.get(chat_id)
 
-    if ws is None:
-        raise InvalidInput('Websocket for chat not found')
-
     return ws

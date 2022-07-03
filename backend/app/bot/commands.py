@@ -85,6 +85,9 @@ async def quit_volunteer(_: Any, message: Message) -> None:
         await delete_volunteer(chat_id, user_id)
 
     except InvalidInput as e:
+        if get_ws(chat_id) is not None:
+            close_connection(chat_id)
+
         response = e.args[0]
 
     await message.reply(text=response)
@@ -151,10 +154,10 @@ async def resolve_support_thread(_: Any, message: Message) -> None:
         await close_support_thread(chat_id=chat_id, solved=True)
 
     except InvalidInput as err:
-        if get_ws(chat_id) is None:
-            response = err.args[0]
-        else:
+        if get_ws(chat_id) is not None:
             close_connection(chat_id)
+        else:
+            response = err.args[0]
 
     await message.reply(text=response)
 
@@ -172,7 +175,10 @@ async def disconnect_support_thread(_: Any, message: Message) -> None:
         await close_support_thread(chat_id=chat_id, solved=False)
 
     except InvalidInput as err:
-        response = err.args[0]
+        if get_ws(chat_id) is not None:
+            close_connection(chat_id)
+        else:
+            response = err.args[0]
 
     await message.reply(text=response)
 
@@ -186,4 +192,5 @@ async def support(_: Any, message: Message) -> None:
 
     ws = get_ws(chat_id)
 
-    await ws.send(message.text)
+    if ws is not None:
+        await ws.send(message.text)
