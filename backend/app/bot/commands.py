@@ -86,7 +86,7 @@ async def quit_volunteer(_: Any, message: Message) -> None:
 
     except InvalidInput as e:
         if get_ws(chat_id) is not None:
-            close_connection(chat_id)
+            await close_connection(chat_id)
 
         response = e.args[0]
 
@@ -155,7 +155,7 @@ async def resolve_support_thread(_: Any, message: Message) -> None:
 
     except InvalidInput as err:
         if get_ws(chat_id) is not None:
-            close_connection(chat_id)
+            await close_connection(chat_id)
         else:
             response = err.args[0]
 
@@ -176,7 +176,7 @@ async def disconnect_support_thread(_: Any, message: Message) -> None:
 
     except InvalidInput as err:
         if get_ws(chat_id) is not None:
-            close_connection(chat_id)
+            await close_connection(chat_id)
         else:
             response = err.args[0]
 

@@ -156,7 +156,7 @@ async def open_support_thread(
             )
 
 
-def close_connection(
+async def close_connection(
     chat_id: int,
 ):
     # delete thread for chat
@@ -165,6 +165,7 @@ def close_connection(
 
     # delete ws object
     if chat_ws.get(chat_id) is not None:
+        await chat_ws[chat_id].close()
         del chat_ws[chat_id]
 
     # delete ws task
@@ -239,5 +240,6 @@ def get_ws(chat_id: int) -> WebSocketClientProtocol:
     :return: websocket
     """
     ws = chat_ws.get(chat_id)
+
 
     return ws
