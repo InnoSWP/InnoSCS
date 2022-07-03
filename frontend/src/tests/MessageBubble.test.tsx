@@ -9,7 +9,7 @@ it("margin test different types", () => {
     <MessageBubble
       text={"test"}
       prevSender={"message-bubble-user"}
-      type={"message-bubble-volunteer"}
+      sender={"message-bubble-volunteer"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");
@@ -20,20 +20,20 @@ it("margin test same types", () => {
   render(
     <MessageBubble
       text={"test"}
+      sender={"message-bubble-user"}
       prevSender={"message-bubble-user"}
-      type={"message-bubble-user"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");
   expect(messageBubble.style.marginTop).toBe("8px");
 });
 
-it("margin test prevSender null", () => {
+it("margin test prevSender volunteer", () => {
   render(
     <MessageBubble
+      prevSender={"message-bubble-volunteer"}
+      sender={"message-bubble-user"}
       text={"Test"}
-      prevSender={null}
-      type={"message-bubble-user"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");

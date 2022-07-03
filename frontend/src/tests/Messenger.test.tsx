@@ -7,14 +7,16 @@ import {
   waitFor,
 } from "@testing-library/react";
 import Messenger from "../components/Messenger";
-import MessageBubble from "../components/MessageBubble";
+import { RecoilRoot } from "recoil";
+import { messageBubblesState, sidebarState } from "../components/atoms";
+import { RecoilTestHelper, RecoilObserver } from "./RecoilStateHelper";
 jest.mock("../components/WebSocket-Context", () => ({
   useWebSocket: () => ({
     dispatchWebSocket: jest.fn(),
   }),
 }));
 let jsx_list: JSX.Element[];
-let addBubble: jest.Mock<void, [func: (prev: JSX.Element[]) => JSX.Element[]]>;
+let addBubble: jest.Mock<void, [prev: JSX.Element[]]>;
 
 beforeAll(() => {
   jsx_list = [];
@@ -30,8 +32,8 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  addBubble = jest.fn((func: (prev: JSX.Element[]) => JSX.Element[]) => {
-    jsx_list = func(jsx_list);
+  addBubble = jest.fn((list: JSX.Element[]) => {
+    jsx_list = list;
   });
   window.HTMLElement.prototype.scrollIntoView = function () {
     // mock
@@ -41,12 +43,15 @@ afterEach(cleanup);
 
 it("messenger test", async () => {
   render(
-    <Messenger
-      sidebarActivated={false}
-      messageBubbles={[]}
-      addBubble={addBubble}
-      currentThreadName={"test"}
-    />
+    <RecoilRoot>
+      <RecoilTestHelper
+        sidebarActivated={false}
+        messageBubbles={[]}
+        currentThreadName={"test"}
+      />
+      <RecoilObserver node={sidebarState} onChange={addBubble} />
+      <Messenger />
+    </RecoilRoot>
   );
 
   const buttonSend = screen.getByTestId("button-send");
@@ -58,21 +63,19 @@ it("messenger test", async () => {
   fireEvent.click(buttonSend);
 
   expect(addBubble).toBeCalled();
-  expect(jsx_list.length).toBe(1);
 });
 
 it("empty input test", () => {
-  jsx_list = [
-    <MessageBubble text="test" type="message-bubble-user" prevSender={null} />,
-  ];
-
   render(
-    <Messenger
-      sidebarActivated={false}
-      messageBubbles={[]}
-      addBubble={addBubble}
-      currentThreadName={"test"}
-    />
+    <RecoilRoot>
+      <RecoilTestHelper
+        sidebarActivated={false}
+        messageBubbles={[]}
+        currentThreadName={"test"}
+      />
+      <RecoilObserver node={messageBubblesState} onChange={addBubble} />
+      <Messenger />
+    </RecoilRoot>
   );
 
   const buttonSend = screen.getByTestId("button-send");
@@ -80,17 +83,16 @@ it("empty input test", () => {
 });
 
 it("prevSender test", async () => {
-  jsx_list = [
-    <MessageBubble text="test" type="message-bubble-user" prevSender={null} />,
-  ];
-
   render(
-    <Messenger
-      sidebarActivated={false}
-      messageBubbles={[]}
-      addBubble={addBubble}
-      currentThreadName={"test"}
-    />
+    <RecoilRoot>
+      <RecoilTestHelper
+        sidebarActivated={false}
+        messageBubbles={[]}
+        currentThreadName={"test"}
+      />
+      <RecoilObserver node={messageBubblesState} onChange={addBubble} />
+      <Messenger />
+    </RecoilRoot>
   );
 
   const buttonSend = screen.getByTestId("button-send");
@@ -103,14 +105,15 @@ it("prevSender test", async () => {
 });
 
 it("sidebar test", () => {
-  jsx_list = [];
-
   render(
-    <Messenger
-      sidebarActivated={true}
-      messageBubbles={[]}
-      addBubble={addBubble}
-      currentThreadName={"test"}
-    />
+    <RecoilRoot>
+      <RecoilTestHelper
+        sidebarActivated={true}
+        messageBubbles={[]}
+        currentThreadName={"test"}
+      />
+      <RecoilObserver node={messageBubblesState} onChange={addBubble} />
+      <Messenger />
+    </RecoilRoot>
   );
 });

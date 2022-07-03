@@ -14,7 +14,8 @@ it("problem solved buttons test", () => {
     <ProblemSolved
       onCancel={onCancel}
       onSubmit={onSubmit}
-      toggleNotification={toggleNotification}
+      toggle={toggleNotification}
+      active={notification}
     />
   );
 

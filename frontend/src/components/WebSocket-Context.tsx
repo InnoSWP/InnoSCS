@@ -69,12 +69,20 @@ const WebSocketReducer = (state: WebSocketState, action: WebSocketAction) => {
       };
 
     case "SEND_MESSAGE":
-      state.webSocket[action.thread_name].send(action.message);
+      try {
+        state.webSocket[action.thread_name].send(action.message);
+      } catch (error) {
+        console.log("Couldn't send message");
+      }
       return state;
 
     case "CLOSE":
-      state.webSocket[action.thread_name].close();
-      delete state.webSocket[action.thread_name];
+      try {
+        state.webSocket[action.thread_name].close();
+        delete state.webSocket[action.thread_name];
+      } catch (error) {
+        console.log("Couldn't close the websocket");
+      }
       return state;
   }
 };

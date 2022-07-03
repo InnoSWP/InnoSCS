@@ -9,7 +9,7 @@ it("main props test", () => {
     <MessageBubble
       key="test-bubble"
       text="test"
-      type="message-bubble-user"
+      sender="message-bubble-user"
       prevSender="message-bubble-volunteer"
     />,
   ];

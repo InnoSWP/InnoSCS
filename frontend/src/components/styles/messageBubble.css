@@ -2,8 +2,6 @@
   position: relative;
   display: flex;
   flex-direction: row-reverse;
-  max-height: 400px;
-  animation: slideBubble 0.5s ease-in-out 1;
 
 }
 
@@ -11,8 +9,6 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  max-height: 400px;
-  animation: slideBubble 0.5s ease-in-out 1;
 
 }
 
@@ -50,7 +46,7 @@
   margin-left: 8px;
   word-wrap: break-word;
 }
-
+/* 
 @keyframes slideBubble {
   0% {
     max-height: 0;
@@ -61,5 +57,5 @@
     max-height: 50vh;
     opacity: 1;
   }
-}
+} */
 

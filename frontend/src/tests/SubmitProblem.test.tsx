@@ -15,7 +15,8 @@ it("submit problem props and input test", async () => {
       changeText={changeText}
       inputText={testText}
       submitThread={submitThread}
-      toggleNotification={toggleNotification}
+      toggle={toggleNotification}
+      active={true}
     />
   );
 

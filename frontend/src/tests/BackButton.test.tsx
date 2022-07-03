@@ -4,8 +4,8 @@ import BackButton from "../components/BackButton";
 
 it("toggle on click test", () => {
   let active = false;
-  const toggle = jest.fn((func: (val: boolean) => boolean) => {
-    active = func(active);
+  const toggle = jest.fn((value: boolean) => {
+    active = value;
   });
 
   const { rerender } = render(<BackButton active={active} toggle={toggle} />);
