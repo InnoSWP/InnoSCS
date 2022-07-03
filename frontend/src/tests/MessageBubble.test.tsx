@@ -9,7 +9,7 @@ it("margin test different types", () => {
     <MessageBubble
       text={"test"}
       prevSender={"message-bubble-user"}
-      type={"message-bubble-volunteer"}
+      sender={"message-bubble-volunteer"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");
@@ -21,7 +21,7 @@ it("margin test same types", () => {
     <MessageBubble
       text={"test"}
       prevSender={"message-bubble-user"}
-      type={"message-bubble-user"}
+      sender={"message-bubble-user"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");
@@ -33,7 +33,7 @@ it("margin test prevSender volunteer", () => {
     <MessageBubble
       text={"Test"}
       prevSender={"message-bubble-volunteer"}
-      type={"message-bubble-user"}
+      sender={"message-bubble-user"}
     />
   );
   const messageBubble = screen.getByTestId("message-bubble");

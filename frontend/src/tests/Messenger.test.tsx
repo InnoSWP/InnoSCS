@@ -110,7 +110,7 @@ it("empty input test", () => {
   jsx_list = [
     <MessageBubble
       text="test"
-      type="message-bubble-user"
+      sender="message-bubble-user"
       prevSender={"message-bubble-volunteer"}
     />,
   ];
@@ -135,7 +135,7 @@ it("prevSender test", async () => {
   jsx_list = [
     <MessageBubble
       text="test"
-      type="message-bubble-user"
+      sender="message-bubble-user"
       prevSender={"message-bubble-volunteer"}
     />,
   ];

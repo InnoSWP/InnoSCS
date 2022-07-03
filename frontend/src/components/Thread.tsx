@@ -7,7 +7,7 @@
  */
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { selectedThreadsState, threadDeletionState } from "./atoms";
 
@@ -24,7 +24,7 @@ export default function Thread({ problemName, status, openThread }: Props) {
 
   const [checkboxState, toggleCheckbox] = useState(false);
 
-  const selectThread = () => {
+  const selectThread = (e: ChangeEvent<HTMLInputElement>) => {
     if (!checkboxState) {
       setSelectedThreads((prev) => {
         if (!prev.includes(problemName)) return [...prev, problemName];
@@ -41,9 +41,9 @@ export default function Thread({ problemName, status, openThread }: Props) {
         return prev;
       });
     }
-    toggleCheckbox((prev) => !prev);
 
-    console.log(selectedThreads);
+    toggleCheckbox(!checkboxState);
+    console.log(selectedThreads, checkboxState);
   };
   const variants = {
     active: {
@@ -86,6 +86,7 @@ export default function Thread({ problemName, status, openThread }: Props) {
       >
         <input
           className="thread-checkbox"
+          data-testid="thread-checkbox"
           type="checkbox"
           onChange={selectThread}
           checked={checkboxState}

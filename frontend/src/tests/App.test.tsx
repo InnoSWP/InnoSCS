@@ -26,11 +26,4 @@ it("test App", () => {
       </WebSocketProvider>
     </RecoilRoot>
   );
-  const menuOptions = screen.getAllByTestId("menu-option");
-  for (let i = 0; i < menuOptions.length; i++) {
-    fireEvent.click(menuOptions[i]);
-  }
-
-  const yesButton = screen.getByTestId("yes-button");
-  fireEvent.click(yesButton);
 });
