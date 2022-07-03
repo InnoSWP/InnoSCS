@@ -54,11 +54,12 @@ nav {
 .button-back {
   background-color: white;
   border-width: 0;
+  opacity: 0;
   transition: 0.5s;
 }
 
-.button-back.rotated {
-  transform: rotate(-180deg);
+.button-back.active {
+  opacity: 1;
   transition: 0.5s;
 }
 

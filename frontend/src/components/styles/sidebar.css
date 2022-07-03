@@ -105,3 +105,22 @@
   color: rgb(122, 122, 122);
 }
 
+.unread-messages-container {
+  position: absolute;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #349EFF;
+}
+
+.unread-messages-container > span {
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  font-size: small;
+  color: white;
+}
+

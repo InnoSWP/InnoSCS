@@ -16,6 +16,7 @@ it("thread props test", async () => {
         status={status}
         problemName={problemName}
         openThread={openThread}
+        unread={0}
       />
     </RecoilRoot>
   );

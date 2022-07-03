@@ -23,50 +23,18 @@ import { AnimatePresence, motion } from "framer-motion";
  */
 
 export default function SideBar() {
-  const [, addBubble] = useRecoilState(messageBubblesState);
+  const [, setMessageBubbles] = useRecoilState(messageBubblesState);
   const [sidebarActive, toggleSideBar] = useRecoilState(sidebarState);
   const [submitProblemTextInput, changeSubmitProblemText] =
     useState<string>("");
   const [submitProblemActive, toggleSubmitProblem] = useState<boolean>(false);
   const [threads, setThreads] = useRecoilState(threadsState);
-  const { dispatchWebSocket } = useWebSocket();
+  const { webSocketState, dispatchWebSocket } = useWebSocket();
   const [currentThreadName, setCurrentThreadName] = useRecoilState(
     currentThreadNameState
   );
   const [problemSolvedActivate, toggleProblemSolved] =
     useRecoilState(problemSolvedState);
-
-  /**
-   * Creates Volunteer Bubble
-   *
-   * In current implementation is used for {@link webSocket} listener event
-   */
-  const createVolunteerBubble = useCallback(
-    (event: MessageEvent<string>, threadName: string) => {
-      const sender = "message-bubble-volunteer";
-      if (event.data) {
-        const isCurrent = JSON.parse(localStorage.getItem(threadName)!).current;
-        if (isCurrent) {
-          addBubble((bubbles) => {
-            return [
-              <MessageBubble
-                key={`message-${bubbles.length + 1}`}
-                text={event.data}
-                sender={sender}
-                prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-              />,
-              ...bubbles,
-            ];
-          });
-        }
-
-        var currentThread = JSON.parse(localStorage.getItem(threadName)!);
-        currentThread.messages.push({ text: event.data, sender: sender });
-        localStorage.setItem(threadName, JSON.stringify(currentThread));
-      }
-    },
-    [addBubble]
-  );
 
   const toggleCurrentThreadValue = (
     futureThread: string,
@@ -104,11 +72,13 @@ export default function SideBar() {
           />
         );
       }
-      addBubble(threadMessages.reverse());
+      currentThread.unread = 0;
+      localStorage.setItem(problemName, JSON.stringify(currentThread));
+      setMessageBubbles(threadMessages.reverse());
       toggleCurrentThreadValue(problemName, currentThreadName);
       setCurrentThreadName(problemName);
     },
-    [addBubble, toggleSideBar, setCurrentThreadName, currentThreadName]
+    [setMessageBubbles, toggleSideBar, setCurrentThreadName, currentThreadName]
   );
 
   // Thread list sync with localStorage, whenever current thread is changed
@@ -125,14 +95,11 @@ export default function SideBar() {
           problemName={localStorage.key(i)!}
           status={threadJson.status}
           openThread={openThread}
+          unread={threadJson.unread ? threadJson.unread : 0}
         />,
       ]);
     }
   }, [setThreads, openThread]);
-
-  useEffect(() => {
-    syncThreads();
-  }, [currentThreadName, syncThreads]);
 
   useEffect(() => {
     toggleSideBar(!submitProblemActive);
@@ -172,42 +139,6 @@ export default function SideBar() {
   };
 
   /**
-   * Creates new thread if input is not empty, then pushes to localStorage
-   */
-  function submitThread() {
-    if (submitProblemTextInput !== "") {
-      fetchData().then((t) => {
-        const newThread = {
-          status: "resolving",
-          messages: [],
-          id: t,
-          current: false,
-        };
-        localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
-
-        dispatchWebSocket({
-          type: "CONNECT",
-          thread_name: submitProblemTextInput,
-          func: createVolunteerBubble,
-        });
-      });
-
-      setThreads((threads) => {
-        const newThreadElement = (
-          <Thread
-            key={`thread-${submitProblemTextInput}`}
-            problemName={submitProblemTextInput}
-            status={"resolving"}
-            openThread={openThread}
-          />
-        );
-
-        return [...threads, newThreadElement];
-      });
-    }
-  }
-
-  /**
    * Closes {@link currentThreadName} thread
    *
    * If {@link currentThreadName} is empty (The current thread is not chosen), then nothing happens.
@@ -236,6 +167,96 @@ export default function SideBar() {
     },
     [currentThreadName, dispatchWebSocket, syncThreads]
   );
+
+  /**
+   * Creates Volunteer Bubble
+   *
+   * In current implementation is used for {@link webSocket} listener event
+   */
+  const createVolunteerBubble = useCallback(
+    (event: MessageEvent<string>, threadName: string) => {
+      const sender = "message-bubble-volunteer";
+      if (event.data) {
+        let currentThread = JSON.parse(localStorage.getItem(threadName)!);
+        const isCurrent = currentThread.current;
+        if (isCurrent) {
+          if (sidebarActive) {
+            if (currentThread.unread) {
+              currentThread.unread += 1;
+            } else currentThread.unread = 1;
+          }
+          setMessageBubbles((bubbles) => {
+            return [
+              <MessageBubble
+                key={`message-${bubbles.length + 1}`}
+                text={event.data}
+                sender={sender}
+                prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
+              />,
+              ...bubbles,
+            ];
+          });
+        } else {
+          if (currentThread.unread) {
+            currentThread.unread += 1;
+          } else currentThread.unread = 1;
+        }
+
+        currentThread.messages.push({ text: event.data, sender: sender });
+        localStorage.setItem(threadName, JSON.stringify(currentThread));
+        syncThreads();
+      }
+    },
+    [setMessageBubbles, syncThreads, sidebarActive]
+  );
+
+  /**
+   * Creates new thread if input is not empty, then pushes to localStorage
+   */
+  function submitThread() {
+    if (submitProblemTextInput !== "") {
+      fetchData().then((t) => {
+        const newThread = {
+          status: "resolving",
+          messages: [],
+          id: t,
+          current: false,
+        };
+        localStorage.setItem(submitProblemTextInput, JSON.stringify(newThread));
+
+        dispatchWebSocket({
+          type: "CONNECT",
+          thread_name: submitProblemTextInput,
+          func: createVolunteerBubble,
+        });
+      });
+
+      setThreads((threads) => {
+        const newThreadElement = (
+          <Thread
+            key={`thread-${submitProblemTextInput}`}
+            problemName={submitProblemTextInput}
+            status={"resolving"}
+            openThread={openThread}
+            unread={0}
+          />
+        );
+
+        return [...threads, newThreadElement];
+      });
+    }
+  }
+
+  useEffect(() => {
+    syncThreads();
+    Object.keys(webSocketState.webSocket).forEach((k) => {
+      if (!webSocketState.webSocket[k].onmessage) {
+        webSocketState.webSocket[k].onmessage = (ev: MessageEvent<string>) => {
+          createVolunteerBubble(ev, k);
+        };
+      }
+    });
+  }, [currentThreadName, syncThreads, createVolunteerBubble, webSocketState]);
 
   return (
     <div>

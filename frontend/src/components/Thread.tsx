@@ -15,9 +15,15 @@ type Props = {
   problemName: string;
   status: "resolving" | "resolved" | "unsolved";
   openThread: (problemName: string) => void;
+  unread: number;
 };
 
-export default function Thread({ problemName, status, openThread }: Props) {
+export default function Thread({
+  problemName,
+  status,
+  openThread,
+  unread,
+}: Props) {
   const threadDeletionActive = useRecoilValue(threadDeletionState);
   const [selectedThreads, setSelectedThreads] =
     useRecoilState(selectedThreadsState);
@@ -59,7 +65,9 @@ export default function Thread({ problemName, status, openThread }: Props) {
     <motion.div
       data-testid="thread-container"
       className="thread-container"
-      onClick={() => openThread(problemName)}
+      onClick={() => {
+        openThread(problemName);
+      }}
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
@@ -70,6 +78,17 @@ export default function Thread({ problemName, status, openThread }: Props) {
         className={`thread-status ${status}`}
       ></div>
       <span>{problemName}</span>
+      {unread > 0 && (
+        <motion.div
+          className="unread-messages-container"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+        >
+          <span>{unread}</span>
+        </motion.div>
+      )}
+
       <motion.div
         className="thread-checkbox-container"
         onClick={(e) => e.stopPropagation()}

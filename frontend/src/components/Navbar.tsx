@@ -119,8 +119,12 @@ export default function Navbar() {
       <div className="navbar-wrapper">
         <div className="button-back-container">
           <BackButton
-            active={sidebarActive}
-            toggle={threadDeletionActive ? toggleThreadDeletion : toggleSideBar}
+            active={!sidebarActive || threadDeletionActive}
+            toggle={
+              threadDeletionActive
+                ? (value: boolean) => toggleThreadDeletion(!value)
+                : toggleSideBar
+            }
           />
         </div>
         <div className="title-container">
