@@ -1,5 +1,4 @@
-import { ChangeEvent } from "react";
-import { MouseEventHandler } from "react";
+import React, { ChangeEvent, FormEventHandler } from "react";
 import "./styles/messageBox.css";
 /**
  * MessageBox component is a footer part of the application, which sends user message.
@@ -12,7 +11,7 @@ import "./styles/messageBox.css";
 type Props = {
   changeMessageText: (value: string | (() => string)) => void;
   inputText: string;
-  sendMessage: MouseEventHandler<HTMLButtonElement>;
+  sendMessage: () => void;
 };
 
 export default function MessageBox({
@@ -24,8 +23,13 @@ export default function MessageBox({
     changeMessageText(() => event.target.value);
   }
 
+  const onFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage();
+  };
+
   return (
-    <div className="message-box-wrapper">
+    <form className="message-box-wrapper" onSubmit={onFormSubmit}>
       <div className="message-wrapper">
         <input
           data-testid="message-input"
@@ -48,11 +52,7 @@ export default function MessageBox({
           </svg>
         </div>
       </div>
-      <button
-        data-testid="button-send"
-        className="button-send"
-        onClick={sendMessage}
-      >
+      <button data-testid="button-send" className="button-send" type="submit">
         <svg
           width="21"
           height="18"
@@ -63,6 +63,6 @@ export default function MessageBox({
           <path d="M0 18L21 9L0 0V7L15 9L0 11V18Z" fill="white" />
         </svg>
       </button>
-    </div>
+    </form>
   );
 }

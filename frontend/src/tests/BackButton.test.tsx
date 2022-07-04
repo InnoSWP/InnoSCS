@@ -8,20 +8,12 @@ it("toggle on click test", () => {
     active = value;
   });
 
-  const { rerender } = render(<BackButton active={active} toggle={toggle} />);
+  render(<BackButton active={active} toggle={toggle} />);
   const buttonBack = screen.getByTestId("button-back");
 
   fireEvent.click(buttonBack);
-  expect(active).toBe(true);
   expect(toggle).toBeCalledTimes(1);
 
-  rerender(<BackButton active={active} toggle={toggle} />);
-  expect(buttonBack.className).toBe("button-back rotated");
-
   fireEvent.click(buttonBack);
-  expect(active).toBe(false);
   expect(toggle).toBeCalledTimes(2);
-
-  rerender(<BackButton active={active} toggle={toggle} />);
-  expect(buttonBack.className).toBe("button-back");
 });

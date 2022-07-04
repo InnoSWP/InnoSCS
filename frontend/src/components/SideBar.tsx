@@ -17,6 +17,7 @@ import {
   problemSolvedState,
 } from "./atoms";
 import { AnimatePresence, motion } from "framer-motion";
+import ThreadClosed from "./ThreadClosed";
 
 /**
  * SideBar component contains list of all threads
@@ -63,14 +64,23 @@ export default function SideBar() {
       const currentThread = JSON.parse(localStorage.getItem(problemName)!);
       const threadMessages = [];
       for (let m = 0; m < currentThread.messages.length; m++) {
-        threadMessages.push(
-          <MessageBubble
-            key={`message-${threadMessages.length + 1}`}
-            text={currentThread.messages[m].text}
-            sender={currentThread.messages[m].sender}
-            prevSender={m - 1 < 0 ? null : currentThread.messages[m - 1].sender}
-          />
-        );
+        if (
+          currentThread.messages[m].text !==
+          "User from another side is out you can leave thread"
+        ) {
+          threadMessages.push(
+            <MessageBubble
+              key={`message-${threadMessages.length + 1}`}
+              text={currentThread.messages[m].text}
+              sender={currentThread.messages[m].sender}
+              prevSender={
+                m - 1 < 0 ? null : currentThread.messages[m - 1].sender
+              }
+            />
+          );
+        } else {
+          threadMessages.push(<ThreadClosed key={`closed-${problemName}`} />);
+        }
       }
       currentThread.unread = 0;
       localStorage.setItem(problemName, JSON.stringify(currentThread));
@@ -156,6 +166,10 @@ export default function SideBar() {
           }
         ).then(() => {
           thread.status = status;
+          thread.messages.push({
+            text: "User from another side is out you can leave thread",
+            sender: "message-bubble-volunteer",
+          });
           localStorage.setItem(currentThreadName, JSON.stringify(thread));
           dispatchWebSocket({
             type: "CLOSE",
@@ -185,17 +199,33 @@ export default function SideBar() {
               currentThread.unread += 1;
             } else currentThread.unread = 1;
           }
-          setMessageBubbles((bubbles) => {
-            return [
-              <MessageBubble
-                key={`message-${bubbles.length + 1}`}
-                text={event.data}
-                sender={sender}
-                prevSender={bubbles.length === 0 ? null : bubbles[0].props.type}
-              />,
-              ...bubbles,
-            ];
-          });
+          if (
+            event.data !== "User from another side is out you can leave thread"
+          ) {
+            setMessageBubbles((bubbles) => {
+              return [
+                <MessageBubble
+                  key={`message-${bubbles.length + 1}`}
+                  text={event.data}
+                  sender={sender}
+                  prevSender={
+                    bubbles.length === 0 ? null : bubbles[0].props.type
+                  }
+                />,
+                ...bubbles,
+              ];
+            });
+          } else {
+            setMessageBubbles((bubbles) => {
+              return [
+                <ThreadClosed key={`closed-${threadName}`} />,
+                ...bubbles,
+              ];
+            });
+            setTimeout(() => {
+              toggleProblemSolved(true);
+            }, 500);
+          }
         } else {
           if (currentThread.unread) {
             currentThread.unread += 1;
@@ -207,7 +237,7 @@ export default function SideBar() {
         syncThreads();
       }
     },
-    [setMessageBubbles, syncThreads, sidebarActive]
+    [setMessageBubbles, syncThreads, sidebarActive, toggleProblemSolved]
   );
 
   /**
@@ -272,7 +302,7 @@ export default function SideBar() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span>There is no threads yet</span>
+              <span>There are no threads yet</span>
             </motion.div>
           )}
         </AnimatePresence>

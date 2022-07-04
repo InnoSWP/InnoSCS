@@ -1,12 +1,26 @@
+import { motion } from "framer-motion";
+
 type Props = {
   active: boolean;
   toggle: (value: boolean) => void;
 };
 export default function BackButton({ active, toggle }: Props) {
+  const variants = {
+    active: {
+      opacity: 1,
+    },
+
+    hidden: {
+      opacity: 0,
+    },
+  };
   return (
-    <button
+    <motion.button
       data-testid="button-back"
-      className={active ? "button-back active" : "button-back"}
+      className={"button-back"}
+      variants={variants}
+      initial="hidden"
+      animate={active ? "active" : "hidden"}
       onClick={() => toggle(true)}
     >
       <svg
@@ -21,6 +35,6 @@ export default function BackButton({ active, toggle }: Props) {
           fill="black"
         />
       </svg>
-    </button>
+    </motion.button>
   );
 }
