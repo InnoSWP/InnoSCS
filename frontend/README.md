@@ -1,1 +1,0 @@
-# Frontend part of the Seamless Customer Support
